@@ -11,8 +11,8 @@ sourceSets {
 
 dependencies {
     bioModel group: 'org.intermine', name: 'bio-model', version: bioVersion, transitive: false
-    compile group: 'org.intermine', name: 'intermine-objectstore', version: imVersion
-    compile group: 'org.intermine', name: 'intermine-integrate', version: imVersion
+    api group: 'org.intermine', name: 'intermine-objectstore', version: imVersion
+    api group: 'org.intermine', name: 'intermine-integrate', version: imVersion
 }
 
 processResources {

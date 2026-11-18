@@ -4,7 +4,7 @@ buildscript {
             // define in ~/.gradle/gradle.properties
             // intermine.plugin.repo=file:///your/intermine/repo/plugin/build/libs
             url project.getProperty("intermine.plugin.repo")
-            layout "pattern", {
+            patternLayout {
                 artifact  "[artifact]-[revision].[ext]"
             }
             metadataSources {
@@ -13,6 +13,8 @@ buildscript {
         }
         maven {
             url project.getProperty("intermine.maven.central")
+            allowInsecureProtocol = "http".equalsIgnoreCase(url.scheme) &&
+                project.findProperty("intermine.maven.central.allowInsecureProtocol") == "true"
         }
     }
     dependencies {
@@ -39,12 +41,12 @@ processResources {
 }
 
 dependencies {
-    compile group: "org.intermine", name: "intermine-model", version: System.getProperty("imVersion")
-    compile group: "org.intermine", name: "intermine-objectstore", version: System.getProperty("imVersion")
-    compile fileTree(dir: 'libs', include: '*.jar')
-    compile 'commons-lang:commons-lang:2.6'
-    compile group: 'ch.qos.reload4j', name: 'reload4j', version: '1.2.22'
-    compile group: 'org.slf4j', name: 'slf4j-reload4j', version: '1.7.36'
+    api group: "org.intermine", name: "intermine-model", version: System.getProperty("imVersion")
+    api group: "org.intermine", name: "intermine-objectstore", version: System.getProperty("imVersion")
+    api fileTree(dir: 'libs', include: '*.jar')
+    api 'commons-lang:commons-lang:2.6'
+    api group: 'ch.qos.reload4j', name: 'reload4j', version: '1.2.22'
+    api group: 'org.slf4j', name: 'slf4j-reload4j', version: '1.7.36'
 }
 
 dbModelConfig {
@@ -59,11 +61,17 @@ task copyMineProperties(type: Copy) {
     rename { fileName -> fileName.replace('intermine-bio-test.properties', 'intermine.properties') }
 }
 
-task copyGenomicModel(type: Copy, overwrite: true) {
-    from sourceSets.main.output.resourcesDir
-    include 'core.xml'
-    destinationDir sourceSets.main.output.resourcesDir
-    rename { fileName -> fileName.replace('core.xml', 'genomic_model.xml') }
+tasks.named('copyGenomicModel') {
+    actions.clear()
+    setOnlyIf { true }
+    doLast {
+        copy {
+            from sourceSets.main.output.resourcesDir
+            include 'core.xml'
+            into sourceSets.main.output.resourcesDir
+            rename 'core.xml', 'genomic_model.xml'
+        }
+    }
 }
 
 tasks.buildDB.dependsOn ':bio-testresources:createUnitTestDatabases'

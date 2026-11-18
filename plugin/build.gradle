@@ -1,82 +1,26 @@
 apply plugin: 'groovy'
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'signing'
+apply plugin: 'java-library'
 
 group 'org.intermine'
 version '5.1.1'
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     maven {
         url project.getProperty("intermine.maven.central")
+        allowInsecureProtocol = "http".equalsIgnoreCase(url.scheme) &&
+            project.findProperty("intermine.maven.central.allowInsecureProtocol") == "true"
     }
 }
 
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
+    api gradleApi()
+    api localGroovy()
+    testImplementation gradleTestKit()
+    testImplementation 'junit:junit:4.13.2'
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
-
-signing {
-    required { gradle.taskGraph.hasTask("publish") }
-    sign configurations.archives
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            pom.project {
-                name project.name
-                packaging 'jar'
-                description 'InterMine Plugin'
-                url 'https://github.com/intermine/intermine'
-
-                scm {
-                    connection 'scm:git:git://github.com/intermine/intermine.git'
-                    developerConnection 'scm:git:ssh://github.com:intermine/intermine.git'
-                    url 'https://github.com/intermine/intermine'
-                }
-
-                licenses {
-                    license {
-                        name 'LGPL-2.1'
-                        url 'https://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt'
-                    }
-                }
-
-                developers {
-                    developer {
-                        name 'InterMine core team and contributors'
-                    }
-                }
-            }
-        }
-    }
-}
+ext.pomDescription = 'InterMine Plugin'
+apply from: "${rootDir}/../config/gradle/publishing.gradle"

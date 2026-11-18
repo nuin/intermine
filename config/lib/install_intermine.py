@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 
 import argparse
-from dataclasses import dataclass
 import glob
 import os
+import re
+import sys
+from dataclasses import dataclass
 from pathlib import Path
 from subprocess import run
-import sys
-from typing import Any
+from urllib.parse import urlsplit
 
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 EXIT_USER = 2
+
+GRADLE_DISTRIBUTION = "https://services.gradle.org/distributions/gradle-8.14.7-bin.zip"
+GRADLE_SHA256 = "903bfc4bc7622323124054c10f509246212a1902948bdaf26c379cca8735e856"
 
 
 @dataclass
@@ -24,6 +28,7 @@ class IntermineBuilder:
     offline: bool
     offline_url: str
     plugins_url: str
+    gradle_distribution_sha256: str | None = None
 
     def __post_init__(self) -> None:
         python_lib_dir = os.path.dirname(os.path.realpath(__file__))
@@ -47,25 +52,41 @@ class IntermineBuilder:
         self.gradle_install_modules()
 
     def create_gradle_properties(self) -> None:
-        replacement_dict = {
-            "im_checkout": self.checkout,
-            "im_central_url": self.central_url,
-            "im_clojars_url": self.clojars_url,
-            "im_ebi_url": self.ebi_url,
-            "im_plugins_url": self.plugins_url,
+        repositories = {
+            "central": self.central_url,
+            "clojars": self.clojars_url,
+            "ebi": self.ebi_url,
+            "plugins": self.plugins_url,
         }
+        replacement_dict = {"im_checkout": self.checkout}
+        for name, url in repositories.items():
+            replacement_dict[f"im_{name}_url"] = url
+            replacement_dict[f"im_{name}_allow_insecure"] = str(
+                urlsplit(url).scheme == "http"
+            ).lower()
 
         self.create_properties("gradle.properties", replacement_dict)
 
     def create_gradle_wrapper_properties(self) -> None:
+        checksum = self.gradle_distribution_sha256
+        official_distribution = self.gradle_distribution_url == GRADLE_DISTRIBUTION
+        offline_distribution = (
+            self.offline
+            and self.gradle_distribution_url == GRADLE_DISTRIBUTION.rsplit("/", 1)[-1]
+        )
+        if checksum is None and (official_distribution or offline_distribution):
+            checksum = GRADLE_SHA256
         replacement_dict = {
             "im_gradle_distribution_url": self.gradle_distribution_url,
+            "im_gradle_distribution_checksum": f"distributionSha256Sum={checksum}"
+            if checksum
+            else "",
         }
 
         self.create_properties("gradle-wrapper.properties", replacement_dict)
 
     def create_properties(
-        self, filename: str, replacement_dict: dict[str, Any]
+        self, filename: str, replacement_dict: dict[str, str]
     ) -> None:
         for properties_in in glob.glob(
             f"**/{filename}.in", root_dir=self.checkout, recursive=True
@@ -88,9 +109,7 @@ class IntermineBuilder:
     def copy_test_properties(self) -> None:
         self.copy_properties("ci.properties", "intermine-test.properties")
         self.copy_properties("testmodel.properties", "testmodel.properties")
-        self.copy_properties(
-            "ci-bio.properties", "intermine-bio-test.properties"
-        )
+        self.copy_properties("ci-bio.properties", "intermine-bio-test.properties")
 
     def copy_properties(self, source_name: str, dest_name: str) -> None:
         dot_intermine_dir = os.path.join(Path.home(), ".intermine")
@@ -105,8 +124,7 @@ class IntermineBuilder:
 
         with open(dest_file, "w") as f_out:
             f_out.write(
-                "# FILE AUTOMATICALLY GENERATED FROM "
-                f"{source_file}. DO NOT EDIT!\n"
+                f"# FILE AUTOMATICALLY GENERATED FROM {source_file}. DO NOT EDIT!\n"
             )
             with open(source_file) as f_in:
                 for line in f_in:
@@ -137,8 +155,19 @@ class IntermineBuilder:
         run(["./gradlew", "install", "--stacktrace"], check=True)
 
 
+def sha256_digest(value: str) -> str:
+    if not re.fullmatch(r"[0-9a-fA-F]{64}", value):
+        raise argparse.ArgumentTypeError(
+            "SHA-256 must contain 64 hexadecimal characters"
+        )
+    return value.lower()
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Install Intermine")
+    parser = argparse.ArgumentParser(
+        description="Install Intermine",
+        epilog="Selecting an http:// Maven URL explicitly enables HTTP for that repository.",
+    )
     parser.add_argument(
         "--clean",
         action="store_true",
@@ -171,9 +200,7 @@ def main() -> None:
 
     parser.add_argument(
         "--ebi_url",
-        default=(
-            "https://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/"
-        ),
+        default=("https://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/"),
         help="URL of EMBL-EBI Maven repository",
     )
 
@@ -185,8 +212,14 @@ def main() -> None:
 
     parser.add_argument(
         "--gradle_distribution_url",
-        default="https://services.gradle.org/distributions/gradle-4.9-bin.zip",
-        help="URL of Gradle plugins Maven repository",
+        default=GRADLE_DISTRIBUTION,
+        help="URL of the Gradle distribution ZIP",
+    )
+
+    parser.add_argument(
+        "--gradle_distribution_sha256",
+        type=sha256_digest,
+        help="SHA-256 of a custom Gradle distribution; the official distribution is verified automatically",
     )
 
     args = parser.parse_args()

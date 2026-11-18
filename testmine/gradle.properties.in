@@ -2,9 +2,13 @@ systemProp.javax.xml.stream.XMLOutputFactory=com.sun.xml.internal.stream.XMLOutp
 
 # Install from internet or local Sonatype Nexus repo
 intermine.maven.central=@@im_central_url@@
+intermine.maven.central.allowInsecureProtocol=@@im_central_allow_insecure@@
 intermine.maven.clojars=@@im_clojars_url@@
+intermine.maven.clojars.allowInsecureProtocol=@@im_clojars_allow_insecure@@
 intermine.maven.ebi=@@im_ebi_url@@
+intermine.maven.ebi.allowInsecureProtocol=@@im_ebi_allow_insecure@@
 intermine.maven.plugins=@@im_plugins_url@@
+intermine.maven.plugins.allowInsecureProtocol=@@im_plugins_allow_insecure@@
 
 # Where to find the Intermine plugin locally on file system
 intermine.plugin.repo=file://@@im_checkout@@/plugin/build/libs

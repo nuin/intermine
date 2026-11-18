@@ -11,8 +11,8 @@ sourceSets {
 
 dependencies {
     bioModel group: 'org.intermine', name: 'bio-source-flymine-static', version: flymineVersion, transitive: false
-    compile group: 'org.intermine', name: 'bio-source-flymine-static', version: flymineVersion, transitive: false
-    compile group: 'org.intermine', name: 'bio-postprocess-create-intron-features', version: bioVersion
+    api group: 'org.intermine', name: 'bio-source-flymine-static', version: flymineVersion, transitive: false
+    api group: 'org.intermine', name: 'bio-postprocess-create-intron-features', version: bioVersion
 }
 
 processResources {

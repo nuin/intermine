@@ -1,0 +1,91 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+tasks.named('sourcesJar') {
+    dependsOn tasks.named('classes')
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            pom {
+                name = project.name
+                description = project.pomDescription
+                url = 'https://github.com/intermine/intermine'
+                scm {
+                    connection = 'scm:git:git://github.com/intermine/intermine.git'
+                    developerConnection = 'scm:git:ssh://github.com:intermine/intermine.git'
+                    url = 'https://github.com/intermine/intermine'
+                }
+                licenses {
+                    license {
+                        name = 'LGPL-2.1'
+                        url = 'https://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'InterMine core team and contributors'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        if (project.hasProperty('publishRepositoryUrl')) {
+            maven {
+                name = 'release'
+                url = project.property('publishRepositoryUrl')
+                if (project.hasProperty('publishRepositoryUsername')) {
+                    credentials {
+                        username = project.property('publishRepositoryUsername')
+                        password = project.findProperty('publishRepositoryPassword')
+                    }
+                }
+            }
+        }
+    }
+}
+
+pluginManager.withPlugin('war') {
+    configurations.api.extendsFrom(configurations.providedCompile)
+    publishing.publications.mavenJava {
+        setArtifacts([tasks.named('war'), tasks.named('sourcesJar'), tasks.named('javadocJar')])
+        pom.packaging = 'war'
+        pom.withXml {
+            def provided = configurations.providedRuntime.allDependencies.collect {
+                "${it.group}:${it.name}"
+            }.toSet()
+            asNode().dependencies.dependency.each { dependency ->
+                if (provided.contains("${dependency.groupId.text()}:${dependency.artifactId.text()}")) {
+                    dependency.scope[0].value = 'provided'
+                }
+            }
+        }
+    }
+    // The WAR and classes classifier share a Maven POM, rather than a Java component artifact.
+    tasks.withType(org.gradle.api.publish.tasks.GenerateModuleMetadata).configureEach {
+        enabled = false
+    }
+}
+
+signing {
+    required {
+        gradle.taskGraph.allTasks.any {
+            it instanceof org.gradle.api.publish.maven.tasks.PublishToMavenRepository
+        }
+    }
+    sign publishing.publications.mavenJava
+}
+
+tasks.register('install') {
+    group = 'publishing'
+    description = 'Installs the Maven publication into the local Maven repository.'
+    dependsOn tasks.named('publishToMavenLocal')
+}

@@ -7,7 +7,7 @@ ext {
 }
 
 subprojects {
-    apply plugin: 'java'
+    apply plugin: 'java-library'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -34,7 +34,7 @@ subprojects {
         localDirs.each { dir ->
             ivy {
                 url "file://" + dir
-                layout "pattern", {
+                patternLayout {
                     artifact  "[artifact]-[revision](-[classifier]).[ext]"
                 }
                 metadataSources {
@@ -44,12 +44,18 @@ subprojects {
         }
         maven {
             url project.getProperty("intermine.maven.central")
+            allowInsecureProtocol = "http".equalsIgnoreCase(url.scheme) &&
+                project.findProperty("intermine.maven.central.allowInsecureProtocol") == "true"
         }
         maven {
             url project.getProperty("intermine.maven.ebi")
+            allowInsecureProtocol = "http".equalsIgnoreCase(url.scheme) &&
+                project.findProperty("intermine.maven.ebi.allowInsecureProtocol") == "true"
         }
         maven {
             url project.getProperty("intermine.maven.clojars")
+            allowInsecureProtocol = "http".equalsIgnoreCase(url.scheme) &&
+                project.findProperty("intermine.maven.clojars.allowInsecureProtocol") == "true"
         }
     }
 
@@ -58,31 +64,31 @@ subprojects {
     }
 
     dependencies {
-        compile group: 'ant', name: 'ant', version: '1.6.5'
-        compile group: 'ch.qos.reload4j', name: 'reload4j', version: '1.2.22'
-        compile group: 'org.slf4j', name: 'slf4j-reload4j', version: '1.7.36'
+        api group: 'ant', name: 'ant', version: '1.6.5'
+        api group: 'ch.qos.reload4j', name: 'reload4j', version: '1.2.22'
+        api group: 'org.slf4j', name: 'slf4j-reload4j', version: '1.7.36'
         commonResources group: "org.intermine", name: "intermine-resources", version: imVersion
     }
 
-    task copyMineProperties(type: Copy) {
-        description "Copies mine specific intermine.properties file (from .intermine directory) into resources output to be included in the war"
-        from minePropertyFile
-        into sourceSets.main.output.resourcesDir
-        rename { fileName -> fileName.replace("testmodel.properties", "intermine.properties") }
-        inputs.sourceFiles.stopExecutionIfEmpty()
+    processResources {
+        from(minePropertyFile) {
+            rename 'testmodel.properties', 'intermine.properties'
+        }
+        from({ zipTree(configurations.commonResources.singleFile) }) {
+            include 'default.intermine.test.properties'
+            rename 'default.intermine.test.properties', 'default.intermine.properties'
+        }
     }
 
-    task copyDefaultProperties(type: Copy) {
-        description "Copies default.intermine.properties file (from resources project) into resources output to be included in the war"
-        dependsOn 'processResources'
-        from({ zipTree(configurations.commonResources.singleFile) }) {
-            include "default.intermine.test.properties"
-        }
-        into sourceSets.main.output.resourcesDir
-        rename { fileName -> fileName.replace("default.intermine.test.properties", "default.intermine.properties") }
+    tasks.register('copyMineProperties') {
+        dependsOn tasks.named('processResources')
+    }
+
+    tasks.register('copyDefaultProperties') {
+        dependsOn tasks.named('processResources')
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.9'
+tasks.named('wrapper', Wrapper) {
+    gradleVersion = '8.14.7'
 }

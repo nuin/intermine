@@ -48,7 +48,7 @@ class DBModelUtils {
         ant.taskdef(name: "modelOutputTask", classname: "org.intermine.task.ModelOutputTask") {
             classpath {
                 dirset(dir: project.getBuildDir().getAbsolutePath())
-                pathelement(path: project.configurations.getByName("compile").asPath)
+                pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                 pathelement(path: project.configurations.getByName("bioModel").asPath)
             }
         }
@@ -64,9 +64,9 @@ class DBModelUtils {
         ant.taskdef(name: "torque", classname: "org.intermine.objectstore.intermine.TorqueModelOutputTask") {
             classpath {
                 dirset(dir: project.getBuildDir().getAbsolutePath())
-                pathelement(path: project.configurations.getByName("compile").asPath)
+                pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                 pathelement(path: project.configurations.getByName("bioModel").asPath)
-                pathelement(path: project.configurations.getByName("api").asPath) //userprofile classes
+                pathelement(path: project.configurations.getByName("intermineApi").asPath) //userprofile classes
             }
         }
         ant.torque(osname: objectStoreName, destFile: destination)
@@ -82,7 +82,7 @@ class DBModelUtils {
             classpath {
                 dirset(dir: buildResourcesMainDir)//to read default.intermine.properties
                 pathelement(path: project.buildDir.getAbsolutePath())//to read the schema
-                pathelement(path: project.configurations.getByName("compile").asPath)
+                pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
             }
         }
         ant.buildDB(osname: objectStoreName, model: modelName, schemafile: schemaFile, tempDir: tempDirectory)
@@ -95,8 +95,8 @@ class DBModelUtils {
         ant.taskdef(name: 'insertModel', classname: 'org.intermine.task.StoreMetadataTask') {
             classpath {
                 dirset(dir: buildResourcesMainDir) // intermine.properties
-                pathelement(path: project.configurations.getByName("compile").asPath)
-                pathelement(path: project.configurations.getByName("api").asPath) //userprofile_keyDefs.properties
+                pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
+                pathelement(path: project.configurations.getByName("intermineApi").asPath) //userprofile_keyDefs.properties
             }
         }
         ant.insertModel(osname: objectStoreName, modelName: modelName)
@@ -109,7 +109,7 @@ class DBModelUtils {
         ant.taskdef(name: 'analyse', classname: 'org.intermine.task.AnalyseDbTask') {
             classpath {
                 dirset(dir: buildResourcesMainDir) // intermine.properties
-                pathelement(path: project.configurations.getByName("compile").asPath)
+                pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
             }
         }
         ant.analyse(osname: objectStoreName, model: modelName)
@@ -123,7 +123,7 @@ class DBModelUtils {
             classpath {
                 dirset(dir: buildResourcesMainDir) // intermine.properties
                 dirset(dir: project.getBuildDir().getAbsolutePath())
-                pathelement(path: project.configurations.getByName("compile").asPath)
+                pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
             }
         }
         ant.createIndexes(alias: objectStoreName, attributeIndexes: attributeIndexes)

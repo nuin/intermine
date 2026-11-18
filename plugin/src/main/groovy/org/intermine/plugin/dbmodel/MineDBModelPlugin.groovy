@@ -27,7 +27,7 @@ class MineDBModelPlugin implements Plugin<Project> {
                     classpath {
                         pathelement(path: project.configurations.getByName("plugin").asPath)
                         pathelement(path: project.configurations.getByName("mergeSource").asPath)
-                        pathelement(path: project.configurations.getByName("compile").asPath)
+                        pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                         dirset(dir: project.getBuildDir().getAbsolutePath())
                     }
                 }

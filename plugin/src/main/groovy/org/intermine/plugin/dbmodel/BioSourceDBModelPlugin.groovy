@@ -94,6 +94,11 @@ class BioSourceDBModelPlugin implements Plugin<Project>{
             }
         }
 
+        project.tasks.named('copyGenomicModel') {
+            actions.clear()
+            dependsOn 'mergeModels'
+        }
+
         project.tasks.test.dependsOn 'createTestPrioritiesFile'
     }
 }

@@ -111,7 +111,7 @@ class WebAppPlugin implements Plugin<Project> {
                     ant.taskdef(name: "summarizeObjectStore", classname: "org.intermine.task.SummariseObjectStoreTask") {
                         classpath {
                             dirset(dir: project.getBuildDir().getAbsolutePath())
-                            pathelement(path: project.configurations.getByName("compile").asPath)
+                            pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                         }
                     }
                     ant.summarizeObjectStore(alias: config.objectStoreName, configFileName: "objectstoresummary.config.properties",
@@ -156,7 +156,7 @@ class WebAppPlugin implements Plugin<Project> {
                 ant.taskdef(name: "loadTemplates", classname: "org.intermine.web.task.LoadDefaultTemplatesTask") {
                     classpath {
                         dirset(dir: project.getBuildDir().getAbsolutePath())
-                        pathelement(path: project.configurations.getByName("compile").asPath)
+                        pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                     }
                 }
                 ant.loadTemplates(osAlias: config.userProfileObjectStoreName, userProfileAlias: config.userProfileObjectStoreWriterName,
@@ -179,7 +179,7 @@ class WebAppPlugin implements Plugin<Project> {
                 ant.taskdef(name: "dropPrecomputedTables", classname: "org.intermine.task.DropPrecomputedTablesTask") {
                     classpath {
                         dirset(dir: project.getBuildDir().getAbsolutePath())
-                        pathelement(path: project.configurations.getByName("compile").asPath)
+                        pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                     }
                 }
                 ant.dropPrecomputedTables(alias: config.objectStoreName)
@@ -199,7 +199,7 @@ class WebAppPlugin implements Plugin<Project> {
                 ant.taskdef(name: "precomputeQueries", classname: "org.intermine.task.PrecomputeTask") {
                     classpath {
                         dirset(dir: project.getBuildDir().getAbsolutePath())
-                        pathelement(path: project.configurations.getByName("compile").asPath)
+                        pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                     }
                 }
                 ant.precomputeQueries(objectStoreAlias: config.objectStoreName, minRows:0,
@@ -224,7 +224,7 @@ class WebAppPlugin implements Plugin<Project> {
                 ant.taskdef(name: "precomputeTemplates", classname: "org.intermine.web.task.PrecomputeTemplatesTask") {
                     classpath {
                         dirset(dir: project.getBuildDir().getAbsolutePath())
-                        pathelement(path: project.configurations.getByName("compile").asPath)
+                        pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                     }
                 }
                 ant.precomputeTemplates(alias: config.objectStoreName,

@@ -19,8 +19,8 @@ sourceSets {
 
 dependencies {
     bioModel group: 'org.intermine', name: 'bio-model', version: bioVersion, transitive: false
-    compile group: 'org.intermine', name: 'intermine-integrate', version: imVersion
-    compile group: "org.biojava", name: "biojava-core", version: "4.2.0"
+    api group: 'org.intermine', name: 'intermine-integrate', version: imVersion
+    api group: "org.biojava", name: "biojava-core", version: "4.2.0"
 }
 
 processResources {

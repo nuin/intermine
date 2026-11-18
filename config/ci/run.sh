@@ -42,6 +42,7 @@ gradlew_build() {
 }
 
 if [ "$TEST_SUITE" = "intermine" ]; then
+    run_gradle plugin test
     echo "RUNNING intermine unit tests"
     gradlew_build intermine
 

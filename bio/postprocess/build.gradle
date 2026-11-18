@@ -4,7 +4,7 @@ buildscript {
             // define in ~/.gradle/gradle.properties
             // intermine.plugin.repo=file:///your/intermine/repo/plugin/build/libs
             url project.getProperty("intermine.plugin.repo")
-            layout "pattern", {
+            patternLayout {
                 artifact  "[artifact]-[revision].[ext]"
             }
             metadataSources {
@@ -14,6 +14,8 @@ buildscript {
 
         maven {
             url project.getProperty("intermine.maven.central")
+            allowInsecureProtocol = "http".equalsIgnoreCase(url.scheme) &&
+                project.findProperty("intermine.maven.central.allowInsecureProtocol") == "true"
         }
     }
     dependencies {
@@ -31,9 +33,7 @@ subprojects {
     group = 'org.intermine'
     version '5.1.1'
 
-    apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'signing'
+    apply plugin: 'java-library'
     apply plugin: 'dbmodel'
     apply plugin: 'biocore-dbmodel'
     apply plugin: "checkstyle"
@@ -74,7 +74,7 @@ subprojects {
         localDirs.each { dir ->
             ivy {
                 url "file://" + dir
-                layout "pattern", {
+                patternLayout {
                     artifact  "[artifact]-[revision](-[classifier]).[ext]"
                 }
                 metadataSources {
@@ -84,6 +84,8 @@ subprojects {
         }
         maven {
             url project.getProperty("intermine.maven.central")
+            allowInsecureProtocol = "http".equalsIgnoreCase(url.scheme) &&
+                project.findProperty("intermine.maven.central.allowInsecureProtocol") == "true"
         }
     }
 
@@ -92,23 +94,23 @@ subprojects {
     }
 
     dependencies {
-        compile group: 'com.zaxxer', name: 'HikariCP', version: '3.2.0', transitive: false
-        compile group: 'ch.qos.reload4j', name: 'reload4j', version: '1.2.22'
-        compile group: 'org.slf4j', name: 'slf4j-reload4j', version: '1.7.36'
-        compile group: 'org.apache.ant', name: 'ant', version: '1.7.0'
-        compile group: 'org.apache.solr', name: 'solr-solrj', version: '8.11.4'
-        compile group: 'org.intermine', name: 'bio-core', version: System.getProperty("bioVersion"), transitive: false
-        compile group : "org.intermine", name: "intermine-integrate", version: System.getProperty("imVersion")
-        compile group : "org.intermine", name: "intermine-model", version: System.getProperty("imVersion")
-        compile group : "org.intermine", name: "intermine-objectstore", version: System.getProperty("imVersion")
-        compile group : "org.intermine", name: "intermine-resources", version: System.getProperty("imVersion") // log4j
-        compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
-        compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
-        compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
+        api group: 'com.zaxxer', name: 'HikariCP', version: '3.2.0', transitive: false
+        api group: 'ch.qos.reload4j', name: 'reload4j', version: '1.2.22'
+        api group: 'org.slf4j', name: 'slf4j-reload4j', version: '1.7.36'
+        api group: 'org.apache.ant', name: 'ant', version: '1.7.0'
+        api group: 'org.apache.solr', name: 'solr-solrj', version: '8.11.4'
+        api group: 'org.intermine', name: 'bio-core', version: System.getProperty("bioVersion"), transitive: false
+        api group : "org.intermine", name: "intermine-integrate", version: System.getProperty("imVersion")
+        api group : "org.intermine", name: "intermine-model", version: System.getProperty("imVersion")
+        api group : "org.intermine", name: "intermine-objectstore", version: System.getProperty("imVersion")
+        api group : "org.intermine", name: "intermine-resources", version: System.getProperty("imVersion") // log4j
+        api group: 'commons-collections', name: 'commons-collections', version: '3.2'
+        api group: 'commons-lang', name: 'commons-lang', version: '2.6'
+        api group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
 
-        testCompile group: 'junit', name: 'junit', version: '4.8.2'
-        testCompile group: "org.intermine", name: "intermine-integrate", version: System.getProperty("imVersion")
-        testCompile group: 'xmlunit', name: 'xmlunit', version: '1.0'
+        testImplementation group: 'junit', name: 'junit', version: '4.8.2'
+        testImplementation group: "org.intermine", name: "intermine-integrate", version: System.getProperty("imVersion")
+        testImplementation group: 'xmlunit', name: 'xmlunit', version: '1.0'
         mergeModel group : "org.intermine", name: "intermine-objectstore", version: System.getProperty("imVersion")
     }
 
@@ -148,7 +150,7 @@ subprojects {
     }
 
     checkstyle {
-        toolVersion '7.8.1'
+        toolVersion = '7.8.1'
         configFile file("${rootDir}/../../config/checkstyle/checkstyle.xml")
         sourceSets = [sourceSets.main]
         showViolations = true
@@ -172,6 +174,8 @@ subprojects {
         enabled = false
     }
 
+    apply from: "${rootDir}/../../config/gradle/checkstyle.gradle"
+
     tasks.withType(Test) {
         scanForTestClasses = false
         include '**/*Test.class'
@@ -180,77 +184,18 @@ subprojects {
     test {
         // we have a system property that we need to get to the tests
         systemProperties System.properties
-        ignoreFailures = true
+        ignoreFailures = false
         forkEvery = 1
     }
 
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
-    }
-
-    signing {
-        required { gradle.taskGraph.hasTask("publish") }
-        sign configurations.archives
-    }
-
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-                repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-
-                snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-
-                pom.project {
-                    name project.name
-                    packaging 'jar'
-                    description 'InterMine Post Processes modules'
-                    url 'https://github.com/intermine/intermine'
-
-                    scm {
-                        connection 'scm:git:git://github.com/intermine/intermine.git'
-                        developerConnection 'scm:git:ssh://github.com:intermine/intermine.git'
-                        url 'https://github.com/intermine/intermine'
-                    }
-
-                    licenses {
-                        license {
-                            name 'LGPL-2.1'
-                            url 'https://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            name 'InterMine core team and contributors'
-                        }
-                    }
-                }
-            }
-        }
-    }
+    ext.pomDescription = 'InterMine Post Processes modules'
+    apply from: "${rootDir}/../../config/gradle/publishing.gradle"
 
     tasks.compileTestJava.dependsOn 'copyMineProperties', 'buildUnitTestDB'
 }
 
 task testReport(type: TestReport) {
-    destinationDir = file("$buildDir/reports/allTests")
+    destinationDirectory = layout.buildDirectory.dir("reports/allTests")
     // Include the results from the `test` task in all subprojects
-    reportOn subprojects*.test
+    testResults.from(subprojects.collect { it.tasks.named("test").flatMap { task -> task.binaryResultsDirectory } })
 }

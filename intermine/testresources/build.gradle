@@ -7,13 +7,15 @@ configurations {
     commonResources
 }
 
+sourceSets.test.resources.exclude('intermine-test.properties')
+
 dependencies {
     commonResources project(':intermine-resources')
 
      // We need this dependency because the pre-generated userprofile classes and model XML are here, which is necessary to build the userprofile-test db
-    testCompile project(':intermine-api')
-    testCompile project(':intermine-objectstore')
-    testCompile 'commons-lang:commons-lang:2.6'
+    testImplementation project(':intermine-api')
+    testImplementation project(':intermine-objectstore')
+    testImplementation 'commons-lang:commons-lang:2.6'
 }
 
 void generateModel(model, destination, type) {
@@ -21,7 +23,7 @@ void generateModel(model, destination, type) {
         classpath {
             fileset(dir: '../model/build/libs/', includes: '*.jar')
             dirset(dir: 'src/test/resources/')
-            pathelement(path: configurations.testCompile.asPath)
+            pathelement(path: configurations.testRuntimeClasspath.asPath)
         }
     }
 
@@ -29,6 +31,7 @@ void generateModel(model, destination, type) {
 }
 
 task generateTestModel {
+    dependsOn configurations.testRuntimeClasspath
     description "generate the testmodel Java files from the data model, eg. Employee.java"
     doLast {
         generateModel('testmodel', 'src/test/java', 'java')
@@ -41,7 +44,7 @@ void insertDataModel(model, osname) {
             fileset(dir: '../model/build/libs/', includes: '*.jar')
             dirset(dir: 'src/test/resources/')
             dirset(dir: 'build/') // intermine.properties
-            pathelement(path: configurations.testCompile.asPath)
+            pathelement(path: configurations.testRuntimeClasspath.asPath)
         }
     }
 
@@ -57,6 +60,7 @@ task insertModel (dependsOn: 'buildDB') {
 }
 
 task copyDefaultProperties(type: Copy) {
+    dependsOn configurations.commonResources
     description "Copies default.intermine.test.properties file (from resources project) into resources output to be included in the war"
 
     from({ zipTree(configurations.commonResources.singleFile) }) {
@@ -80,14 +84,20 @@ processTestResources {
         println "Using InterMine test properties path: '$intermineTestPropertiesPath'"
     }
 
-    from intermineTestPropertiesPath
-    rename { fileName ->
-        fileName.replace('intermine-test.properties', 'intermine.properties')
+    from(intermineTestPropertiesPath) {
+        rename 'intermine-test.properties', 'intermine.properties'
     }
 }
 
 task buildTestModelJar(type: Jar) {
     from(sourceSets.test.output)
+}
+
+['apiElements', 'runtimeElements'].each { configurationName ->
+    configurations.named(configurationName) {
+        outgoing.artifacts.clear()
+        outgoing.artifact(tasks.named('buildTestModelJar'))
+    }
 }
 
 void createDbInternal(dbName) {
@@ -199,7 +209,7 @@ void createTables(osname, model) {
 
     ant.taskdef(name: 'buildDBUnittest', classname: 'org.intermine.task.BuildDbTask') {
         classpath {
-            pathelement(path: configurations.testCompile.asPath)
+            pathelement(path: configurations.testRuntimeClasspath.asPath)
             dirset(dir: 'build/') // testmodel classes and schemas
             dirset(dir: 'src/test/resources/') // testmodel classes and schemas
         }
@@ -207,7 +217,7 @@ void createTables(osname, model) {
     ant.buildDBUnittest(osname: "os.$osname", model: "$model", schemafile:"os.$osname-schema.xml", tempDir: "$buildDir/tmp")
     ant.taskdef(name: 'insertModel', classname: 'org.intermine.task.StoreMetadataTask') {
         classpath {
-            pathelement(path: configurations.testCompile.asPath)
+            pathelement(path: configurations.testRuntimeClasspath.asPath)
             dirset(dir: 'build/') // testmodel classes and schemas
             dirset(dir: 'src/test/resources/') // testmodel classes and schemas
         }
@@ -220,7 +230,7 @@ void createTables(osname, model) {
 void generateSchema(osname, model) {
     ant.taskdef(name: 'torque', classname: 'org.intermine.objectstore.intermine.TorqueModelOutputTask') {
         classpath {
-            pathelement(path: configurations.testCompile.asPath)
+            pathelement(path: configurations.testRuntimeClasspath.asPath)
             dirset(dir: 'build/') // testmodel classes and intermine.properties
             dirset(dir: 'src/test/resources') // testmodel_model.xml
         }
@@ -229,7 +239,7 @@ void generateSchema(osname, model) {
 }
 
 task buildDB {
-    dependsOn 'compileTestJava'
+    dependsOn 'testClasses'
     dependsOn 'createUnitTestDatabases'
     dependsOn 'generateTestModel'
     description "Create tables for database for intermine tests"

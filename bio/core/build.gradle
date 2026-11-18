@@ -4,7 +4,7 @@ buildscript {
             // define in ~/.gradle/gradle.properties
             // intermine.plugin.repo=file:///your/intermine/repo/plugin/build/libs
             url project.getProperty("intermine.plugin.repo")
-            layout "pattern", {
+            patternLayout {
                 artifact "[artifact]-[revision].[ext]"
             }
             metadataSources {
@@ -14,6 +14,8 @@ buildscript {
 
         maven {
             url project.getProperty("intermine.maven.central")
+            allowInsecureProtocol = "http".equalsIgnoreCase(url.scheme) &&
+                project.findProperty("intermine.maven.central.allowInsecureProtocol") == "true"
         }
     }
     dependencies {
@@ -45,7 +47,7 @@ sourceSets {
 
 configurations {
     provided
-    compile.extendsFrom provided
+    api.extendsFrom provided
     bioModel
 
     all {
@@ -54,27 +56,27 @@ configurations {
 }
 
 dependencies {
-    compile group: 'com.zaxxer', name: 'HikariCP', version: '3.2.0', transitive: false
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
-    compile group: "org.intermine", name: "intermine-api", version: System.getProperty("imVersion")
-    compile group: "org.intermine", name: "intermine-integrate", version: System.getProperty("imVersion")
-    compile group: "org.intermine", name: "intermine-model", version: System.getProperty("imVersion")
-    compile group: "org.intermine", name: "intermine-objectstore", version: System.getProperty("imVersion") // idresolver needs db
-    compile group: "org.intermine", name: "intermine-pathquery", version: System.getProperty("imVersion")
-    compile group: "org.intermine", name: "intermine-resources", version: System.getProperty("imVersion")
-    compile group: 'ch.qos.reload4j', name: 'reload4j', version: '1.2.22'
-    compile group: 'org.slf4j', name: 'slf4j-reload4j', version: '1.7.36'
-    compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
-    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    api group: 'com.zaxxer', name: 'HikariCP', version: '3.2.0', transitive: false
+    api group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
+    api group: "org.intermine", name: "intermine-api", version: System.getProperty("imVersion")
+    api group: "org.intermine", name: "intermine-integrate", version: System.getProperty("imVersion")
+    api group: "org.intermine", name: "intermine-model", version: System.getProperty("imVersion")
+    api group: "org.intermine", name: "intermine-objectstore", version: System.getProperty("imVersion") // idresolver needs db
+    api group: "org.intermine", name: "intermine-pathquery", version: System.getProperty("imVersion")
+    api group: "org.intermine", name: "intermine-resources", version: System.getProperty("imVersion")
+    api group: 'ch.qos.reload4j', name: 'reload4j', version: '1.2.22'
+    api group: 'org.slf4j', name: 'slf4j-reload4j', version: '1.7.36'
+    api group: 'commons-lang', name: 'commons-lang', version: '2.6'
+    api group: 'commons-collections', name: 'commons-collections', version: '3.2'
 
-    compile group: 'commons-io', name: 'commons-io', version: '1.2'
-    compile group: 'commons-logging', name: 'commons-logging', version: '1.3.5'
+    api group: 'commons-io', name: 'commons-io', version: '1.2'
+    api group: 'commons-logging', name: 'commons-logging', version: '1.3.5'
 
     provided fileTree(dir: 'libs', include: '*.jar') // obo and bbop not available in the public maven repo
-    testCompile group: "org.intermine", name: "intermine-integrate", version: System.getProperty("imVersion"), classifier: "testClasses"
-    testCompile group: "org.intermine", name: "bio-source-flymine-static", version: System.getProperty("flymineVersion"), transitive: false
+    testImplementation group: "org.intermine", name: "intermine-integrate", version: System.getProperty("imVersion"), classifier: "testClasses"
+    testImplementation group: "org.intermine", name: "bio-source-flymine-static", version: System.getProperty("flymineVersion"), transitive: false
     bioModel group: "org.intermine", name: "bio-source-flymine-static", version: System.getProperty("flymineVersion"), transitive: false
-    runtime fileTree(dir: 'libs', include: '*.jar') //antlr-2.7.6-caching.jar
+    runtimeOnly fileTree(dir: 'libs', include: '*.jar') //antlr-2.7.6-caching.jar
 }
 
 dbModelConfig {
@@ -83,17 +85,22 @@ dbModelConfig {
     defaultInterminePropertiesFile = "default.intermine.bio-test.properties"
 }
 
-task copyMineProperties(type: Copy) {
-    from "${System.env.HOME}/.intermine/intermine-bio-test.properties"
-    into sourceSets.main.output.resourcesDir
-    rename { fileName -> fileName.replace('intermine-bio-test.properties', 'intermine.properties') }
+processResources {
+    from("${System.env.HOME}/.intermine/intermine-bio-test.properties") {
+        rename 'intermine-bio-test.properties', 'intermine.properties'
+    }
+}
+
+tasks.register('copyMineProperties') {
+    dependsOn tasks.named('processResources')
 }
 
 tasks.test.dependsOn 'buildUnitTestDB'
 tasks.buildUnitTestDB.dependsOn ':bio-testresources:createUnitTestDatabases'
 
 jar {
-    dependsOn configurations.runtime
+    dependsOn configurations.runtimeClasspath
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     // put all the JARs included in `provided` config and include them in the JAR
     from {
         (configurations.provided).collect {

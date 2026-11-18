@@ -26,7 +26,9 @@ class DBModelPlugin implements Plugin<Project> {
             bioModel
             bioModelForSOOnly
             commonResources
-            api
+            intermineApi {
+                canBeConsumed = false
+            }
             mergeSource
             plugin
             antlr
@@ -37,7 +39,7 @@ class DBModelPlugin implements Plugin<Project> {
 
             doLast {
                 project.dependencies.add("commonResources", [group: "org.intermine", name: "intermine-resources", version: System.getProperty("imVersion")])
-                project.dependencies.add("api", [group: "org.intermine", name: "intermine-api", version: System.getProperty("imVersion"), transitive: false])
+                project.dependencies.add("intermineApi", [group: "org.intermine", name: "intermine-api", version: System.getProperty("imVersion"), transitive: false])
 
                 dbUtils = new DBModelUtils(project)
                 SourceSetContainer sourceSets = (SourceSetContainer) project.getProperties().get("sourceSets")
@@ -231,14 +233,14 @@ class DBModelPlugin implements Plugin<Project> {
                     ant.taskdef(name: "createSoModel", classname: "org.intermine.bio.task.SOToModelTask") {
                         classpath {
                             dirset(dir: project.buildDir.absolutePath)
-                            pathelement(path: project.configurations.getByName("compile").asPath)
+                            pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                         }
                     }
                 } else {
                     ant.taskdef(name: "createSoModel", classname: "org.intermine.bio.task.SOToModelTask") {
                         classpath {
                             pathelement(path: project.configurations.getByName("bioModelForSOOnly").asPath)
-                            pathelement(path: project.configurations.getByName("compile").asPath)
+                            pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                         }
                     }
                 }
@@ -291,7 +293,7 @@ class DBModelPlugin implements Plugin<Project> {
             dependsOn 'initConfig', 'processResources'
 
             doLast {
-                FileTree fileTree = project.zipTree(project.configurations.getByName("api").singleFile)
+                FileTree fileTree = project.zipTree(project.configurations.getByName("intermineApi").singleFile)
                 PatternSet patternSet = new PatternSet()
                 patternSet.include("userprofile_model.xml")
                 File file = fileTree.matching(patternSet).singleFile
@@ -336,7 +338,7 @@ class DBModelPlugin implements Plugin<Project> {
                 ant.taskdef(name: "acceptanceTest", classname: "org.intermine.task.AcceptanceTestTask") {
                     classpath {
                         dirset(dir: project.getBuildDir().getAbsolutePath())
-                        pathelement(path: project.configurations.getByName("compile").asPath)
+                        pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                     }
                 }
                 ant.acceptanceTest(database: "db.production", configFile: acceptanceTestFilePath,
@@ -357,7 +359,7 @@ class DBModelPlugin implements Plugin<Project> {
                     ant.taskdef(name: "runIQLQuery", classname: "org.intermine.task.RunIqlQueryTask") {
                         classpath {
                             dirset(dir: project.getBuildDir().getAbsolutePath())
-                            pathelement(path: project.configurations.getByName("compile").asPath)
+                            pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                             pathelement(path: project.configurations.getByName("antlr").asPath)
                         }
                     }
@@ -378,7 +380,7 @@ class DBModelPlugin implements Plugin<Project> {
                 ant.taskdef(name: "generateUpdateTriggers", classname: "org.intermine.task.GenerateUpdateTriggersTask") {
                     classpath {
                         dirset(dir: project.getBuildDir().getAbsolutePath())
-                        pathelement(path: project.configurations.getByName("compile").asPath)
+                        pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                     }
                 }
                 ant.generateUpdateTriggers(osName: config.objectStoreName, destDir: buildResourcesMainDir)

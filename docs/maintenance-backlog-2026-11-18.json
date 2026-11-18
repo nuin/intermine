@@ -1,0 +1,2850 @@
+{
+  "observed_date": "2026-11-18",
+  "repository": "intermine/intermine",
+  "local_branch": "beta",
+  "local_and_upstream_dev_commit": "787f779b7a3be3d778de784229a701cc47dc355b",
+  "query": "repo:intermine/intermine is:issue is:open",
+  "source_pages": [
+    "https://api.github.com/search/issues?q=repo:intermine/intermine+is:issue+is:open&sort=updated&order=desc&per_page=100&page=1",
+    "https://api.github.com/search/issues?q=repo:intermine/intermine+is:issue+is:open&sort=updated&order=desc&per_page=100&page=2",
+    "https://api.github.com/search/issues?q=repo:intermine/intermine+is:issue+is:open&sort=updated&order=desc&per_page=100&page=3"
+  ],
+  "total_count": 218,
+  "incomplete_results": false,
+  "scope": "Complete open core-issue metadata inventory. Titles and labels are not evidence that a reported defect remains reproducible. Bodies, comments and cross-repository issues are not included.",
+  "issues": [
+    {
+      "number": 2450,
+      "title": "InterMine © 2017-2021 should be changed to InterMine © 2017-2023",
+      "url": "https://github.com/intermine/intermine/issues/2450",
+      "created_at": "2023-01-31T10:34:20Z",
+      "updated_at": "2026-01-30T16:30:54Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2424,
+      "title": "intermine.webservice import Service error",
+      "url": "https://github.com/intermine/intermine/issues/2424",
+      "created_at": "2022-03-09T11:53:12Z",
+      "updated_at": "2025-07-23T01:38:26Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 2452,
+      "title": "Mousemine 500: internal sever error",
+      "url": "https://github.com/intermine/intermine/issues/2452",
+      "created_at": "2023-04-04T11:03:18Z",
+      "updated_at": "2023-04-04T11:08:45Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2451,
+      "title": "IndexOutOfBoundsException in legacy webapp region search",
+      "url": "https://github.com/intermine/intermine/issues/2451",
+      "created_at": "2023-03-16T19:04:48Z",
+      "updated_at": "2023-03-16T19:04:48Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1639,
+      "title": "Query results do not sort when response format is \"jsonobjects\"",
+      "url": "https://github.com/intermine/intermine/issues/1639",
+      "created_at": "2017-07-20T11:02:08Z",
+      "updated_at": "2022-12-09T21:55:33Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2380,
+      "title": "Embed rdf in html",
+      "url": "https://github.com/intermine/intermine/issues/2380",
+      "created_at": "2021-06-15T09:52:34Z",
+      "updated_at": "2022-08-24T14:09:02Z",
+      "labels": [
+        "enhancement",
+        "fair"
+      ],
+      "assignees": [
+        "danielabutano"
+      ],
+      "milestone": "Future InterMine release",
+      "comments": 0
+    },
+    {
+      "number": 2442,
+      "title": "New data source derived from BioFileConverter not working",
+      "url": "https://github.com/intermine/intermine/issues/2442",
+      "created_at": "2022-08-19T09:55:14Z",
+      "updated_at": "2022-08-19T09:57:57Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2229,
+      "title": "Let's talk expression data!",
+      "url": "https://github.com/intermine/intermine/issues/2229",
+      "created_at": "2020-03-12T19:05:14Z",
+      "updated_at": "2022-05-30T11:52:06Z",
+      "labels": [
+        "model change"
+      ],
+      "assignees": [
+        "sergiocontrino",
+        "rachellyne"
+      ],
+      "milestone": "Future InterMine release",
+      "comments": 12
+    },
+    {
+      "number": 2436,
+      "title": "allUsers WS + set admin",
+      "url": "https://github.com/intermine/intermine/issues/2436",
+      "created_at": "2022-05-30T11:45:24Z",
+      "updated_at": "2022-05-30T11:48:36Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": "InterMine 5.1.1",
+      "comments": 0
+    },
+    {
+      "number": 1782,
+      "title": "InterMineR - add R to code generation and API tab",
+      "url": "https://github.com/intermine/intermine/issues/1782",
+      "created_at": "2018-04-05T08:59:45Z",
+      "updated_at": "2022-05-30T11:33:37Z",
+      "labels": [
+        "enhancement",
+        "help wanted"
+      ],
+      "assignees": [],
+      "milestone": "InterMine 5.1.1",
+      "comments": 0
+    },
+    {
+      "number": 298,
+      "title": "Shared templates, groups, and permissions",
+      "url": "https://github.com/intermine/intermine/issues/298",
+      "created_at": "2013-05-18T18:21:56Z",
+      "updated_at": "2022-05-30T11:27:28Z",
+      "labels": [
+        "wishlist",
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": "InterMine 5.2.0",
+      "comments": 2
+    },
+    {
+      "number": 2122,
+      "title": "Curator role",
+      "url": "https://github.com/intermine/intermine/issues/2122",
+      "created_at": "2019-10-07T11:18:13Z",
+      "updated_at": "2022-05-30T11:26:37Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": "InterMine 5.2.0",
+      "comments": 0
+    },
+    {
+      "number": 2123,
+      "title": "Only ONE super user",
+      "url": "https://github.com/intermine/intermine/issues/2123",
+      "created_at": "2019-10-07T11:29:28Z",
+      "updated_at": "2022-05-30T11:25:41Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": "InterMine 5.2.0",
+      "comments": 1
+    },
+    {
+      "number": 2423,
+      "title": "summarise-objectstore: performance issue",
+      "url": "https://github.com/intermine/intermine/issues/2423",
+      "created_at": "2022-02-18T11:51:24Z",
+      "updated_at": "2022-02-18T11:51:25Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [
+        "sergiocontrino"
+      ],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2350,
+      "title": "Adding a filter through column summary in results table creates incorrect == in code",
+      "url": "https://github.com/intermine/intermine/issues/2350",
+      "created_at": "2021-04-13T10:47:21Z",
+      "updated_at": "2022-02-16T15:42:17Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2079,
+      "title": "Unable to filter down to specific species using facet_Organism in keyword search",
+      "url": "https://github.com/intermine/intermine/issues/2079",
+      "created_at": "2019-08-14T10:36:18Z",
+      "updated_at": "2022-02-16T13:04:32Z",
+      "labels": [
+        "bug",
+        "bluegenes"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 2221,
+      "title": "File name in 'Export'",
+      "url": "https://github.com/intermine/intermine/issues/2221",
+      "created_at": "2020-03-02T21:41:45Z",
+      "updated_at": "2022-01-24T23:28:51Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2406,
+      "title": "Update /query/results/tablerows to return permanent url in the url",
+      "url": "https://github.com/intermine/intermine/issues/2406",
+      "created_at": "2021-12-15T17:27:11Z",
+      "updated_at": "2021-12-15T17:27:11Z",
+      "labels": [],
+      "assignees": [
+        "danielabutano"
+      ],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2162,
+      "title": "Gradle needs to start or deploy a second time to serve webapp",
+      "url": "https://github.com/intermine/intermine/issues/2162",
+      "created_at": "2019-12-06T14:05:00Z",
+      "updated_at": "2021-10-26T16:17:44Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 4
+    },
+    {
+      "number": 2388,
+      "title": "Add web service for exporting FASTA for region",
+      "url": "https://github.com/intermine/intermine/issues/2388",
+      "created_at": "2021-07-07T10:57:57Z",
+      "updated_at": "2021-07-07T11:03:51Z",
+      "labels": [
+        "bluegenes"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2387,
+      "title": "Region search results link to service URL",
+      "url": "https://github.com/intermine/intermine/issues/2387",
+      "created_at": "2021-07-06T13:14:45Z",
+      "updated_at": "2021-07-06T13:14:45Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2355,
+      "title": "DataTracker throws PSQLException at CopyManager.copyIn if sourcename contains non-ASCII character",
+      "url": "https://github.com/intermine/intermine/issues/2355",
+      "created_at": "2021-05-03T18:29:13Z",
+      "updated_at": "2021-05-03T18:30:26Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1760,
+      "title": "[Bug] \"Create List\" button not working in IM Enrichment Widgets",
+      "url": "https://github.com/intermine/intermine/issues/1760",
+      "created_at": "2018-02-08T17:33:50Z",
+      "updated_at": "2021-04-15T17:52:20Z",
+      "labels": [],
+      "assignees": [
+        "joshkh"
+      ],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 2332,
+      "title": "[UX] Color Contrast",
+      "url": "https://github.com/intermine/intermine/issues/2332",
+      "created_at": "2021-02-25T18:35:34Z",
+      "updated_at": "2021-02-25T18:35:34Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2314,
+      "title": "Pathway enrichment widget:  reactome not working",
+      "url": "https://github.com/intermine/intermine/issues/2314",
+      "created_at": "2021-01-07T10:48:47Z",
+      "updated_at": "2021-01-21T10:28:12Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2319,
+      "title": "complexes are empty",
+      "url": "https://github.com/intermine/intermine/issues/2319",
+      "created_at": "2021-01-19T17:55:04Z",
+      "updated_at": "2021-01-21T09:33:48Z",
+      "labels": [
+        "data"
+      ],
+      "assignees": [
+        "sergiocontrino"
+      ],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2318,
+      "title": "the subactions of integrate are not working for update-publications ",
+      "url": "https://github.com/intermine/intermine/issues/2318",
+      "created_at": "2021-01-19T15:58:13Z",
+      "updated_at": "2021-01-19T15:58:13Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2312,
+      "title": "avoid throwing error for some classes for the LUI converter",
+      "url": "https://github.com/intermine/intermine/issues/2312",
+      "created_at": "2020-12-23T10:50:33Z",
+      "updated_at": "2020-12-23T10:50:33Z",
+      "labels": [
+        "question",
+        "input-needed"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2300,
+      "title": "Increase or remove size limit for list upload",
+      "url": "https://github.com/intermine/intermine/issues/2300",
+      "created_at": "2020-11-12T09:39:54Z",
+      "updated_at": "2020-11-12T09:40:51Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [
+        "rachellyne"
+      ],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2299,
+      "title": "update Uniprot loader to add suffix to canonical protein",
+      "url": "https://github.com/intermine/intermine/issues/2299",
+      "created_at": "2020-11-10T11:12:13Z",
+      "updated_at": "2020-11-10T15:16:58Z",
+      "labels": [
+        "data"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1507,
+      "title": "Unescaped pipes in the trail break tomcat 8",
+      "url": "https://github.com/intermine/intermine/issues/1507",
+      "created_at": "2017-02-10T17:02:56Z",
+      "updated_at": "2020-11-09T07:43:06Z",
+      "labels": [
+        "bug",
+        "good first bug"
+      ],
+      "assignees": [],
+      "milestone": "InterMine 1.8",
+      "comments": 5
+    },
+    {
+      "number": 1374,
+      "title": "Data download script: don't download if version is the same.",
+      "url": "https://github.com/intermine/intermine/issues/1374",
+      "created_at": "2016-06-02T15:48:47Z",
+      "updated_at": "2020-10-17T16:13:26Z",
+      "labels": [
+        "enhancement",
+        "data",
+        "good first bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 5
+    },
+    {
+      "number": 2294,
+      "title": "Don't show friendly mines if report page class doesn't extend Annotatable",
+      "url": "https://github.com/intermine/intermine/issues/2294",
+      "created_at": "2020-10-09T18:19:24Z",
+      "updated_at": "2020-10-09T18:19:55Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [
+        "danielabutano"
+      ],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1991,
+      "title": "Investigate code coverage solutions",
+      "url": "https://github.com/intermine/intermine/issues/1991",
+      "created_at": "2019-02-07T13:04:16Z",
+      "updated_at": "2020-10-08T00:02:13Z",
+      "labels": [
+        "enhancement",
+        "good first bug",
+        "help wanted"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 2293,
+      "title": "Failing on ordering by a field whose class is not in the select",
+      "url": "https://github.com/intermine/intermine/issues/2293",
+      "created_at": "2020-10-05T13:28:12Z",
+      "updated_at": "2020-10-05T13:28:12Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2291,
+      "title": "Add a new property on webconfig_model to manage the rounding",
+      "url": "https://github.com/intermine/intermine/issues/2291",
+      "created_at": "2020-08-24T15:34:08Z",
+      "updated_at": "2020-08-24T15:34:24Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2083,
+      "title": "FacetSearch and FacetList endpoints return invalid facet keys",
+      "url": "https://github.com/intermine/intermine/issues/2083",
+      "created_at": "2019-08-15T11:41:16Z",
+      "updated_at": "2020-08-24T10:11:23Z",
+      "labels": [
+        "bug",
+        "enhancement",
+        "bluegenes"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2289,
+      "title": "esyn displayers do not display",
+      "url": "https://github.com/intermine/intermine/issues/2289",
+      "created_at": "2020-08-04T09:57:38Z",
+      "updated_at": "2020-08-04T09:57:38Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2278,
+      "title": "Count webservice hits to template rankings",
+      "url": "https://github.com/intermine/intermine/issues/2278",
+      "created_at": "2020-07-06T16:40:43Z",
+      "updated_at": "2020-08-04T09:41:56Z",
+      "labels": [
+        "bluegenes"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2277,
+      "title": "\"FlyMine\" and \"flymine\" occur all over the core IM code",
+      "url": "https://github.com/intermine/intermine/issues/2277",
+      "created_at": "2020-07-01T15:57:49Z",
+      "updated_at": "2020-07-01T15:57:49Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2271,
+      "title": "Upgrading Python client to Python 3.8",
+      "url": "https://github.com/intermine/intermine/issues/2271",
+      "created_at": "2020-06-16T23:10:32Z",
+      "updated_at": "2020-06-28T16:47:11Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2014,
+      "title": "Proposed core GWAS model",
+      "url": "https://github.com/intermine/intermine/issues/2014",
+      "created_at": "2019-02-22T00:38:40Z",
+      "updated_at": "2020-06-26T15:54:16Z",
+      "labels": [
+        "data"
+      ],
+      "assignees": [
+        "rachellyne"
+      ],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 2270,
+      "title": "Uploading list occasionally redirects to an empty list analysis page",
+      "url": "https://github.com/intermine/intermine/issues/2270",
+      "created_at": "2020-06-15T15:36:23Z",
+      "updated_at": "2020-06-15T15:36:46Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2165,
+      "title": "Update datasets.xml to contains all the datasets (with their descriptions)",
+      "url": "https://github.com/intermine/intermine/issues/2165",
+      "created_at": "2019-12-16T12:37:45Z",
+      "updated_at": "2020-05-26T16:12:54Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [
+        "rachellyne"
+      ],
+      "milestone": "Future InterMine release",
+      "comments": 3
+    },
+    {
+      "number": 2244,
+      "title": "gradle 5.0 incompatibility in bio/sources/build.gradle",
+      "url": "https://github.com/intermine/intermine/issues/2244",
+      "created_at": "2020-04-17T22:17:55Z",
+      "updated_at": "2020-04-17T22:17:55Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2241,
+      "title": "Wrong HTTP status code returned by the service/query/results when not public list are used",
+      "url": "https://github.com/intermine/intermine/issues/2241",
+      "created_at": "2020-04-15T14:18:41Z",
+      "updated_at": "2020-04-15T14:18:41Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2235,
+      "title": "Misleading message if property src.data.dir it's not properly configured in the project.xml file",
+      "url": "https://github.com/intermine/intermine/issues/2235",
+      "created_at": "2020-03-30T16:37:08Z",
+      "updated_at": "2020-04-07T15:59:32Z",
+      "labels": [],
+      "assignees": [
+        "danielabutano"
+      ],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2231,
+      "title": "project.xml XML validation",
+      "url": "https://github.com/intermine/intermine/issues/2231",
+      "created_at": "2020-03-19T16:03:25Z",
+      "updated_at": "2020-03-19T16:04:15Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2230,
+      "title": "gff nicer error message if configuration is wrong",
+      "url": "https://github.com/intermine/intermine/issues/2230",
+      "created_at": "2020-03-18T11:42:40Z",
+      "updated_at": "2020-03-18T11:45:57Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2228,
+      "title": "panther loader: odd case mislabelling type of homology",
+      "url": "https://github.com/intermine/intermine/issues/2228",
+      "created_at": "2020-03-12T12:55:16Z",
+      "updated_at": "2020-03-12T12:56:09Z",
+      "labels": [
+        "data"
+      ],
+      "assignees": [
+        "sergiocontrino"
+      ],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2216,
+      "title": "Copy list doesn't work in MyMine",
+      "url": "https://github.com/intermine/intermine/issues/2216",
+      "created_at": "2020-02-27T13:42:03Z",
+      "updated_at": "2020-03-10T15:31:16Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 2223,
+      "title": "Query -> results -> Edit Query gives error",
+      "url": "https://github.com/intermine/intermine/issues/2223",
+      "created_at": "2020-03-09T11:40:50Z",
+      "updated_at": "2020-03-09T11:40:50Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1522,
+      "title": "Expand web service clients' cookbooks",
+      "url": "https://github.com/intermine/intermine/issues/1522",
+      "created_at": "2017-03-24T10:42:29Z",
+      "updated_at": "2020-03-06T07:57:33Z",
+      "labels": [
+        "docs",
+        "good first bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2218,
+      "title": "Problem uploading lists with lots of non-gene identifiers",
+      "url": "https://github.com/intermine/intermine/issues/2218",
+      "created_at": "2020-03-02T13:44:59Z",
+      "updated_at": "2020-03-02T13:44:59Z",
+      "labels": [
+        "enhancement",
+        "data"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2217,
+      "title": "Incorrect gene-protein mapping in humanMine",
+      "url": "https://github.com/intermine/intermine/issues/2217",
+      "created_at": "2020-03-02T13:37:29Z",
+      "updated_at": "2020-03-02T13:38:10Z",
+      "labels": [
+        "data"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1884,
+      "title": "create-attribute-indexes is bombing on lack of a key for Intron",
+      "url": "https://github.com/intermine/intermine/issues/1884",
+      "created_at": "2018-09-04T17:42:46Z",
+      "updated_at": "2020-02-27T08:50:05Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 2206,
+      "title": "Integration with identifiers-widget",
+      "url": "https://github.com/intermine/intermine/issues/2206",
+      "created_at": "2020-02-18T12:49:21Z",
+      "updated_at": "2020-02-25T15:13:00Z",
+      "labels": [
+        "enhancement",
+        "fair",
+        "WIP"
+      ],
+      "assignees": [
+        "danielabutano"
+      ],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2200,
+      "title": "Sharing a list with a non-registered user with an email address does not work",
+      "url": "https://github.com/intermine/intermine/issues/2200",
+      "created_at": "2020-02-05T21:34:56Z",
+      "updated_at": "2020-02-14T17:10:44Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 2196,
+      "title": "update_publications 429 error",
+      "url": "https://github.com/intermine/intermine/issues/2196",
+      "created_at": "2020-01-31T15:38:56Z",
+      "updated_at": "2020-02-14T16:36:08Z",
+      "labels": [],
+      "assignees": [
+        "danielabutano"
+      ],
+      "milestone": null,
+      "comments": 7
+    },
+    {
+      "number": 2195,
+      "title": "Use minified im-tables bundle to save bandwidth",
+      "url": "https://github.com/intermine/intermine/issues/2195",
+      "created_at": "2020-01-29T15:18:27Z",
+      "updated_at": "2020-02-14T15:31:59Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2202,
+      "title": "jbrowse: allow configuration using both organism and strain",
+      "url": "https://github.com/intermine/intermine/issues/2202",
+      "created_at": "2020-02-11T10:56:36Z",
+      "updated_at": "2020-02-11T10:56:36Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2197,
+      "title": "KBase integrations? ",
+      "url": "https://github.com/intermine/intermine/issues/2197",
+      "created_at": "2020-02-03T10:15:30Z",
+      "updated_at": "2020-02-07T15:16:41Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 2198,
+      "title": "missing ref DOEvidence -> OntologyTerm",
+      "url": "https://github.com/intermine/intermine/issues/2198",
+      "created_at": "2020-02-04T17:45:33Z",
+      "updated_at": "2020-02-04T17:47:04Z",
+      "labels": [
+        "model change"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2192,
+      "title": "In the query/results webservice,  update the default value of the input parameter \"query\"",
+      "url": "https://github.com/intermine/intermine/issues/2192",
+      "created_at": "2020-01-27T11:30:35Z",
+      "updated_at": "2020-01-27T11:30:35Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2188,
+      "title": "interaction widget truncates view",
+      "url": "https://github.com/intermine/intermine/issues/2188",
+      "created_at": "2020-01-21T18:39:49Z",
+      "updated_at": "2020-01-21T18:39:49Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2176,
+      "title": "Deploy BlueGenes for flymine and humanmine using bluegenes target",
+      "url": "https://github.com/intermine/intermine/issues/2176",
+      "created_at": "2020-01-09T17:54:45Z",
+      "updated_at": "2020-01-09T17:54:45Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2167,
+      "title": "Sort out gene display on JBrowse",
+      "url": "https://github.com/intermine/intermine/issues/2167",
+      "created_at": "2019-12-18T10:45:21Z",
+      "updated_at": "2019-12-18T10:49:15Z",
+      "labels": [
+        "JBrowse"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2163,
+      "title": "Investigate on the Runtime Exception thrown by the SharedBagManager.getSharedBags ",
+      "url": "https://github.com/intermine/intermine/issues/2163",
+      "created_at": "2019-12-12T12:09:23Z",
+      "updated_at": "2019-12-12T12:09:23Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2018,
+      "title": "Update dataset URLs - some are empty",
+      "url": "https://github.com/intermine/intermine/issues/2018",
+      "created_at": "2019-02-27T09:26:08Z",
+      "updated_at": "2019-12-12T10:13:06Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [
+        "rachellyne"
+      ],
+      "milestone": "Future InterMine release",
+      "comments": 3
+    },
+    {
+      "number": 2131,
+      "title": "New data types in human ncbi gff",
+      "url": "https://github.com/intermine/intermine/issues/2131",
+      "created_at": "2019-10-18T11:36:55Z",
+      "updated_at": "2019-12-11T12:13:23Z",
+      "labels": [],
+      "assignees": [
+        "sergiocontrino"
+      ],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 2089,
+      "title": "Upgrade to JUnit 5",
+      "url": "https://github.com/intermine/intermine/issues/2089",
+      "created_at": "2019-09-12T16:44:43Z",
+      "updated_at": "2019-12-10T06:47:22Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2153,
+      "title": "Genomic Intervals as GFF3: add 'all features' to parameters",
+      "url": "https://github.com/intermine/intermine/issues/2153",
+      "created_at": "2019-11-19T16:10:19Z",
+      "updated_at": "2019-11-19T18:08:44Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2146,
+      "title": "Problem with FlyMine Do/allele data",
+      "url": "https://github.com/intermine/intermine/issues/2146",
+      "created_at": "2019-11-11T14:16:09Z",
+      "updated_at": "2019-11-11T14:16:09Z",
+      "labels": [
+        "data"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2141,
+      "title": "do we allow lists to be queried upon via list id?",
+      "url": "https://github.com/intermine/intermine/issues/2141",
+      "created_at": "2019-10-31T14:42:12Z",
+      "updated_at": "2019-11-04T13:28:54Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2140,
+      "title": "Wrong tags displaued in the List->View page for bags with the same name belonging to different users",
+      "url": "https://github.com/intermine/intermine/issues/2140",
+      "created_at": "2019-10-30T15:48:06Z",
+      "updated_at": "2019-10-30T15:49:41Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2132,
+      "title": "More specific SO terms",
+      "url": "https://github.com/intermine/intermine/issues/2132",
+      "created_at": "2019-10-18T11:45:49Z",
+      "updated_at": "2019-10-18T11:45:49Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2125,
+      "title": "Minor correction in the trigger script creation task",
+      "url": "https://github.com/intermine/intermine/issues/2125",
+      "created_at": "2019-10-08T16:40:35Z",
+      "updated_at": "2019-10-08T16:40:35Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2114,
+      "title": "Replace schema set in the branding.images.logo",
+      "url": "https://github.com/intermine/intermine/issues/2114",
+      "created_at": "2019-10-01T08:57:42Z",
+      "updated_at": "2019-10-01T08:57:42Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2111,
+      "title": "OAuth2: configure InterMine with OpenId Connet discovery",
+      "url": "https://github.com/intermine/intermine/issues/2111",
+      "created_at": "2019-09-25T15:50:45Z",
+      "updated_at": "2019-09-25T15:50:45Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [
+        "danielabutano"
+      ],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2106,
+      "title": "Sharing lists: the list is in the lists tab but not in mymine",
+      "url": "https://github.com/intermine/intermine/issues/2106",
+      "created_at": "2019-09-23T14:54:40Z",
+      "updated_at": "2019-09-23T14:54:40Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2105,
+      "title": "Sharing lists: google users are just called GOOGLE",
+      "url": "https://github.com/intermine/intermine/issues/2105",
+      "created_at": "2019-09-23T14:49:16Z",
+      "updated_at": "2019-09-23T14:52:35Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2100,
+      "title": "InterPro API - worth looking into",
+      "url": "https://github.com/intermine/intermine/issues/2100",
+      "created_at": "2019-09-18T13:47:48Z",
+      "updated_at": "2019-09-23T10:46:45Z",
+      "labels": [
+        "suggestion",
+        "data"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2090,
+      "title": "YeastMine: GOAnnotation.evidence is empty",
+      "url": "https://github.com/intermine/intermine/issues/2090",
+      "created_at": "2019-09-16T07:38:24Z",
+      "updated_at": "2019-09-18T14:47:16Z",
+      "labels": [
+        "please-test"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 13
+    },
+    {
+      "number": 2093,
+      "title": "Link outs: add GO",
+      "url": "https://github.com/intermine/intermine/issues/2093",
+      "created_at": "2019-09-17T14:06:34Z",
+      "updated_at": "2019-09-18T13:19:47Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2096,
+      "title": "GO terms: add IBA",
+      "url": "https://github.com/intermine/intermine/issues/2096",
+      "created_at": "2019-09-18T10:33:34Z",
+      "updated_at": "2019-09-18T11:21:36Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2097,
+      "title": "HumanMine: ontology terms on report page is empty",
+      "url": "https://github.com/intermine/intermine/issues/2097",
+      "created_at": "2019-09-18T10:44:30Z",
+      "updated_at": "2019-09-18T10:44:48Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2095,
+      "title": "HumanMine: update assembly version",
+      "url": "https://github.com/intermine/intermine/issues/2095",
+      "created_at": "2019-09-18T09:19:28Z",
+      "updated_at": "2019-09-18T10:31:55Z",
+      "labels": [
+        "data"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2094,
+      "title": "FlyMine: update to use global_additions.xml file",
+      "url": "https://github.com/intermine/intermine/issues/2094",
+      "created_at": "2019-09-17T15:40:47Z",
+      "updated_at": "2019-09-17T15:40:47Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2092,
+      "title": "Invalid Project XML generates \"jar not found\" error",
+      "url": "https://github.com/intermine/intermine/issues/2092",
+      "created_at": "2019-09-16T16:00:55Z",
+      "updated_at": "2019-09-17T08:33:40Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 2022,
+      "title": "CDS features need phase",
+      "url": "https://github.com/intermine/intermine/issues/2022",
+      "created_at": "2019-03-04T10:52:57Z",
+      "updated_at": "2019-09-16T16:38:13Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": "Future InterMine release",
+      "comments": 4
+    },
+    {
+      "number": 2091,
+      "title": "HumanMine: linkout generates weirdo popup",
+      "url": "https://github.com/intermine/intermine/issues/2091",
+      "created_at": "2019-09-16T08:52:04Z",
+      "updated_at": "2019-09-16T08:52:04Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1524,
+      "title": "Complexes: InterMine doesn't handle curated stoichiometry",
+      "url": "https://github.com/intermine/intermine/issues/1524",
+      "created_at": "2017-03-29T13:42:12Z",
+      "updated_at": "2019-09-12T13:17:32Z",
+      "labels": [
+        "bug",
+        "please-test"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 1641,
+      "title": "Remove unused params",
+      "url": "https://github.com/intermine/intermine/issues/1641",
+      "created_at": "2017-07-21T14:29:36Z",
+      "updated_at": "2019-09-12T13:17:32Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1779,
+      "title": "PSI-Complexes: update to new identifier scheme",
+      "url": "https://github.com/intermine/intermine/issues/1779",
+      "created_at": "2018-03-20T11:12:46Z",
+      "updated_at": "2019-09-12T13:17:32Z",
+      "labels": [
+        "data"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1243,
+      "title": "List upload: humanmine example has protein accession that's not matched",
+      "url": "https://github.com/intermine/intermine/issues/1243",
+      "created_at": "2015-11-25T10:42:02Z",
+      "updated_at": "2019-09-12T13:17:31Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1517,
+      "title": "Interaction.complex relationship isn't being populated. ",
+      "url": "https://github.com/intermine/intermine/issues/1517",
+      "created_at": "2017-03-14T11:23:00Z",
+      "updated_at": "2019-09-12T13:17:31Z",
+      "labels": [
+        "bug",
+        "data"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1979,
+      "title": "MouseMine: gradle migration",
+      "url": "https://github.com/intermine/intermine/issues/1979",
+      "created_at": "2019-01-04T08:57:59Z",
+      "updated_at": "2019-09-10T08:34:55Z",
+      "labels": [
+        "in-progress"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 4
+    },
+    {
+      "number": 1993,
+      "title": "\"publications\" in template filter",
+      "url": "https://github.com/intermine/intermine/issues/1993",
+      "created_at": "2019-02-11T14:29:40Z",
+      "updated_at": "2019-09-10T08:34:11Z",
+      "labels": [
+        "question"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2026,
+      "title": "delete web-model.xml",
+      "url": "https://github.com/intermine/intermine/issues/2026",
+      "created_at": "2019-03-05T09:05:45Z",
+      "updated_at": "2019-09-10T08:33:52Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2034,
+      "title": "Permanent link to list",
+      "url": "https://github.com/intermine/intermine/issues/2034",
+      "created_at": "2019-04-01T15:34:54Z",
+      "updated_at": "2019-09-10T08:33:36Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2043,
+      "title": "Improve the list upgrade system",
+      "url": "https://github.com/intermine/intermine/issues/2043",
+      "created_at": "2019-05-13T12:29:20Z",
+      "updated_at": "2019-09-10T08:33:18Z",
+      "labels": [
+        "question"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2047,
+      "title": "localaccount property in userprofile table never used",
+      "url": "https://github.com/intermine/intermine/issues/2047",
+      "created_at": "2019-06-05T16:01:35Z",
+      "updated_at": "2019-09-10T08:32:47Z",
+      "labels": [
+        "question"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2066,
+      "title": "Add Util Java class to parse templates XML",
+      "url": "https://github.com/intermine/intermine/issues/2066",
+      "created_at": "2019-07-04T07:47:03Z",
+      "updated_at": "2019-09-10T08:32:34Z",
+      "labels": [
+        "wishlist"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2068,
+      "title": "Get constraint operators programatically",
+      "url": "https://github.com/intermine/intermine/issues/2068",
+      "created_at": "2019-07-06T18:44:05Z",
+      "updated_at": "2019-09-10T08:32:21Z",
+      "labels": [
+        "wishlist"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2078,
+      "title": "Complexes: error on export",
+      "url": "https://github.com/intermine/intermine/issues/2078",
+      "created_at": "2019-08-13T11:57:01Z",
+      "updated_at": "2019-09-10T08:32:09Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": "Future InterMine release",
+      "comments": 2
+    },
+    {
+      "number": 2082,
+      "title": "FASTA - can't find JAR when generating keys",
+      "url": "https://github.com/intermine/intermine/issues/2082",
+      "created_at": "2019-08-15T07:32:44Z",
+      "updated_at": "2019-09-10T08:31:53Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2071,
+      "title": "OMIM creating bad publications",
+      "url": "https://github.com/intermine/intermine/issues/2071",
+      "created_at": "2019-07-18T11:42:57Z",
+      "updated_at": "2019-09-09T07:50:48Z",
+      "labels": [
+        "data"
+      ],
+      "assignees": [
+        "rachellyne"
+      ],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2024,
+      "title": "Add \"data sets\" source -- instead of using items XML",
+      "url": "https://github.com/intermine/intermine/issues/2024",
+      "created_at": "2019-03-04T14:46:22Z",
+      "updated_at": "2019-09-09T07:43:34Z",
+      "labels": [
+        "input-needed"
+      ],
+      "assignees": [
+        "rachellyne"
+      ],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 2067,
+      "title": "Need to log out and in again from the Intermine portal to see the lists created from the API",
+      "url": "https://github.com/intermine/intermine/issues/2067",
+      "created_at": "2019-07-04T15:01:12Z",
+      "updated_at": "2019-07-04T15:01:12Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2064,
+      "title": "Add param to indicate query format - JSON or XML",
+      "url": "https://github.com/intermine/intermine/issues/2064",
+      "created_at": "2019-07-01T14:44:37Z",
+      "updated_at": "2019-07-02T08:49:11Z",
+      "labels": [
+        "wishlist"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 2049,
+      "title": "two spaces in orderBy xml value causes error",
+      "url": "https://github.com/intermine/intermine/issues/2049",
+      "created_at": "2019-06-14T09:41:01Z",
+      "updated_at": "2019-06-28T08:51:46Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2050,
+      "title": "About the classDescriptions.properties",
+      "url": "https://github.com/intermine/intermine/issues/2050",
+      "created_at": "2019-06-20T08:01:40Z",
+      "updated_at": "2019-06-28T08:51:23Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 2028,
+      "title": "Junit Test: move some classes in a more appropriate module",
+      "url": "https://github.com/intermine/intermine/issues/2028",
+      "created_at": "2019-03-07T12:16:42Z",
+      "updated_at": "2019-03-07T12:16:42Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1775,
+      "title": "Code generation for JS is out of date ",
+      "url": "https://github.com/intermine/intermine/issues/1775",
+      "created_at": "2018-03-09T13:36:37Z",
+      "updated_at": "2019-03-07T10:37:41Z",
+      "labels": [
+        "bug",
+        "help wanted"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 1824,
+      "title": "List analysis: fields are incorrect for references",
+      "url": "https://github.com/intermine/intermine/issues/1824",
+      "created_at": "2018-06-13T13:10:30Z",
+      "updated_at": "2019-02-26T16:52:08Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1986,
+      "title": "Google API wants a local privacy policy",
+      "url": "https://github.com/intermine/intermine/issues/1986",
+      "created_at": "2019-01-30T11:03:49Z",
+      "updated_at": "2019-02-04T14:34:51Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 1987,
+      "title": "keyword search: priority to mine organism?",
+      "url": "https://github.com/intermine/intermine/issues/1987",
+      "created_at": "2019-02-04T12:08:06Z",
+      "updated_at": "2019-02-04T12:08:32Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1845,
+      "title": "old JSON jar is only used once. Can we replace?",
+      "url": "https://github.com/intermine/intermine/issues/1845",
+      "created_at": "2018-07-05T10:09:24Z",
+      "updated_at": "2019-01-28T07:38:03Z",
+      "labels": [
+        "question",
+        "help wanted"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 1464,
+      "title": "keyword search with \"heterotaxy\" doesn't find OMIM terms that include \"heterotaxy\"",
+      "url": "https://github.com/intermine/intermine/issues/1464",
+      "created_at": "2016-11-22T00:12:22Z",
+      "updated_at": "2019-01-22T12:58:42Z",
+      "labels": [
+        "question",
+        "input-needed"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 8
+    },
+    {
+      "number": 1971,
+      "title": "Postprocesses - can't run all at the same time",
+      "url": "https://github.com/intermine/intermine/issues/1971",
+      "created_at": "2018-12-13T08:39:22Z",
+      "updated_at": "2018-12-13T16:28:37Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 1353,
+      "title": "Priorities config - throw nice exception if formatted incorrectly.",
+      "url": "https://github.com/intermine/intermine/issues/1353",
+      "created_at": "2016-04-20T10:41:33Z",
+      "updated_at": "2018-10-19T08:15:34Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 1762,
+      "title": "Results tables: Renaming Exported Download File is not working",
+      "url": "https://github.com/intermine/intermine/issues/1762",
+      "created_at": "2018-02-19T14:43:22Z",
+      "updated_at": "2018-10-18T14:17:09Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 4
+    },
+    {
+      "number": 533,
+      "title": "change the InterMineObject.id field from an Integer to a Long ",
+      "url": "https://github.com/intermine/intermine/issues/533",
+      "created_at": "2014-02-04T14:08:22Z",
+      "updated_at": "2018-10-18T13:55:54Z",
+      "labels": [
+        "enhancement",
+        "input-needed"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 12
+    },
+    {
+      "number": 1891,
+      "title": "wishlist for webservices: numeric jsonrows / column summary logarithm scale result parameter",
+      "url": "https://github.com/intermine/intermine/issues/1891",
+      "created_at": "2018-09-12T13:10:22Z",
+      "updated_at": "2018-10-18T12:55:03Z",
+      "labels": [
+        "wishlist",
+        "input-needed"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 1642,
+      "title": "Query crashes when result format is jsonobjects",
+      "url": "https://github.com/intermine/intermine/issues/1642",
+      "created_at": "2017-07-21T14:40:14Z",
+      "updated_at": "2018-10-18T12:39:01Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 5
+    },
+    {
+      "number": 1789,
+      "title": "Merge keys and subclasses bug",
+      "url": "https://github.com/intermine/intermine/issues/1789",
+      "created_at": "2018-04-16T12:28:59Z",
+      "updated_at": "2018-10-18T10:03:08Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1866,
+      "title": "Feature wishlist: \"does this path exist?\" API endpoint",
+      "url": "https://github.com/intermine/intermine/issues/1866",
+      "created_at": "2018-07-18T16:25:36Z",
+      "updated_at": "2018-10-17T14:34:03Z",
+      "labels": [
+        "question",
+        "input-needed"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 1912,
+      "title": "Gradle: clean up project XML ",
+      "url": "https://github.com/intermine/intermine/issues/1912",
+      "created_at": "2018-10-11T09:56:47Z",
+      "updated_at": "2018-10-11T09:56:47Z",
+      "labels": [
+        "gradle"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1894,
+      "title": "DB connections keep growing during post-processing",
+      "url": "https://github.com/intermine/intermine/issues/1894",
+      "created_at": "2018-09-26T15:17:07Z",
+      "updated_at": "2018-09-28T07:32:46Z",
+      "labels": [
+        "bug",
+        "input-needed"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 1890,
+      "title": "Gradle: clean properties files in bio sources",
+      "url": "https://github.com/intermine/intermine/issues/1890",
+      "created_at": "2018-09-11T15:02:17Z",
+      "updated_at": "2018-09-11T15:03:03Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 701,
+      "title": "Tag filtering not working as expected for other superusers",
+      "url": "https://github.com/intermine/intermine/issues/701",
+      "created_at": "2014-06-23T08:57:56Z",
+      "updated_at": "2018-08-09T13:52:26Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 6
+    },
+    {
+      "number": 1213,
+      "title": "Enrichment widget: expand web services",
+      "url": "https://github.com/intermine/intermine/issues/1213",
+      "created_at": "2015-11-05T14:19:43Z",
+      "updated_at": "2018-07-31T09:05:35Z",
+      "labels": [
+        "enhancement",
+        "in-progress"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 1848,
+      "title": "add .cff (citation file format) file to root of repo?",
+      "url": "https://github.com/intermine/intermine/issues/1848",
+      "created_at": "2018-07-06T13:44:48Z",
+      "updated_at": "2018-07-06T13:47:08Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 1722,
+      "title": "InterPro - protein domain description includes brackets <> in XML which is not being processed correctly",
+      "url": "https://github.com/intermine/intermine/issues/1722",
+      "created_at": "2017-11-16T13:10:17Z",
+      "updated_at": "2018-06-22T07:10:17Z",
+      "labels": [
+        "data"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1092,
+      "title": "Support non-null/non-empty constraints in the data model",
+      "url": "https://github.com/intermine/intermine/issues/1092",
+      "created_at": "2015-07-17T16:58:41Z",
+      "updated_at": "2018-06-13T09:16:38Z",
+      "labels": [
+        "question",
+        "input-needed"
+      ],
+      "assignees": [],
+      "milestone": "Future InterMine release",
+      "comments": 5
+    },
+    {
+      "number": 1634,
+      "title": "Chromosome displayer widget - hardcode chromosomes",
+      "url": "https://github.com/intermine/intermine/issues/1634",
+      "created_at": "2017-07-17T13:59:02Z",
+      "updated_at": "2018-06-12T07:52:35Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 1054,
+      "title": "List upload reads your mind",
+      "url": "https://github.com/intermine/intermine/issues/1054",
+      "created_at": "2015-06-26T14:32:40Z",
+      "updated_at": "2018-06-11T15:02:56Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 1285,
+      "title": "Results tables - not creating correct list ",
+      "url": "https://github.com/intermine/intermine/issues/1285",
+      "created_at": "2016-01-27T09:28:51Z",
+      "updated_at": "2018-06-11T14:59:21Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 7
+    },
+    {
+      "number": 1148,
+      "title": "Build system - merging errors are caught very late and are not helpful.",
+      "url": "https://github.com/intermine/intermine/issues/1148",
+      "created_at": "2015-09-21T08:19:26Z",
+      "updated_at": "2018-06-11T13:09:03Z",
+      "labels": [
+        "enhancement",
+        "data"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1512,
+      "title": "Expand Path Query API",
+      "url": "https://github.com/intermine/intermine/issues/1512",
+      "created_at": "2017-02-24T16:14:16Z",
+      "updated_at": "2018-06-11T12:30:13Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 1725,
+      "title": "Bug in possible values endpoint?",
+      "url": "https://github.com/intermine/intermine/issues/1725",
+      "created_at": "2017-11-16T15:33:32Z",
+      "updated_at": "2018-06-08T09:34:07Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 1733,
+      "title": "Request: please add class descriptions to /model response",
+      "url": "https://github.com/intermine/intermine/issues/1733",
+      "created_at": "2017-12-13T10:45:38Z",
+      "updated_at": "2018-06-07T16:18:51Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1739,
+      "title": "Chromosome displayer widget - order numerically not alphabetically",
+      "url": "https://github.com/intermine/intermine/issues/1739",
+      "created_at": "2018-01-17T09:42:36Z",
+      "updated_at": "2018-06-07T14:54:14Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 1795,
+      "title": "Project build script: Errors while creating checkpoint database are being silently swallowed",
+      "url": "https://github.com/intermine/intermine/issues/1795",
+      "created_at": "2018-04-20T12:23:25Z",
+      "updated_at": "2018-06-07T13:43:47Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1797,
+      "title": "Project build script: Allow user to start build from specific checkpoint",
+      "url": "https://github.com/intermine/intermine/issues/1797",
+      "created_at": "2018-04-20T12:41:58Z",
+      "updated_at": "2018-06-07T13:31:21Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 6
+    },
+    {
+      "number": 1764,
+      "title": "Make queries taggable",
+      "url": "https://github.com/intermine/intermine/issues/1764",
+      "created_at": "2018-02-20T09:55:54Z",
+      "updated_at": "2018-02-20T09:57:23Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 1685,
+      "title": "Add web service analytics",
+      "url": "https://github.com/intermine/intermine/issues/1685",
+      "created_at": "2017-09-13T09:45:12Z",
+      "updated_at": "2017-09-21T17:22:13Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 1151,
+      "title": "Clients need to be updated to query for regions",
+      "url": "https://github.com/intermine/intermine/issues/1151",
+      "created_at": "2015-09-22T12:19:44Z",
+      "updated_at": "2017-09-21T14:55:42Z",
+      "labels": [
+        "good first bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 703,
+      "title": "Non-existent web services should return a 404 error.",
+      "url": "https://github.com/intermine/intermine/issues/703",
+      "created_at": "2014-06-23T13:29:37Z",
+      "updated_at": "2017-09-21T14:47:41Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": "Future InterMine release",
+      "comments": 2
+    },
+    {
+      "number": 1085,
+      "title": "Query for NOT IN collections",
+      "url": "https://github.com/intermine/intermine/issues/1085",
+      "created_at": "2015-07-13T15:18:49Z",
+      "updated_at": "2017-09-21T14:46:24Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": "Future InterMine release",
+      "comments": 2
+    },
+    {
+      "number": 1582,
+      "title": "Rethink how we store user information",
+      "url": "https://github.com/intermine/intermine/issues/1582",
+      "created_at": "2017-06-01T15:16:34Z",
+      "updated_at": "2017-08-09T14:26:41Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 1599,
+      "title": "Core Data Model - make Homology symmetric",
+      "url": "https://github.com/intermine/intermine/issues/1599",
+      "created_at": "2017-06-20T22:39:48Z",
+      "updated_at": "2017-06-27T16:59:26Z",
+      "labels": [],
+      "assignees": [
+        "rachellyne"
+      ],
+      "milestone": null,
+      "comments": 7
+    },
+    {
+      "number": 227,
+      "title": "GFF/FASTA export collections",
+      "url": "https://github.com/intermine/intermine/issues/227",
+      "created_at": "2013-03-15T11:51:45Z",
+      "updated_at": "2017-06-05T12:35:20Z",
+      "labels": [
+        "enhancement",
+        "input-needed"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 5
+    },
+    {
+      "number": 498,
+      "title": "Bag Upload Results - download summary needs platform specific line ending",
+      "url": "https://github.com/intermine/intermine/issues/498",
+      "created_at": "2013-12-12T10:40:27Z",
+      "updated_at": "2017-06-01T12:36:59Z",
+      "labels": [],
+      "assignees": [
+        "yochannah"
+      ],
+      "milestone": "Future InterMine release",
+      "comments": 1
+    },
+    {
+      "number": 858,
+      "title": "Update count on list upload to be count of all identifiers submitted",
+      "url": "https://github.com/intermine/intermine/issues/858",
+      "created_at": "2014-12-02T16:19:11Z",
+      "updated_at": "2017-06-01T12:36:59Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [
+        "yochannah"
+      ],
+      "milestone": "Future InterMine release",
+      "comments": 7
+    },
+    {
+      "number": 959,
+      "title": "Results tables on report pages - filter doesn't update title or making a list",
+      "url": "https://github.com/intermine/intermine/issues/959",
+      "created_at": "2015-03-10T13:06:19Z",
+      "updated_at": "2017-05-23T15:07:57Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 951,
+      "title": "Allow users to remove items from their lists",
+      "url": "https://github.com/intermine/intermine/issues/951",
+      "created_at": "2015-02-27T02:57:34Z",
+      "updated_at": "2017-05-23T15:07:57Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 952,
+      "title": "We do not ask for confirmation when deleting lists",
+      "url": "https://github.com/intermine/intermine/issues/952",
+      "created_at": "2015-02-27T13:50:55Z",
+      "updated_at": "2017-05-23T15:07:57Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 542,
+      "title": "i icon on column headers",
+      "url": "https://github.com/intermine/intermine/issues/542",
+      "created_at": "2014-02-12T22:08:10Z",
+      "updated_at": "2017-05-23T15:07:57Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 480,
+      "title": "Add option in summary to remove outliers",
+      "url": "https://github.com/intermine/intermine/issues/480",
+      "created_at": "2013-12-04T13:55:30Z",
+      "updated_at": "2017-05-23T15:07:57Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 793,
+      "title": "Show id fields when logged in as superuser",
+      "url": "https://github.com/intermine/intermine/issues/793",
+      "created_at": "2014-11-11T11:51:50Z",
+      "updated_at": "2017-05-23T15:07:57Z",
+      "labels": [
+        "enhancement",
+        "input-needed"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 794,
+      "title": "Allow subtype constraints in results table dialogs",
+      "url": "https://github.com/intermine/intermine/issues/794",
+      "created_at": "2014-11-11T11:53:57Z",
+      "updated_at": "2017-05-23T15:07:57Z",
+      "labels": [
+        "enhancement",
+        "input-needed"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 798,
+      "title": "Define multiple filters at once",
+      "url": "https://github.com/intermine/intermine/issues/798",
+      "created_at": "2014-11-11T12:01:55Z",
+      "updated_at": "2017-05-23T15:07:57Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 435,
+      "title": "Toggle empty columns in query results",
+      "url": "https://github.com/intermine/intermine/issues/435",
+      "created_at": "2013-09-17T12:21:03Z",
+      "updated_at": "2017-05-23T15:07:57Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 437,
+      "title": "Query results - text wrapping",
+      "url": "https://github.com/intermine/intermine/issues/437",
+      "created_at": "2013-09-17T12:26:37Z",
+      "updated_at": "2017-05-23T15:07:57Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 552,
+      "title": "Decimal places on query results summaries",
+      "url": "https://github.com/intermine/intermine/issues/552",
+      "created_at": "2014-02-27T16:19:10Z",
+      "updated_at": "2017-05-23T15:07:57Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 86,
+      "title": "GO widget - filter on evidence code",
+      "url": "https://github.com/intermine/intermine/issues/86",
+      "created_at": "2012-09-14T07:32:49Z",
+      "updated_at": "2017-05-23T15:07:56Z",
+      "labels": [
+        "wishlist"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 94,
+      "title": "Pluralization in the mine",
+      "url": "https://github.com/intermine/intermine/issues/94",
+      "created_at": "2012-09-17T19:46:13Z",
+      "updated_at": "2017-05-23T15:07:56Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 96,
+      "title": "italicize gene symbols/names",
+      "url": "https://github.com/intermine/intermine/issues/96",
+      "created_at": "2012-09-17T19:51:37Z",
+      "updated_at": "2017-05-23T15:07:56Z",
+      "labels": [
+        "wishlist"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 98,
+      "title": "Internal error message \"send us an email\" link may not work with MS Outlook",
+      "url": "https://github.com/intermine/intermine/issues/98",
+      "created_at": "2012-09-18T19:21:30Z",
+      "updated_at": "2017-05-23T15:07:56Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 36,
+      "title": "Integrated Region Searching",
+      "url": "https://github.com/intermine/intermine/issues/36",
+      "created_at": "2012-07-26T21:00:07Z",
+      "updated_at": "2017-05-23T15:07:56Z",
+      "labels": [
+        "wishlist",
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 37,
+      "title": "Multi-select feature types for export",
+      "url": "https://github.com/intermine/intermine/issues/37",
+      "created_at": "2012-07-27T18:31:58Z",
+      "updated_at": "2017-05-23T15:07:56Z",
+      "labels": [
+        "wishlist"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 238,
+      "title": "The enrichment widgets have stopped delivering match details",
+      "url": "https://github.com/intermine/intermine/issues/238",
+      "created_at": "2013-03-28T16:13:25Z",
+      "updated_at": "2017-05-23T15:07:56Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 199,
+      "title": "Query results - don't want everything to be a link",
+      "url": "https://github.com/intermine/intermine/issues/199",
+      "created_at": "2013-02-13T10:28:39Z",
+      "updated_at": "2017-05-23T15:07:56Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 3
+    },
+    {
+      "number": 188,
+      "title": "Rename list on list analysis pages",
+      "url": "https://github.com/intermine/intermine/issues/188",
+      "created_at": "2013-01-09T15:36:34Z",
+      "updated_at": "2017-05-23T15:07:56Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 53,
+      "title": "Customise export options in webapp ",
+      "url": "https://github.com/intermine/intermine/issues/53",
+      "created_at": "2012-08-30T13:41:49Z",
+      "updated_at": "2017-05-23T15:07:56Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 425,
+      "title": "Link for 'Number of Genes in this list not analysed in this widget: ##' Doesn't do anything.",
+      "url": "https://github.com/intermine/intermine/issues/425",
+      "created_at": "2013-08-30T14:15:44Z",
+      "updated_at": "2017-05-23T15:07:56Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1556,
+      "title": "No more than one item can be picked from the result table containing publications",
+      "url": "https://github.com/intermine/intermine/issues/1556",
+      "created_at": "2017-05-08T13:27:24Z",
+      "updated_at": "2017-05-08T13:27:24Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 376,
+      "title": "Loop constraints between attribute values",
+      "url": "https://github.com/intermine/intermine/issues/376",
+      "created_at": "2013-06-20T16:53:59Z",
+      "updated_at": "2017-04-28T16:18:18Z",
+      "labels": [
+        "wishlist",
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 5
+    },
+    {
+      "number": 1447,
+      "title": "SubQuery support in PathQuery",
+      "url": "https://github.com/intermine/intermine/issues/1447",
+      "created_at": "2016-10-28T13:11:37Z",
+      "updated_at": "2017-04-28T14:48:11Z",
+      "labels": [
+        "enhancement",
+        "in-progress"
+      ],
+      "assignees": [
+        "danielabutano",
+        "joshkh"
+      ],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 977,
+      "title": "Provide support for locations using FALDO",
+      "url": "https://github.com/intermine/intermine/issues/977",
+      "created_at": "2015-04-13T11:08:51Z",
+      "updated_at": "2017-04-28T14:08:06Z",
+      "labels": [
+        "data"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 1463,
+      "title": "No ability to add char/Character attribute in data model",
+      "url": "https://github.com/intermine/intermine/issues/1463",
+      "created_at": "2016-11-21T20:24:26Z",
+      "updated_at": "2017-04-28T14:04:03Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 1401,
+      "title": "[Feature Request] Ability to toggle Test Correction setting for Enrichment Widgets",
+      "url": "https://github.com/intermine/intermine/issues/1401",
+      "created_at": "2016-08-01T15:13:15Z",
+      "updated_at": "2017-04-28T14:04:02Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 640,
+      "title": "Queries - add aggregates e.g. MAX, count and AVG",
+      "url": "https://github.com/intermine/intermine/issues/640",
+      "created_at": "2014-05-02T14:30:05Z",
+      "updated_at": "2017-04-28T14:03:14Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 6
+    },
+    {
+      "number": 713,
+      "title": "goFaster precomputed tables",
+      "url": "https://github.com/intermine/intermine/issues/713",
+      "created_at": "2014-07-02T16:22:06Z",
+      "updated_at": "2017-04-28T14:03:14Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 725,
+      "title": "Precompute fails when too many joins",
+      "url": "https://github.com/intermine/intermine/issues/725",
+      "created_at": "2014-07-14T12:45:43Z",
+      "updated_at": "2017-04-28T14:03:14Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 8
+    },
+    {
+      "number": 731,
+      "title": "Consider using an in-memory database for items",
+      "url": "https://github.com/intermine/intermine/issues/731",
+      "created_at": "2014-07-25T10:40:31Z",
+      "updated_at": "2017-04-28T14:03:14Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 939,
+      "title": "Support HTTP last-modified-since caching for queries",
+      "url": "https://github.com/intermine/intermine/issues/939",
+      "created_at": "2015-02-06T16:47:39Z",
+      "updated_at": "2017-04-28T14:02:21Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 1004,
+      "title": "FASTA and GFF3 - option to get taxon from file name",
+      "url": "https://github.com/intermine/intermine/issues/1004",
+      "created_at": "2015-05-13T08:04:34Z",
+      "updated_at": "2017-04-28T14:02:04Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 1039,
+      "title": "Perl client - can't create list when view list has more than one class",
+      "url": "https://github.com/intermine/intermine/issues/1039",
+      "created_at": "2015-06-12T08:40:04Z",
+      "updated_at": "2017-04-28T14:02:04Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 1097,
+      "title": "Tracker to use a separate table for source name",
+      "url": "https://github.com/intermine/intermine/issues/1097",
+      "created_at": "2015-07-30T14:41:37Z",
+      "updated_at": "2017-04-28T14:01:48Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1098,
+      "title": "Minimal data tracker mode",
+      "url": "https://github.com/intermine/intermine/issues/1098",
+      "created_at": "2015-07-30T14:55:34Z",
+      "updated_at": "2017-04-28T14:01:48Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1265,
+      "title": "Publicly share private lists with non-Intermine users",
+      "url": "https://github.com/intermine/intermine/issues/1265",
+      "created_at": "2015-12-10T15:42:02Z",
+      "updated_at": "2017-04-28T14:01:36Z",
+      "labels": [
+        "wishlist",
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1268,
+      "title": "exporting large (many records) results produce transient error message",
+      "url": "https://github.com/intermine/intermine/issues/1268",
+      "created_at": "2015-12-10T16:58:36Z",
+      "updated_at": "2017-04-28T14:01:23Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 257,
+      "title": "New Option for Importing Templates",
+      "url": "https://github.com/intermine/intermine/issues/257",
+      "created_at": "2013-04-06T11:56:59Z",
+      "updated_at": "2017-04-28T13:53:34Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1422,
+      "title": "Widgets - add default constraint that uses > or < ",
+      "url": "https://github.com/intermine/intermine/issues/1422",
+      "created_at": "2016-09-13T15:49:13Z",
+      "updated_at": "2017-04-28T13:41:45Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 5
+    },
+    {
+      "number": 87,
+      "title": "Display false discovery rate (FDR) on enrichment widgets",
+      "url": "https://github.com/intermine/intermine/issues/87",
+      "created_at": "2012-09-14T07:33:17Z",
+      "updated_at": "2017-04-28T13:32:06Z",
+      "labels": [
+        "wishlist"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 217,
+      "title": "List operation - change \"type\" of list",
+      "url": "https://github.com/intermine/intermine/issues/217",
+      "created_at": "2013-02-28T09:27:18Z",
+      "updated_at": "2017-04-28T13:31:06Z",
+      "labels": [
+        "suggestion",
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 225,
+      "title": "Use connection pool for userprofile database connections",
+      "url": "https://github.com/intermine/intermine/issues/225",
+      "created_at": "2013-03-14T10:28:06Z",
+      "updated_at": "2017-04-28T13:30:48Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1264,
+      "title": "Ability to track changes to lists over time.",
+      "url": "https://github.com/intermine/intermine/issues/1264",
+      "created_at": "2015-12-10T15:40:43Z",
+      "updated_at": "2017-04-28T13:28:21Z",
+      "labels": [
+        "wishlist",
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 332,
+      "title": "[ feature request ] Toggle results table cell formatter output",
+      "url": "https://github.com/intermine/intermine/issues/332",
+      "created_at": "2013-05-30T16:03:32Z",
+      "updated_at": "2017-04-28T13:16:48Z",
+      "labels": [
+        "suggestion",
+        "input-needed",
+        "docs"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 488,
+      "title": "Speeding up processing NotXML",
+      "url": "https://github.com/intermine/intermine/issues/488",
+      "created_at": "2013-12-06T22:45:30Z",
+      "updated_at": "2017-04-28T13:13:58Z",
+      "labels": [
+        "wishlist"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 490,
+      "title": "Prevent potential performance bottleneck in ProfileManager",
+      "url": "https://github.com/intermine/intermine/issues/490",
+      "created_at": "2013-12-10T12:28:18Z",
+      "updated_at": "2017-04-28T13:13:34Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 587,
+      "title": "stable URL to templates results table",
+      "url": "https://github.com/intermine/intermine/issues/587",
+      "created_at": "2014-03-26T20:52:43Z",
+      "updated_at": "2017-04-28T13:00:04Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 585,
+      "title": "If a query has more than 26 constraints, you run out of letters",
+      "url": "https://github.com/intermine/intermine/issues/585",
+      "created_at": "2014-03-25T13:50:58Z",
+      "updated_at": "2017-04-28T12:59:52Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 556,
+      "title": "Embed template form",
+      "url": "https://github.com/intermine/intermine/issues/556",
+      "created_at": "2014-03-04T13:49:24Z",
+      "updated_at": "2017-04-28T12:58:02Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 651,
+      "title": "Enrichment service is too tolerant of bad algorithm names",
+      "url": "https://github.com/intermine/intermine/issues/651",
+      "created_at": "2014-05-11T13:29:32Z",
+      "updated_at": "2017-04-28T12:11:01Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 759,
+      "title": "Update username (email)",
+      "url": "https://github.com/intermine/intermine/issues/759",
+      "created_at": "2014-09-19T08:45:02Z",
+      "updated_at": "2017-04-28T12:08:40Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 803,
+      "title": "Support coordinate mapping using SyntenicRegions",
+      "url": "https://github.com/intermine/intermine/issues/803",
+      "created_at": "2014-11-11T12:09:13Z",
+      "updated_at": "2017-04-28T11:35:19Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1090,
+      "title": "Results table: error when creating a list from a query with outer joins",
+      "url": "https://github.com/intermine/intermine/issues/1090",
+      "created_at": "2015-07-16T08:06:52Z",
+      "updated_at": "2017-04-28T11:31:21Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 7
+    },
+    {
+      "number": 1137,
+      "title": "Export - sequence manipulation",
+      "url": "https://github.com/intermine/intermine/issues/1137",
+      "created_at": "2015-09-09T12:01:20Z",
+      "updated_at": "2017-04-28T11:30:56Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 2
+    },
+    {
+      "number": 924,
+      "title": "results table multi-column graphing ability",
+      "url": "https://github.com/intermine/intermine/issues/924",
+      "created_at": "2015-01-23T22:15:36Z",
+      "updated_at": "2017-04-28T11:21:20Z",
+      "labels": [
+        "wishlist"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 1
+    },
+    {
+      "number": 1156,
+      "title": "restore explicit results URI for download ",
+      "url": "https://github.com/intermine/intermine/issues/1156",
+      "created_at": "2015-10-01T09:42:03Z",
+      "updated_at": "2017-04-27T15:10:49Z",
+      "labels": [
+        "suggestion"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1408,
+      "title": "Optional constraints becoming non-optional",
+      "url": "https://github.com/intermine/intermine/issues/1408",
+      "created_at": "2016-08-23T21:10:39Z",
+      "updated_at": "2017-04-27T14:47:25Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 297,
+      "title": "Data Provenance",
+      "url": "https://github.com/intermine/intermine/issues/297",
+      "created_at": "2013-05-17T23:33:24Z",
+      "updated_at": "2017-04-27T14:15:45Z",
+      "labels": [
+        "enhancement",
+        "data"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 4
+    },
+    {
+      "number": 817,
+      "title": "JSON formatting is mangling backwards slashes",
+      "url": "https://github.com/intermine/intermine/issues/817",
+      "created_at": "2014-11-18T16:21:23Z",
+      "updated_at": "2017-04-07T11:20:46Z",
+      "labels": [],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 1527,
+      "title": "Export coordinates in correct chromsome:start...end format",
+      "url": "https://github.com/intermine/intermine/issues/1527",
+      "created_at": "2017-04-06T07:48:04Z",
+      "updated_at": "2017-04-06T07:48:04Z",
+      "labels": [
+        "enhancement"
+      ],
+      "assignees": [],
+      "milestone": null,
+      "comments": 0
+    },
+    {
+      "number": 616,
+      "title": "Cancel queries",
+      "url": "https://github.com/intermine/intermine/issues/616",
+      "created_at": "2014-04-04T10:22:30Z",
+      "updated_at": "2016-03-08T13:01:35Z",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [
+        "sergiocontrino"
+      ],
+      "milestone": null,
+      "comments": 4
+    }
+  ],
+  "open_pull_requests": [
+    {
+      "number": 2449,
+      "title": "New format of GO Annotation data for BAR ThaleMine.",
+      "url": "https://github.com/intermine/intermine/pull/2449",
+      "updated_at": "2022-10-28T17:53:30Z",
+      "base": "dev",
+      "head": "asherpasha:BAR-ThaleMine-8",
+      "changed_files": 1,
+      "review_status": "Not reviewed or tested in this assessment"
+    },
+    {
+      "number": 2454,
+      "title": "Updated protein2ipr to add NCBIfam.",
+      "url": "https://github.com/intermine/intermine/pull/2454",
+      "updated_at": "2023-07-12T02:39:38Z",
+      "base": "dev",
+      "head": "asherpasha:BAR-ThaleMine-9",
+      "changed_files": 1,
+      "review_status": "Not reviewed or tested in this assessment"
+    },
+    {
+      "number": 2306,
+      "title": "Add QueryExpression.LENGTH and QueryExpression.CONCAT operators",
+      "url": "https://github.com/intermine/intermine/pull/2306",
+      "updated_at": "2020-12-04T16:30:34Z",
+      "base": "dev",
+      "head": "legumeinfo:queryexpression",
+      "changed_files": 6,
+      "review_status": "Not reviewed or tested in this assessment"
+    }
+  ]
+}

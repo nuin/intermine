@@ -30,7 +30,7 @@ class IntegrateUtils {
             ant.taskdef(name: 'preRetrieve', classname: bioSourceProperties.getPreRetrieveClassName(sourceName)) {
                 classpath {
                     dirset(dir: gradleProject.getBuildDir().getAbsolutePath())
-                    pathelement(path: gradleProject.configurations.getByName("compile").asPath)
+                    pathelement(path: gradleProject.configurations.getByName("runtimeClasspath").asPath)
                     pathelement(path: gradleProject.configurations.getByName("integrateSource").asPath)
                 }
             }
@@ -72,7 +72,7 @@ class IntegrateUtils {
         ant.taskdef(name: "convertFile", classname: "org.intermine.task.FileConverterTask") {
             classpath {
                 dirset(dir: gradleProject.getBuildDir().getAbsolutePath())
-                pathelement(path: gradleProject.configurations.getByName("compile").asPath)
+                pathelement(path: gradleProject.configurations.getByName("runtimeClasspath").asPath)
                 pathelement(path: gradleProject.configurations.getByName("integrateSource").asPath)
             }
         }
@@ -99,7 +99,7 @@ class IntegrateUtils {
             classpath {
                 dirset(dir: gradleProject.getBuildDir().getAbsolutePath())
                 dirset(dir: buildResourcesMainDir)//to read default.intermine.properties
-                pathelement(path: gradleProject.configurations.getByName("compile").asPath)
+                pathelement(path: gradleProject.configurations.getByName("runtimeClasspath").asPath)
                 pathelement(path: gradleProject.configurations.getByName("integrateSource").asPath)
             }
         }
@@ -119,7 +119,7 @@ class IntegrateUtils {
         ant.taskdef(name: "convertDir", classname: "org.intermine.task.DirectoryConverterTask") {
             classpath {
                 dirset(dir: gradleProject.getBuildDir().getAbsolutePath())
-                pathelement(path: gradleProject.configurations.getByName("compile").asPath)
+                pathelement(path: gradleProject.configurations.getByName("runtimeClasspath").asPath)
                 pathelement(path: gradleProject.configurations.getByName("integrateSource").asPath)
             }
         }
@@ -137,7 +137,7 @@ class IntegrateUtils {
         ant.taskdef(name: "insertXMLData", classname: "org.intermine.dataloader.XmlDataLoaderTask") {
             classpath {
                 dirset(dir: gradleProject.getBuildDir().getAbsolutePath())
-                pathelement(path: gradleProject.configurations.getByName("compile").asPath)
+                pathelement(path: gradleProject.configurations.getByName("runtimeClasspath").asPath)
                 pathelement(path: gradleProject.configurations.getByName("integrateSource").asPath)
             }
         }
@@ -170,7 +170,7 @@ class IntegrateUtils {
         ant.taskdef(name: "convertFullXMLFile", classname: "org.intermine.task.FullXmlConverterTask") {
             classpath {
                 dirset(dir: gradleProject.getBuildDir().getAbsolutePath())
-                pathelement(path: gradleProject.configurations.getByName("compile").asPath)
+                pathelement(path: gradleProject.configurations.getByName("runtimeClasspath").asPath)
                 pathelement(path: gradleProject.configurations.getByName("integrateSource").asPath)
             }
         }
@@ -209,7 +209,7 @@ class IntegrateUtils {
         ant.taskdef(name: "convertGFF3File", classname: "org.intermine.bio.task.GFF3ConverterTask") {
             classpath {
                 dirset(dir: gradleProject.getBuildDir().getAbsolutePath())
-                pathelement(path: gradleProject.configurations.getByName("compile").asPath)
+                pathelement(path: gradleProject.configurations.getByName("runtimeClasspath").asPath)
                 pathelement(path: gradleProject.configurations.getByName("integrateSource").asPath)
             }
         }
@@ -258,7 +258,7 @@ class IntegrateUtils {
         ant.taskdef(name: "convertOBO", classname: "org.intermine.bio.task.OboConverterTask") {
             classpath {
                 dirset(dir: gradleProject.getBuildDir().getAbsolutePath())
-                pathelement(path: gradleProject.configurations.getByName("compile").asPath)
+                pathelement(path: gradleProject.configurations.getByName("runtimeClasspath").asPath)
                 pathelement(path: gradleProject.configurations.getByName("integrateSource").asPath)
             }
         }
@@ -295,7 +295,7 @@ class IntegrateUtils {
         ant.taskdef(name: "dataLoad", classname: classname) {
             classpath {
                 dirset(dir: gradleProject.getBuildDir().getAbsolutePath())
-                pathelement(path: gradleProject.configurations.getByName("compile").asPath)
+                pathelement(path: gradleProject.configurations.getByName("runtimeClasspath").asPath)
                 pathelement(path: gradleProject.configurations.getByName("integrateSource").asPath)
             }
         }

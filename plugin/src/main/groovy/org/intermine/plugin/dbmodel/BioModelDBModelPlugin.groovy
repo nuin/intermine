@@ -21,7 +21,7 @@ class BioModelDBModelPlugin implements Plugin<Project>{
 
                 ant.taskdef(name: "mergeBioCoreModels", classname: "org.intermine.task.ModelMergerTask") {
                     classpath {
-                        pathelement(path: project.configurations.getByName("compile").asPath)
+                        pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                         dirset(dir: project.getBuildDir().getAbsolutePath())
                     }
                 }

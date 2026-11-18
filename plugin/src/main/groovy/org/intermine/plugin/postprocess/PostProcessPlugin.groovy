@@ -110,7 +110,7 @@ class PostProcessPlugin implements Plugin<Project> {
                                 ant.taskdef(name: "sourcePostProcess", classname: "org.intermine.task.PostProcessorTask") {
                                     classpath {
                                         dirset(dir: project.getBuildDir().getAbsolutePath())
-                                        pathelement(path: project.configurations.getByName("compile").asPath)
+                                        pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                                         pathelement(path: project.configurations.getByName("integrateSource").asPath)
                                     }
                                 }
@@ -128,7 +128,7 @@ class PostProcessPlugin implements Plugin<Project> {
                             ant.taskdef(name: "corePostProcess", classname: "org.intermine.task.PostProcessorTask") {
                                 classpath {
                                 dirset(dir: project.getBuildDir().getAbsolutePath())
-                                pathelement(path: project.configurations.getByName("compile").asPath)
+                                pathelement(path: project.configurations.getByName("runtimeClasspath").asPath)
                                 pathelement(path: project.configurations.getByName("postProcesses").asPath)
                                 }
                             }

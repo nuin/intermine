@@ -1,0 +1,2450 @@
+{
+  "observed_date": "2026-11-18",
+  "repository": "intermine/intermine",
+  "commit": "787f779b7a3be3d778de784229a701cc47dc355b",
+  "scope": "All 218 issue bodies reviewed; selected local source inspected. Runtime reproduction and exhaustive comment review pending. Priorities describe reported impact, not confirmed defects. No upstream mutations.",
+  "priority_definitions": {
+    "P1": "Reported reliability, data integrity or access-control impact; reproduce early.",
+    "P2": "Normal defects and maintenance.",
+    "P3": "Feature and UX proposals requiring scope/design."
+  },
+  "issues": [
+    {
+      "number": 2450,
+      "component": "ecosystem",
+      "disposition": "route-to-repository",
+      "priority": "P3",
+      "rationale": "The reported 2017–2021 copyright text differs from the core JSP footer; the screenshot alone does not establish which website owns it.",
+      "next_step": "Identify the screenshot URL and owning website repository, then update the date policy there.",
+      "evidence": [
+        "intermine/webapp/src/main/webapp/footer.jsp",
+        "https://github.com/intermine/intermine/issues/2450"
+      ]
+    },
+    {
+      "number": 2424,
+      "component": "clients",
+      "disposition": "route-to-repository",
+      "priority": "P2",
+      "rationale": "The failing intermine.webservice imports belong to the Python client, not the Java server.",
+      "next_step": "Check intermine/intermine-ws-python against supported Python versions and a clean install; link any existing client fix.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2424"
+      ]
+    },
+    {
+      "number": 2452,
+      "component": "api-query",
+      "disposition": "deployment-specific",
+      "priority": "P2",
+      "rationale": "The 500 involves MouseMine-specific fields, a private list and an omitted input dataframe; the server cause is unavailable.",
+      "next_step": "Obtain sanitized query XML, input sizes, deployment version and server exception; reduce against the MouseMine schema.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2452"
+      ]
+    },
+    {
+      "number": 2451,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "The strict to_index > count clamp remains, and the server still calls subList(fromIdx, toIdx + 1); nine regions with page size ten exceed the end bound.",
+      "next_step": "Add a boundary regression for 0, 1, 9, 10 and 24 regions, including page-size changes, and validate server bounds.",
+      "evidence": [
+        "bio/webapp/src/main/webapp/model/genomic_region_search/genomic_region_search_results_default.js",
+        "bio/webapp/src/main/java/org/intermine/bio/web/logic/GenomicRegionSearchService.java",
+        "https://github.com/intermine/intermine/issues/2451"
+      ]
+    },
+    {
+      "number": 1639,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "PathQueryBuilderForJSONObj still clears the supplied order and sorts by the inserted root id; only the simple-class exception branch restores the original order.",
+      "next_step": "Test ASC/DESC and nested JSON object grouping; define how requested root ordering coexists with grouping before changing the builder.",
+      "evidence": [
+        "intermine/webapp/src/main/java/org/intermine/webservice/server/query/result/PathQueryBuilderForJSONObj.java",
+        "https://github.com/intermine/intermine/issues/1639"
+      ]
+    },
+    {
+      "number": 2380,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "This requests RDF alternate links in HTML and depends on the RDF URL design in #2379.",
+      "next_step": "Specify supported pages, canonical RDF URLs and content negotiation, then add link rendering coverage.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2380"
+      ]
+    },
+    {
+      "number": 2442,
+      "component": "data-loaders",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "The report gives a public KEGG example and BioDirectoryConverter workaround, but the advertised exception is absent from the issue body.",
+      "next_step": "Run the minimal KEGG BioFileConverter example with current source generation and collect the full integration exception.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2442"
+      ]
+    },
+    {
+      "number": 2229,
+      "component": "data-model",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "ExpressionSource, ExpressionSample and ExpressionValue are a proposed shared schema rather than a concrete failure.",
+      "next_step": "Compare participating mines, units, sample identifiers and strain relations, then agree a migration and loader contract.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2229"
+      ]
+    },
+    {
+      "number": 2436,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "User enumeration and administrator assignment introduce privileged API behavior with no authorization contract specified.",
+      "next_step": "Design superuser-only operations, audit behavior and role-change invariants together with #2122 and #2123.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2436"
+      ]
+    },
+    {
+      "number": 1782,
+      "component": "clients",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "R code generation requires coordination between the server codegen endpoint and the InterMineR API.",
+      "next_step": "Choose the supported InterMineR query syntax and add generated-code execution examples to the codegen acceptance criteria.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1782"
+      ]
+    },
+    {
+      "number": 298,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Template sharing, collaborative editing and groups require a permissions model and conflict semantics.",
+      "next_step": "Define ownership, group membership, edit rights and revocation before schema or endpoint changes.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/298"
+      ]
+    },
+    {
+      "number": 2122,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "The curator proposal adds publishing privileges and is coupled to superuser policy.",
+      "next_step": "Specify permitted template/list actions, assignment authority and migration alongside #2123 and #2436.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2122"
+      ]
+    },
+    {
+      "number": 2123,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Restricting every installation to one superuser changes administration semantics and existing accounts.",
+      "next_step": "Resolve whether the single-admin constraint is still desired and design migration and recovery behavior with the curator proposal.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2123"
+      ]
+    },
+    {
+      "number": 2423,
+      "component": "performance",
+      "disposition": "verify-existing-fix",
+      "priority": "P2",
+      "rationale": "ObjectStoreSummary explicitly skips Substitution.overlappingFeatures and references #2423; the deployed performance effect is unverified.",
+      "next_step": "Verify the workaround is in the affected deployment and benchmark summarization while checking the intentionally non-empty field metadata.",
+      "evidence": [
+        "intermine/objectstore/src/main/java/org/intermine/objectstore/ObjectStoreSummary.java",
+        "https://github.com/intermine/intermine/issues/2423"
+      ]
+    },
+    {
+      "number": 2350,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "The report identifies an equality operator mismatch between column-summary filters and generated code, without a saved query or client version.",
+      "next_step": "Capture query JSON/XML after summary filtering and trace whether the invalid operator originates in bundled im-tables or core codegen.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2350"
+      ]
+    },
+    {
+      "number": 2079,
+      "component": "api-query",
+      "disposition": "deployment-specific",
+      "priority": "P2",
+      "rationale": "The report differs between FlyMine and HumanMine and uses facet_Organism while returned keys are organism.shortName, overlapping #2083.",
+      "next_step": "Compare deployed Solr facet configuration and exact keys, then test the documented filter key with an encoded organism value.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2079"
+      ]
+    },
+    {
+      "number": 2221,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P3",
+      "rationale": "Export ignores the selected filename in two JSP workflows; the issue lacks the browser and im-tables version.",
+      "next_step": "Capture download requests and Content-Disposition for list and result exports to locate the filename override.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2221"
+      ]
+    },
+    {
+      "number": 2406,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Only the title specifies permanent URLs in tablerows; there is no response example or compatibility requirement.",
+      "next_step": "Specify the affected response field and permanent identifier behavior for classes with and without stable identifiers.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2406"
+      ]
+    },
+    {
+      "number": 2162,
+      "component": "build",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Fresh Gradle Cargo/Tomcat deployments reportedly need a second run, suggesting task ordering or startup readiness.",
+      "next_step": "Reproduce on a clean biotestmine with pinned Gradle/JDK/Tomcat versions and retain the first deployment logs and WAR timestamps.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2162"
+      ]
+    },
+    {
+      "number": 2388,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "The request adds arbitrary-region FASTA output, including multiple regions, beyond overlapping-feature export.",
+      "next_step": "Specify coordinate conventions, bounds, strand, multi-region headers and behavior when sequence is unavailable.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2388"
+      ]
+    },
+    {
+      "number": 2387,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Region-search HTML still derives report links from webapp.baseurl, matching the described split between service and legacy UI hosts.",
+      "next_step": "Exercise separate service and legacy hosts and establish which configured base URL should build JSP report links.",
+      "evidence": [
+        "bio/webapp/src/main/java/org/intermine/bio/web/logic/GenomicRegionSearchService.java",
+        "https://github.com/intermine/intermine/issues/2387"
+      ]
+    },
+    {
+      "number": 2355,
+      "component": "data-loaders",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "DataTracker still writes sourceName.length() and DataOutputStream.writeBytes(sourceName) into binary COPY; non-ASCII characters are not UTF-8 encoded.",
+      "next_step": "Add a PostgreSQL tracker round-trip with accented and supplementary characters, then use encoded byte lengths and UTF-8 bytes.",
+      "evidence": [
+        "intermine/integrate/src/main/java/org/intermine/dataloader/DataTracker.java",
+        "https://github.com/intermine/intermine/issues/2355"
+      ]
+    },
+    {
+      "number": 1760,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "The enrichment modal Create List control reportedly does nothing across mines, but no console error or current build is supplied.",
+      "next_step": "Repeat the widget flow with the shipped scripts, capture the click handler and API request, and test resulting list contents.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1760"
+      ]
+    },
+    {
+      "number": 2332,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "The screenshot-based color request lacks measured contrast and an identified page/theme; changing white to grey is not itself a contrast specification.",
+      "next_step": "Identify the affected UI owner and measure text/background contrast before choosing accessible colors.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2332"
+      ]
+    },
+    {
+      "number": 2314,
+      "component": "data-loaders",
+      "disposition": "deployment-specific",
+      "priority": "P1",
+      "rationale": "Reactome enrichment is missing while KEGG works; no failing query or dataset/widget configuration is included.",
+      "next_step": "Inspect the affected mine’s Reactome pathway data, enrichment configuration and generated query to separate missing data from widget behavior.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2314"
+      ]
+    },
+    {
+      "number": 2319,
+      "component": "data-loaders",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "Silent empty complex records would affect scientific results; the PSI converter has format-dependent Complex handling and existing fixtures, but current failing input is absent.",
+      "next_step": "Run a retained failing PSI input through the converter and assert complex identifiers and participant counts before and after integration.",
+      "evidence": [
+        "bio/sources/psi-complexes/src/main/java/org/intermine/bio/dataconversion/PsiComplexesConverter.java",
+        "https://github.com/intermine/intermine/issues/2319"
+      ]
+    },
+    {
+      "number": 2318,
+      "component": "data-loaders",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Explicit pre-retrieve/retrieve/load actions reportedly all regenerate publications.xml, undermining resumable builds.",
+      "next_step": "Trace action dispatch for update-publications with a cached XML fixture and compare another source’s subaction behavior.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2318"
+      ]
+    },
+    {
+      "number": 2312,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "LUI generation tries primaryIdentifier on classes such as Location that do not have that field; valid unsupported-class behavior is unspecified.",
+      "next_step": "Define an explicit unavailable-identifier outcome and distinguish unsupported classes from configuration errors in LUI resolution.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2312"
+      ]
+    },
+    {
+      "number": 2300,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "The request changes the upload limit beyond 100000 entries without defining resource or timeout constraints.",
+      "next_step": "Measure identifier resolution cost, choose configurable limits and chunking behavior, and document upload versus query-created lists.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2300"
+      ]
+    },
+    {
+      "number": 2299,
+      "component": "data-model",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Canonical UniProt isoform suffixes alter identifier semantics and cross-source integration keys.",
+      "next_step": "Agree accession versus isoform identifiers and migration rules, then test canonical and noncanonical matching across loaders.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2299"
+      ]
+    },
+    {
+      "number": 1507,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Unescaped trail pipes are a concrete legacy URL compatibility report, but the issue points to an older file layout.",
+      "next_step": "Inspect all current trail URL builders and test percent-encoded links under the supported Tomcat request parser.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1507"
+      ]
+    },
+    {
+      "number": 1374,
+      "component": "data-loaders",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "Downloading multi-gigabyte InterPro files before detecting duplicate releases wastes build time and bandwidth.",
+      "next_step": "Define release/version probing and cache validation for InterPro, including missing metadata and interrupted downloads.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1374"
+      ]
+    },
+    {
+      "number": 2294,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Friendly-mine links assume primaryIdentifier although custom model classes may expose another identifier.",
+      "next_step": "Test report pages with and without the required stable identifier and decide whether capabilities or class ancestry should gate the links.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2294"
+      ]
+    },
+    {
+      "number": 1991,
+      "component": "build",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "Coverage tooling is a maintenance proposal tied to obsolete Travis/Emma assumptions.",
+      "next_step": "Inventory current test execution first, then choose coverage collection and reporting that work with the agreed build modernization.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1991"
+      ]
+    },
+    {
+      "number": 2293,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "A concrete distinct query sorts by a nonselected class field and is rejected by the objectstore.",
+      "next_step": "Reduce to a test-model query and determine the intended distinct-row ordering semantics before altering select expansion.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2293"
+      ]
+    },
+    {
+      "number": 2291,
+      "component": "data-model",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Attribute rounding metadata needs a shared contract between webconfig_model and im-tables-3.",
+      "next_step": "Define precision, display-only versus export behavior and schema/API representation with the client consumer.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2291"
+      ]
+    },
+    {
+      "number": 2083,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Facet endpoints reportedly expose display labels instead of the machine keys required for filtering, with explicit mismatched responses.",
+      "next_step": "Add contract tests comparing facet-list, facet-search and quick-search keys; verify every returned key can be used as a filter.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2083"
+      ]
+    },
+    {
+      "number": 2289,
+      "component": "ecosystem",
+      "disposition": "deployment-specific",
+      "priority": "P2",
+      "rationale": "The esyn displayers stopped working after a remote-host change; embedded-content and endpoint compatibility are unverified.",
+      "next_step": "Check the current remote endpoint, iframe/embed policy and request errors on the affected deployment before changing core displayers.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2289"
+      ]
+    },
+    {
+      "number": 2278,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Template popularity counts omit API/BlueGenes usage; identifying a template by query name alone can misattribute requests.",
+      "next_step": "Specify verified template identity, uniqueness, token/privacy rules and which API operations count toward rankings.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2278"
+      ]
+    },
+    {
+      "number": 2277,
+      "component": "ecosystem",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Broad FlyMine renaming mixes product-specific assumptions with copyright attribution and examples.",
+      "next_step": "Inventory runtime defaults separately from attribution and examples; agree rename scope before mechanical replacement.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2277"
+      ]
+    },
+    {
+      "number": 2271,
+      "component": "clients",
+      "disposition": "route-to-repository",
+      "priority": "P2",
+      "rationale": "The remaining checklist centers on Python client compatibility and release work, with linked core CI follow-up.",
+      "next_step": "Verify the client repository’s supported Python matrix and release, then track only the current core CI dependency here.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2271"
+      ]
+    },
+    {
+      "number": 2014,
+      "component": "data-model",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "A proposed GWAS/Phenotype/GeneticMarker schema needs agreement across existing mine models and loaders.",
+      "next_step": "Compare HumanMine and LIS representations and settle phenotype, strain, marker and p-value semantics plus migration.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2014"
+      ]
+    },
+    {
+      "number": 2270,
+      "component": "lists-auth",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "The intermittent empty analysis page was not reproduced by the reporter and has no input or request trace.",
+      "next_step": "Capture a failing list input, authentication state, redirect chain and resulting bag state on a versioned deployment.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2270"
+      ]
+    },
+    {
+      "number": 2165,
+      "component": "data-loaders",
+      "disposition": "deployment-specific",
+      "priority": "P2",
+      "rationale": "The missing descriptions are specific FlyMine/HumanMine dataset metadata counts, not a demonstrated core parser defect.",
+      "next_step": "Audit current dataset descriptions and provenance in each mine’s static metadata source, then add completeness checks there.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2165"
+      ]
+    },
+    {
+      "number": 2244,
+      "component": "build",
+      "disposition": "verify-existing-fix",
+      "priority": "P2",
+      "rationale": "bio/sources/build.gradle now excludes org.apache.logging.log4j and uses reload4j; the reported Log4j PluginProcessor classpath may no longer exist.",
+      "next_step": "Run the dependency and compiler-warning checks on the current source build before deciding whether an annotationProcessor change remains necessary.",
+      "evidence": [
+        "bio/sources/build.gradle",
+        "https://github.com/intermine/intermine/issues/2244"
+      ]
+    },
+    {
+      "number": 2241,
+      "component": "lists-auth",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "A query referencing an inaccessible private list reportedly returns 500; the desired 403 also needs a deliberate information-disclosure policy.",
+      "next_step": "Test missing, private and authorized lists through query/results and agree consistent status/error mapping without leaking list existence.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2241"
+      ]
+    },
+    {
+      "number": 2235,
+      "component": "data-loaders",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Using value instead of location for src.data.dir produces an unhelpful null filename error.",
+      "next_step": "Add a malformed source-property fixture and validate property kind before OBO conversion starts.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2235"
+      ]
+    },
+    {
+      "number": 2231,
+      "component": "build",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "Misnested project.xml properties reach execution and produce misleading model errors; a validation contract is needed.",
+      "next_step": "Define project.xml schema and semantic checks, then test the supplied misnested source before any integration tasks run.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2231"
+      ]
+    },
+    {
+      "number": 2230,
+      "component": "data-loaders",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Missing gff3.seqClsName reportedly becomes a null model-class lookup instead of an actionable configuration error.",
+      "next_step": "Add a missing-property fixture and check required GFF options at configuration boundaries.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2230"
+      ]
+    },
+    {
+      "number": 2228,
+      "component": "data-loaders",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "The loader maps LDO correctly in isolation but deduplicates gene pairs; the reported wrong type needs input-order and integration checks.",
+      "next_step": "Use the supplied PTGR2 row plus duplicate pair records to test type precedence, then inspect retained HumanMine integration provenance.",
+      "evidence": [
+        "bio/sources/panther/src/main/java/org/intermine/bio/dataconversion/PantherConverter.java",
+        "https://github.com/intermine/intermine/issues/2228"
+      ]
+    },
+    {
+      "number": 2216,
+      "component": "lists-auth",
+      "disposition": "deployment-specific",
+      "priority": "P2",
+      "rationale": "Copying fails in HumanMine while FlyMine succeeds, and the remaining naming discrepancy is a separate UX concern.",
+      "next_step": "Capture the HumanMine exception and source list metadata, reproduce with the same list, and separate naming-policy changes.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2216"
+      ]
+    },
+    {
+      "number": 2223,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Template trail navigation followed by Edit Query has concrete steps and a TemplateAction null-pointer stack trace.",
+      "next_step": "Add a session-state regression for run-template, trail return and edit-query, retaining submitted form values.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2223"
+      ]
+    },
+    {
+      "number": 1522,
+      "component": "docs",
+      "disposition": "route-to-repository",
+      "priority": "P3",
+      "rationale": "The request expands examples across language-client documentation repositories rather than changing the server.",
+      "next_step": "Assign the cookbook topics to each maintained client docs repository and validate executable examples against a test mine.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1522"
+      ]
+    },
+    {
+      "number": 2218,
+      "component": "performance",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Large unmatched identifier lists reportedly stall resolution; no benchmark sizes, timings or representative input are retained.",
+      "next_step": "Benchmark controlled matched/unmatched ratios and duplicate counts, then profile lookup queries and rejection handling.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2218"
+      ]
+    },
+    {
+      "number": 2217,
+      "component": "data-loaders",
+      "disposition": "deployment-specific",
+      "priority": "P1",
+      "rationale": "CALM1/2/3 reportedly merge to the wrong protein despite correct source XML; this is a high-impact provenance/integration case specific to HumanMine.",
+      "next_step": "Preserve the three source records and track primary keys, merge decisions and source precedence through a minimal HumanMine build.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2217"
+      ]
+    },
+    {
+      "number": 1884,
+      "component": "data-loaders",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Index generation fails on null primary-key properties for Intron, but the triggering model/key configuration is absent.",
+      "next_step": "Reconstruct the generated model and primary-key resources for the affected mine, then add a missing-key configuration regression.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1884"
+      ]
+    },
+    {
+      "number": 2206,
+      "component": "ecosystem",
+      "disposition": "route-to-repository",
+      "priority": "P3",
+      "rationale": "The only requirement is integration with the separate identifiers-widget project; there is no specified core behavior.",
+      "next_step": "Define the embedding use case with identifiers-widget maintainers and retain a core issue only for an agreed integration change.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2206"
+      ]
+    },
+    {
+      "number": 2200,
+      "component": "lists-auth",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "shareBag.js still invokes $SERVICE.fetchList before invitation; compatibility with the actually shipped service client remains unverified.",
+      "next_step": "Check the bundled imjs API and test invitation creation for an unregistered email with observable request/error handling.",
+      "evidence": [
+        "intermine/webapp/src/main/webapp/js/shareBag.js",
+        "https://github.com/intermine/intermine/issues/2200"
+      ]
+    },
+    {
+      "number": 2196,
+      "component": "data-loaders",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "EntrezPublicationsRetriever.getReader performs a POST without local retry/backoff handling; the issue reports batches failing with HTTP 429.",
+      "next_step": "Use a local mock returning 429 and Retry-After to test bounded retry and request pacing without stressing the external API.",
+      "evidence": [
+        "bio/sources/update-publications/src/main/java/org/intermine/bio/dataconversion/EntrezPublicationsRetriever.java",
+        "https://github.com/intermine/intermine/issues/2196"
+      ]
+    },
+    {
+      "number": 2195,
+      "component": "performance",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "The report identifies a larger unminified im-tables asset, but the currently served bundle needs verification.",
+      "next_step": "Inspect the actual deployed script URL, compression and sourcemap support, then choose the minified artifact in the owning bundle pipeline.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2195"
+      ]
+    },
+    {
+      "number": 2202,
+      "component": "ecosystem",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "JBrowse reference configuration is organism-only and cannot distinguish strains; the required mapping is unspecified.",
+      "next_step": "Define organism/strain reference keys and fallback rules, then test distinct genomes from one organism.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2202"
+      ]
+    },
+    {
+      "number": 2197,
+      "component": "ecosystem",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "The KBase integration request explicitly lacks a use case.",
+      "next_step": "Agree one data exchange workflow, identifiers and ownership before selecting integration endpoints.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2197"
+      ]
+    },
+    {
+      "number": 2198,
+      "component": "data-model",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "DOEvidence cannot reference its ontology term in the proposed modeling flow; changing the core relationship affects loaders.",
+      "next_step": "Agree relationship cardinality and reverse references with the FlyBase allele loader, then add model and conversion fixtures.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2198"
+      ]
+    },
+    {
+      "number": 2192,
+      "component": "docs",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "The query/results interactive default reportedly uses unsupported JSON where XML succeeds.",
+      "next_step": "Inspect the current API description example and execute it against the endpoint; correct the example or align advertised input formats.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2192"
+      ]
+    },
+    {
+      "number": 2188,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P3",
+      "rationale": "The interaction widget clips a count on a particular list, without viewport or browser details.",
+      "next_step": "Reproduce with the named list or representative content across viewport widths and inspect the containing layout.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2188"
+      ]
+    },
+    {
+      "number": 2176,
+      "component": "build",
+      "disposition": "deployment-specific",
+      "priority": "P2",
+      "rationale": "This is an operational request to investigate BlueGenes downtime from Gradle start targets on FlyMine/HumanMine.",
+      "next_step": "Collect process lifecycle logs and deployment supervision details, then reproduce the start-target failure under the current supported deployment.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2176"
+      ]
+    },
+    {
+      "number": 2167,
+      "component": "ecosystem",
+      "disposition": "deployment-specific",
+      "priority": "P3",
+      "rationale": "The gene-density track appearance is a JBrowse display configuration report tied to particular mines.",
+      "next_step": "Compare track configuration and zoom-dependent rendering with the intended MouseMine example.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2167"
+      ]
+    },
+    {
+      "number": 2163,
+      "component": "lists-auth",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "SharedBagManager wraps SQLExceptions while home-page semantic markup queries shared bags; the report omits the underlying SQL cause.",
+      "next_step": "Capture the nested SQLException and userprofile schema state, then test whether shared-bag storage failures must block the home page.",
+      "evidence": [
+        "intermine/api/src/main/java/org/intermine/api/bag/SharedBagManager.java",
+        "https://github.com/intermine/intermine/issues/2163"
+      ]
+    },
+    {
+      "number": 2018,
+      "component": "data-loaders",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "Dataset homepage URLs and licensing metadata need a consistent source contract for JSON-LD generation.",
+      "next_step": "Inventory missing metadata, distinguish homepage from download URL, and document validation and owning source files.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2018"
+      ]
+    },
+    {
+      "number": 2131,
+      "component": "data-model",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Four newly encountered NCBI feature types require decisions about class/ontology mapping before loading.",
+      "next_step": "Choose model mappings and retention behavior for each listed GFF type and add small conversion fixtures.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2131"
+      ]
+    },
+    {
+      "number": 2089,
+      "component": "build",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "Core and bio-source builds still declare JUnit 4.8.2; migration also has to account for JUnit 3-style tests.",
+      "next_step": "Inventory test styles and custom runners, then plan staged JUnit Platform/Vintage/Jupiter migration with discovery parity checks.",
+      "evidence": [
+        "intermine/build.gradle",
+        "bio/sources/build.gradle",
+        "https://github.com/intermine/intermine/issues/2089"
+      ]
+    },
+    {
+      "number": 2153,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "The genomic interval GFF3 API needs a defined all-features selector and response-size behavior.",
+      "next_step": "Specify available-feature enumeration, default/exclusion behavior and safeguards for large interval responses.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2153"
+      ]
+    },
+    {
+      "number": 2146,
+      "component": "data-loaders",
+      "disposition": "route-to-repository",
+      "priority": "P1",
+      "rationale": "The report concerns FlyBase allele format drift and mine-specific DO modeling, owned by FlyMine bio-sources.",
+      "next_step": "Obtain the changed source fixture in intermine/flymine-bio-sources and coordinate any required core model change with #2198.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2146"
+      ]
+    },
+    {
+      "number": 2141,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "The issue is an unanswered capability question with no required behavior or example.",
+      "next_step": "Determine current list-id query support with an authenticated API example, then document it or specify the missing endpoint behavior.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2141"
+      ]
+    },
+    {
+      "number": 2140,
+      "component": "lists-auth",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "WebSearchableListController still calls getTags with null username when sorting bags; TagManager applies no user constraint for null.",
+      "next_step": "Test two users with same-named bags and different tags, then scope lookup to the bag owner and check shared/public cases.",
+      "evidence": [
+        "intermine/webapp/src/main/java/org/intermine/web/struts/WebSearchableListController.java",
+        "intermine/api/src/main/java/org/intermine/api/profile/TagManager.java",
+        "https://github.com/intermine/intermine/issues/2140"
+      ]
+    },
+    {
+      "number": 2132,
+      "component": "data-loaders",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "NCBI GFF gene subtypes are requested as more specific SO annotations; the issue does not demonstrate incorrect existing broad terms.",
+      "next_step": "Specify subtype-to-SO mappings and add representative snRNA and other gene-biotype fixtures.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2132"
+      ]
+    },
+    {
+      "number": 2125,
+      "component": "build",
+      "disposition": "verify-existing-fix",
+      "priority": "P2",
+      "rationale": "The reported integer-rounding correction is already present as floor((max(max)-1)/1000000)::int in generated trigger SQL.",
+      "next_step": "Check the historical PR and test sequence-block boundaries before considering resolution.",
+      "evidence": [
+        "intermine/objectstore/src/main/java/org/intermine/task/GenerateUpdateTriggersTask.java",
+        "https://github.com/intermine/intermine/issues/2125"
+      ]
+    },
+    {
+      "number": 2114,
+      "component": "legacy-ui",
+      "disposition": "deployment-specific",
+      "priority": "P2",
+      "rationale": "The reported broken logo followed a FlyMine HTTPS migration with an unchanged absolute branding URL.",
+      "next_step": "Verify the deployed logo URL and proxy scheme handling; decide whether configuration validation would prevent recurrence.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2114"
+      ]
+    },
+    {
+      "number": 2111,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "OpenID discovery is a proposed alternative to configured OAuth endpoint URLs.",
+      "next_step": "Define provider discovery, validation, caching and compatibility behavior before changing authentication configuration.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2111"
+      ]
+    },
+    {
+      "number": 2106,
+      "component": "lists-auth",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "A shared list appears on one page but not MyMine; expected visibility and ownership semantics are unclear.",
+      "next_step": "Reproduce with an owner and recipient and compare list service, Lists tab and MyMine results.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2106"
+      ]
+    },
+    {
+      "number": 2105,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Sharing emails expose a Google provider identifier instead of a recognizable display name.",
+      "next_step": "Define the display-name fallback for externally authenticated users and inspect the sharing email path.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2105"
+      ]
+    },
+    {
+      "number": 2100,
+      "component": "data-loaders",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "An InterPro API loader is proposed to reduce bulk-file transfer cost; API suitability was unresolved.",
+      "next_step": "Assess the current InterPro bulk/API contract and define equivalent coverage, rate limits and reproducibility requirements.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2100"
+      ]
+    },
+    {
+      "number": 2090,
+      "component": "data-loaders",
+      "disposition": "route-to-repository",
+      "priority": "P2",
+      "rationale": "The missing GOAnnotation.evidence population is explicitly in YeastMine-specific model and loading configuration.",
+      "next_step": "Review yeastgenome/yeastmine-bio-sources with its maintainers and retain a core issue only if a shared loader defect is isolated.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2090"
+      ]
+    },
+    {
+      "number": 2093,
+      "component": "legacy-ui",
+      "disposition": "deployment-specific",
+      "priority": "P3",
+      "rationale": "Missing GO and Reactome report-page linkouts are reported for HumanMine and FlyMine configurations.",
+      "next_step": "Inventory the deployed linkout configuration and add supported destinations in the owning mine repositories.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2093"
+      ]
+    },
+    {
+      "number": 2096,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "IBA lacks the explanatory evidence-code display affordance; no annotation loss is reported.",
+      "next_step": "Audit the evidence-code help mapping against supported GO codes and add the missing display text.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2096"
+      ]
+    },
+    {
+      "number": 2097,
+      "component": "legacy-ui",
+      "disposition": "deployment-specific",
+      "priority": "P2",
+      "rationale": "The report explicitly attributes an empty HumanMine ontology section to webconfig.",
+      "next_step": "Compare the deployed HumanMine webconfig fields with its loaded ontology model and data.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2097"
+      ]
+    },
+    {
+      "number": 2095,
+      "component": "data-loaders",
+      "disposition": "deployment-specific",
+      "priority": "P2",
+      "rationale": "HumanMine used a pinned older NCBI assembly file and the report questions resulting coordinate differences.",
+      "next_step": "Audit current HumanMine assembly provenance and download selection; compare records only within the same assembly release.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2095"
+      ]
+    },
+    {
+      "number": 2094,
+      "component": "data-model",
+      "disposition": "route-to-repository",
+      "priority": "P2",
+      "rationale": "Moving FlyMine-specific additions out of flymine-static belongs to the FlyMine model/build configuration.",
+      "next_step": "Check the current FlyMine repository and migrate its model additions with a generated-model comparison if still needed.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2094"
+      ]
+    },
+    {
+      "number": 2092,
+      "component": "build",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "generateKeys still locates source JARs by name/version prefixes and throws the reported generic missing-JAR exception.",
+      "next_step": "Build a minimal malformed project.xml and distinguish XML validation failures from dependency resolution failures.",
+      "evidence": [
+        "plugin/src/main/groovy/org/intermine/plugin/dbmodel/DBModelPlugin.groovy",
+        "https://github.com/intermine/intermine/issues/2092"
+      ]
+    },
+    {
+      "number": 2022,
+      "component": "data-model",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "The report describes incorrect translated CDS frames for phase 1/2; current sequence transfer concatenates slices and the GFF phase getter has no production caller.",
+      "next_step": "Create phase 0/1/2 CDS fixtures on both strands, establish the intended raw-CDS/translation contract, and compare transferred sequences.",
+      "evidence": [
+        "bio/core/src/main/java/org/intermine/bio/io/gff3/GFF3Record.java",
+        "bio/core/src/main/java/org/intermine/bio/dataconversion/GFF3Converter.java",
+        "bio/core/src/main/java/org/intermine/bio/dataconversion/GFF3RecordHandler.java",
+        "bio/postprocess/transfer-sequences/src/main/java/org/intermine/bio/postprocess/TransferSequencesProcess.java",
+        "https://github.com/intermine/intermine/issues/2022"
+      ]
+    },
+    {
+      "number": 2091,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "The cross-mine homologue link produces an unspecified popup after list upload.",
+      "next_step": "Capture current UI/network errors for the FlyMine-to-HumanMine list homologue flow and isolate the owning endpoint.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2091"
+      ]
+    },
+    {
+      "number": 1524,
+      "component": "data-model",
+      "disposition": "needs-design",
+      "priority": "P1",
+      "rationale": "The report loses distinction between duplicate curated complex participants; export still caches participants by protein primaryIdentifier.",
+      "next_step": "Create a complex fixture with duplicate protein participants and specify participant identity and interaction cardinality across load and export.",
+      "evidence": [
+        "bio/webapp/src/main/java/org/intermine/webservice/server/complexes/ExportService.java",
+        "bio/sources/psi-complexes/src/main/java/org/intermine/bio/dataconversion/PsiComplexesConverter.java",
+        "https://github.com/intermine/intermine/issues/1524"
+      ]
+    },
+    {
+      "number": 1641,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "The issue requests reverting a specific commit because replacement result tables no longer use its parameters.",
+      "next_step": "Inspect commit 4ab244e and current parameter consumers, then verify removal or prepare a narrowly scoped cleanup.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1641"
+      ]
+    },
+    {
+      "number": 1779,
+      "component": "data-loaders",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "The complex identifier selector still accepts only database short name intact, while the issue requests complexportal complex-primary CPX identifiers.",
+      "next_step": "Load a fixture containing complex-primary and inferred-from xrefs and assert that the intended primary accession is selected.",
+      "evidence": [
+        "bio/sources/psi-complexes/src/main/java/org/intermine/bio/dataconversion/PsiComplexesConverter.java",
+        "https://github.com/intermine/intermine/issues/1779"
+      ]
+    },
+    {
+      "number": 1243,
+      "component": "lists-auth",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "HumanMine example protein accessions reportedly fail resolution through the BioEntity list-upload path.",
+      "next_step": "Use the example accession to compare BioEntity and Protein resolution and determine whether a converter is required.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1243"
+      ]
+    },
+    {
+      "number": 1517,
+      "component": "data-loaders",
+      "disposition": "verify-existing-fix",
+      "priority": "P2",
+      "rationale": "The converter now explicitly sets each generated Interaction.complex reference, which addresses the reported missing direction.",
+      "next_step": "Run a complex binding fixture through integration and query both directions before resolving; remove the example trailing identifier space.",
+      "evidence": [
+        "bio/sources/psi-complexes/src/main/java/org/intermine/bio/dataconversion/PsiComplexesConverter.java",
+        "https://github.com/intermine/intermine/issues/1517"
+      ]
+    },
+    {
+      "number": 1979,
+      "component": "build",
+      "disposition": "route-to-repository",
+      "priority": "P2",
+      "rationale": "This is a MouseMine migration record referencing separate mine, source and migration-script repositories.",
+      "next_step": "Verify the current MouseMine migration status and move any remaining concrete work to its mine/source or intermine-scripts repository.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1979"
+      ]
+    },
+    {
+      "number": 1993,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Template filtering reportedly matches public visibility metadata when searching for publications.",
+      "next_step": "Reproduce with public/private templates and inspect which fields participate in text matching.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1993"
+      ]
+    },
+    {
+      "number": 2026,
+      "component": "build",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "The only rationale for removing web-model.xml is an unverified belief that it is unused.",
+      "next_step": "Trace packaged resources and model consumers before proposing removal; retain compatibility coverage for affected builds.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2026"
+      ]
+    },
+    {
+      "number": 2034,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Renameable list names make persistent client links unstable.",
+      "next_step": "Specify a stable list identifier contract and authorization behavior, with compatibility for existing name-based links.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2034"
+      ]
+    },
+    {
+      "number": 2043,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "The issue combines list upgrade workflow improvements, sorting, renaming and synonym-only automatic upgrades.",
+      "next_step": "Separate UI improvements from automatic-upgrade semantics and specify when changed identifiers require user review.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2043"
+      ]
+    },
+    {
+      "number": 2047,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "The report questions localaccount semantics and limited callers; it does not establish an authentication bypass.",
+      "next_step": "Audit profile creation and password checks for local/OAuth accounts before deciding on schema removal or migration.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2047"
+      ]
+    },
+    {
+      "number": 2066,
+      "component": "clients",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Java template unmarshalling relies on a locally packaged genomic model instead of an explicitly supplied remote model.",
+      "next_step": "Design a model-accepting unmarshalling overload and verify Java client use without genomic_model.xml on the classpath.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2066"
+      ]
+    },
+    {
+      "number": 2068,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Clients duplicate supported constraint operators and need a discoverable server contract.",
+      "next_step": "Define an operator metadata response covering type applicability, arity and version compatibility.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2068"
+      ]
+    },
+    {
+      "number": 2078,
+      "component": "api-query",
+      "disposition": "verify-existing-fix",
+      "priority": "P2",
+      "rationale": "The reported taxonId cast location now parses a String with Integer.parseInt rather than casting it directly to Integer.",
+      "next_step": "Exercise complex export with the reported accession and string taxonId fixture, including null and invalid values.",
+      "evidence": [
+        "bio/webapp/src/main/java/org/intermine/webservice/server/complexes/ExportService.java",
+        "https://github.com/intermine/intermine/issues/2078"
+      ]
+    },
+    {
+      "number": 2082,
+      "component": "build",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "A FASTA-only mine fails generateKeys dependency lookup; the current plugin still relies on mergeSource filename prefixes.",
+      "next_step": "Create a minimal FASTA-only mine and inspect resolved mergeSource dependencies and key-file selection.",
+      "evidence": [
+        "plugin/src/main/groovy/org/intermine/plugin/dbmodel/DBModelPlugin.groovy",
+        "https://github.com/intermine/intermine/issues/2082"
+      ]
+    },
+    {
+      "number": 2071,
+      "component": "data-loaders",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "OMIM-created publication rows reportedly lack titles, but the source input and publication enrichment stage are unspecified.",
+      "next_step": "Capture affected PubMed IDs, OMIM input and publication enrichment logs to distinguish placeholder records from malformed ingestion.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2071"
+      ]
+    },
+    {
+      "number": 2024,
+      "component": "data-loaders",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "A tabular source for DataSet/DataSource metadata is proposed to replace manually edited items XML.",
+      "next_step": "Specify required metadata, provenance, identifier keys and version ownership before choosing loader or parser-based maintenance.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2024"
+      ]
+    },
+    {
+      "number": 2067,
+      "component": "lists-auth",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "API-created lists become visible in MyMine only after a new login, suggesting session/profile cache staleness.",
+      "next_step": "Create a list by API during an authenticated UI session and compare service and MyMine visibility before and after refresh.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2067"
+      ]
+    },
+    {
+      "number": 2064,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "An explicit queryFormat parameter is proposed to replace JSON/XML payload guessing.",
+      "next_step": "Specify accepted formats, defaults, errors and backward-compatible autodetection behavior.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2064"
+      ]
+    },
+    {
+      "number": 2049,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Repeated whitespace in sortOrder causes a reported 400 response; the R-client generator has a separate linked issue.",
+      "next_step": "Test single, repeated and leading whitespace in XML sortOrder and decide whether server parsing should normalize it.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2049"
+      ]
+    },
+    {
+      "number": 2050,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Class descriptions lack the per-mine overlay mechanism already requested for class and field labels.",
+      "next_step": "Define merge precedence for default and mine-specific classDescriptions resources and their model-service exposure.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2050"
+      ]
+    },
+    {
+      "number": 2028,
+      "component": "build",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "The requested test relocation changes module ownership of PathQuery and API tests.",
+      "next_step": "Check present class locations and dependencies, then move only tests that can run without webapp fixtures.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/2028"
+      ]
+    },
+    {
+      "number": 1775,
+      "component": "clients",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "Server JavaScript code generation uses an outdated template and the suggested replacement requires shared ownership with imtables.",
+      "next_step": "Compare current generated JavaScript with supported imjs/imtables usage and choose one maintained generation contract.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1775"
+      ]
+    },
+    {
+      "number": 1824,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "List analysis reportedly drops rows when reference fieldconfigs use inner joins, despite the correct saved-list count.",
+      "next_step": "Build a list with null reference targets and compare report-page and list-analysis generated queries and object IDs.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1824"
+      ]
+    },
+    {
+      "number": 1986,
+      "component": "lists-auth",
+      "disposition": "deployment-specific",
+      "priority": "P2",
+      "rationale": "Google OAuth rejected a privacy URL outside the configured authorized domain.",
+      "next_step": "Review the current deployment OAuth consent configuration and host/link the actual policy on the required authorized domain.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1986"
+      ]
+    },
+    {
+      "number": 1987,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "The requested keyword-search change is ranking a mine primary organism ahead of homologues.",
+      "next_step": "Specify configurable organism weighting and evaluate representative multi-organism search results.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1987"
+      ]
+    },
+    {
+      "number": 1845,
+      "component": "build",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "WebSearchableListController still imports Stringtree JSONWriter and webapp bundles stringtree-json-2.0.5.jar directly.",
+      "next_step": "Replace the single serialization call with an existing JSON library and verify the emitted wsNames shape before removing the JAR.",
+      "evidence": [
+        "intermine/webapp/src/main/java/org/intermine/web/struts/WebSearchableListController.java",
+        "intermine/webapp/build.gradle",
+        "https://github.com/intermine/intermine/issues/1845"
+      ]
+    },
+    {
+      "number": 1464,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Keyword search misses an OMIM term containing heterotaxy; punctuation is only a proposed cause.",
+      "next_step": "Index a minimal punctuation-containing disease term and compare tokenization, search configuration and expected matches.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1464"
+      ]
+    },
+    {
+      "number": 1971,
+      "component": "performance",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "The report shows postProcess failing with PostgreSQL too many clients; PostProcessorTask acquires a writer without explicit cleanup.",
+      "next_step": "Reproduce a sequence of postprocessors while tracking pool counts and connection lifetime, alongside #1894.",
+      "evidence": [
+        "intermine/integrate/src/main/java/org/intermine/task/PostProcessorTask.java",
+        "https://github.com/intermine/intermine/issues/1971"
+      ]
+    },
+    {
+      "number": 1353,
+      "component": "data-loaders",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Malformed priorities are wrapped in reflective integration initialization errors, obscuring the actionable configuration message.",
+      "next_step": "Use the trailing-comma priorities fixture and verify that the build exposes the file, invalid token and root cause.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1353"
+      ]
+    },
+    {
+      "number": 1762,
+      "component": "clients",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "The export popup accepts a custom filename but the downloaded result keeps results.tsv.",
+      "next_step": "Trace the result-table filename parameter and Content-Disposition response to determine client or server ownership.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1762"
+      ]
+    },
+    {
+      "number": 533,
+      "component": "data-model",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "The issue has no body and proposes a broad Integer-to-Long identifier migration without a stated failure or compatibility plan.",
+      "next_step": "Document ID-capacity requirements and inventory schema, serialization, client and integration assumptions before planning migration.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/533"
+      ]
+    },
+    {
+      "number": 1891,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Logarithmic numeric summary buckets require new server-side bucketing semantics and API parameters.",
+      "next_step": "Define zero/negative handling, bucket edges and response metadata, then validate against skewed numeric distributions.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1891"
+      ]
+    },
+    {
+      "number": 1642,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "Nested jsonobjects output reportedly aborts after hundreds of rows with mismatched object IDs while row output succeeds.",
+      "next_step": "Construct a multi-valued nested ontology fixture and compare complete row and object exports, including pagination and ordering.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1642"
+      ]
+    },
+    {
+      "number": 1789,
+      "component": "data-model",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "The report describes merging Chromosomes using a superclass key instead of the configured subclass key; current equivalence queries OR keys across class descriptors.",
+      "next_step": "Add a minimal superclass/subclass collision fixture to establish precedence and check that distinct chromosomes are not merged.",
+      "evidence": [
+        "intermine/integrate/src/main/java/org/intermine/dataloader/DataLoaderHelper.java",
+        "intermine/integrate/src/main/java/org/intermine/dataloader/BaseEquivalentObjectFetcher.java",
+        "https://github.com/intermine/intermine/issues/1789"
+      ]
+    },
+    {
+      "number": 1866,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Cross-mine clients request path validation without executing a query.",
+      "next_step": "Assess model metadata and existing validation support, then specify a lightweight endpoint or documented client-side validation.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1866"
+      ]
+    },
+    {
+      "number": 1912,
+      "component": "build",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "Project XML property removal is based on an unverified assumption that Gradle no longer consumes them.",
+      "next_step": "Trace each listed property across plugins, scripts and mine templates before deleting compatibility configuration.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1912"
+      ]
+    },
+    {
+      "number": 1894,
+      "component": "performance",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "Growing postprocessor connections reportedly exhaust PostgreSQL despite a configured pool limit; the task has no explicit writer close path.",
+      "next_step": "Measure connections across successive postprocessors and distinguish per-task pool creation from leaked borrowed connections, alongside #1971.",
+      "evidence": [
+        "intermine/integrate/src/main/java/org/intermine/task/PostProcessorTask.java",
+        "https://github.com/intermine/intermine/issues/1894"
+      ]
+    },
+    {
+      "number": 1890,
+      "component": "build",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "Source properties retain Ant-era compile.dependencies and may be stale under Gradle.",
+      "next_step": "Identify remaining readers and supported legacy workflows before removing unused dependency properties.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1890"
+      ]
+    },
+    {
+      "number": 701,
+      "component": "lists-auth",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Template tags from a second superuser reportedly do not participate in homepage categories or filtering.",
+      "next_step": "Reproduce two superuser-owned template/tag sets and specify whether public categories combine or privilege ownership.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/701"
+      ]
+    },
+    {
+      "number": 1213,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Enrichment responses are requested to expose matched and unmatched IDs rather than counts alone.",
+      "next_step": "Inspect current enrichment/drill-down services and specify complete identifier reporting and response-size behavior.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1213"
+      ]
+    },
+    {
+      "number": 1848,
+      "component": "docs",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "A citation metadata file is requested, with no defect in execution or data.",
+      "next_step": "Check for existing citation metadata and agree the canonical software citation and maintainers before adding CFF.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1848"
+      ]
+    },
+    {
+      "number": 1722,
+      "component": "data-loaders",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "InterPro abstracts lose inline citation elements and adjoining whitespace; desired preserved markup is unresolved.",
+      "next_step": "Define plain-text versus structured citation output and test nested XML with meaningful spacing and reference IDs.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1722"
+      ]
+    },
+    {
+      "number": 1092,
+      "component": "data-model",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Required model fields and collections are proposed to support validation and safer inner joins.",
+      "next_step": "Specify nullability metadata, migration/validation rules and query planner behavior, including old model compatibility.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1092"
+      ]
+    },
+    {
+      "number": 1634,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "The request is for a configurable chromosome set in the distribution widget.",
+      "next_step": "Define chromosome include/exclude configuration and its interaction with missing data and natural ordering.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1634"
+      ]
+    },
+    {
+      "number": 1054,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Automatic entity-type inference during list upload requires ambiguity and mixed-type semantics.",
+      "next_step": "Specify type inference and user-visible disambiguation using overlapping identifiers across BioEntity subclasses.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1054"
+      ]
+    },
+    {
+      "number": 1285,
+      "component": "lists-auth",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "The supplied query reports 45 genes but saving its result produces only 2, indicating potentially incorrect saved-list membership.",
+      "next_step": "Recreate the expression/list fixture and compare distinct query Gene IDs with saved-list IDs while preserving constraint logic.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1285"
+      ]
+    },
+    {
+      "number": 1148,
+      "component": "data-model",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "Missing integration keys reportedly surface only later as invalid object proxies after a merge, risking invalid built data.",
+      "next_step": "Create a duplicate Ontology/no-key integration fixture and identify the earliest reliable consistency check and diagnostic.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1148"
+      ]
+    },
+    {
+      "number": 1512,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Expanded PathQuery/subquery support is an open-ended feature proposal without a concrete minimal use case.",
+      "next_step": "Collect specific server-side custom queries and prioritize one expressible API capability with clear semantics.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1512"
+      ]
+    },
+    {
+      "number": 1725,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "The possible-values endpoint reportedly ignores path reachability and returns every organism instead of those reachable through Allele.feature.",
+      "next_step": "Use a small multi-organism model to compare path/values with an equivalent path query and establish the endpoint contract.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1725"
+      ]
+    },
+    {
+      "number": 1733,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "The model service is requested to include classDescriptions.properties text.",
+      "next_step": "Inspect current model response metadata and add a backward-compatible description contract if absent.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1733"
+      ]
+    },
+    {
+      "number": 1739,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "The chromosome distribution widget reportedly orders numeric names lexically.",
+      "next_step": "Test mixed chromosome names 1, 2, 10, X, Y and scaffolds and define a stable natural sort.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1739"
+      ]
+    },
+    {
+      "number": 1795,
+      "component": "build",
+      "disposition": "route-to-repository",
+      "priority": "P1",
+      "rationale": "Checkpoint creation reportedly hides a disk-full failure and allows the build to continue; the named bio/scripts/project_build is absent from this checkout.",
+      "next_step": "Locate the maintained project_build in intermine-scripts and fault-inject failed checkpoint creation to verify nonzero propagation.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1795"
+      ]
+    },
+    {
+      "number": 1797,
+      "component": "build",
+      "disposition": "route-to-repository",
+      "priority": "P3",
+      "rationale": "Selecting a named checkpoint changes project_build, which is absent from this core checkout.",
+      "next_step": "Confirm intermine-scripts ownership and design an explicit checkpoint argument with existence and provenance checks.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1797"
+      ]
+    },
+    {
+      "number": 1764,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Saved query tags are requested to match saved list capabilities.",
+      "next_step": "Specify query tag persistence, access control and user/queries response compatibility.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1764"
+      ]
+    },
+    {
+      "number": 1685,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "API analytics are proposed, but event contents, privacy and backend ownership are undecided.",
+      "next_step": "Define aggregate endpoint metrics and data-retention requirements before choosing an analytics implementation.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1685"
+      ]
+    },
+    {
+      "number": 1151,
+      "component": "clients",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Code generation rejects PathConstraintRange for a supplied WITHIN query.",
+      "next_step": "Run the given range query through each current server code generator and route any client-library gaps to their owners.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1151"
+      ]
+    },
+    {
+      "number": 703,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Unknown service routes reportedly redirect to the HTML homepage instead of returning 404.",
+      "next_step": "Request a nonexistent endpoint through the current servlet/proxy setup and assert status and response content type.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/703"
+      ]
+    },
+    {
+      "number": 1085,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "The issue asks for NONE-of-collection semantics because existential inequality returns genes with any different dataset.",
+      "next_step": "Specify an anti-existence query operator and use mixed-dataset fixtures to distinguish it from ordinary inequality.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1085"
+      ]
+    },
+    {
+      "number": 1582,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "Identity fields have conflicting display and sharing roles.",
+      "next_step": "Define canonical account identity, display name and migration rules.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1582"
+      ]
+    },
+    {
+      "number": 1599,
+      "component": "data-model",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Symmetric homology changes model relationships and downstream queries.",
+      "next_step": "Compare existing mine models and specify a compatible relationship migration.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1599"
+      ]
+    },
+    {
+      "number": 227,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Collection sequence export was reportedly disabled.",
+      "next_step": "Exercise collection FASTA/GFF exports on a small fixture and locate disabled paths.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/227"
+      ]
+    },
+    {
+      "number": 498,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "CSV line-ending preference is a portability request.",
+      "next_step": "Check current exported CSV in supported consumers and choose a documented newline convention.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/498"
+      ]
+    },
+    {
+      "number": 858,
+      "component": "lists-auth",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Upload count reportedly differs across mines.",
+      "next_step": "Compare submitted, unique, matched and unmatched identifiers using identical files.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/858"
+      ]
+    },
+    {
+      "number": 959,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "Filtering reportedly leaves list membership and counts inconsistent.",
+      "next_step": "Compare displayed filtered IDs, row count and generated list membership.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/959"
+      ]
+    },
+    {
+      "number": 951,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests removal of items from existing lists.",
+      "next_step": "Verify existing list operators and specify UI/API behavior for mutable lists.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/951"
+      ]
+    },
+    {
+      "number": 952,
+      "component": "lists-auth",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Adjacent copy/delete controls reportedly allow accidental data loss.",
+      "next_step": "Check confirmation and keyboard behavior in current list-management interfaces.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/952"
+      ]
+    },
+    {
+      "number": 542,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests contextual column descriptions.",
+      "next_step": "Check im-tables ownership and define configuration plus accessible help behavior.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/542"
+      ]
+    },
+    {
+      "number": 480,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Outlier removal requires an explicit statistical contract.",
+      "next_step": "Specify user-visible method and treatment of missing values before implementation.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/480"
+      ]
+    },
+    {
+      "number": 793,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests privileged access to ID columns.",
+      "next_step": "Verify current column dialogs and define permission-aware visibility.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/793"
+      ]
+    },
+    {
+      "number": 794,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Subtype constraints affect column selection and query validity.",
+      "next_step": "Specify subclass-aware filtering and column selection with schema fixtures.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/794"
+      ]
+    },
+    {
+      "number": 798,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests staged edits to multiple filters.",
+      "next_step": "Define apply/cancel behavior and identify the current results-table repository.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/798"
+      ]
+    },
+    {
+      "number": 435,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests visibility controls for empty columns.",
+      "next_step": "Define whether emptiness is calculated across the page or complete result set.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/435"
+      ]
+    },
+    {
+      "number": 437,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests text-wrapping controls.",
+      "next_step": "Check current im-tables settings and specify accessible wrapping behavior.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/437"
+      ]
+    },
+    {
+      "number": 552,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Summary precision is a presentation concern.",
+      "next_step": "Define display precision without changing exported numeric values.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/552"
+      ]
+    },
+    {
+      "number": 86,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests an additional enrichment filter.",
+      "next_step": "Specify combined ontology/evidence constraints and population semantics.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/86"
+      ]
+    },
+    {
+      "number": 94,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Automatic pluralization reportedly corrupts irregular nouns.",
+      "next_step": "Check model label configuration with irregular-noun fixtures.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/94"
+      ]
+    },
+    {
+      "number": 96,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests configurable formatting of biological symbols.",
+      "next_step": "Define safe per-class presentation settings and export behavior.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/96"
+      ]
+    },
+    {
+      "number": 98,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Long error-report mailto URLs may fail in desktop clients.",
+      "next_step": "Test current error-report handling with long encoded diagnostic text.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/98"
+      ]
+    },
+    {
+      "number": 36,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests region constraints integrated into queries and lists.",
+      "next_step": "Specify coordinate conventions, organism identity and reusable region inputs.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/36"
+      ]
+    },
+    {
+      "number": 37,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests multiple feature types in region exports.",
+      "next_step": "Check current export parameters and define multi-type output semantics.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/37"
+      ]
+    },
+    {
+      "number": 238,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "A referenced change reportedly removed enrichment match details.",
+      "next_step": "Inspect the referenced commit and test current match-detail output and cost.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/238"
+      ]
+    },
+    {
+      "number": 199,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests selective suppression of field links.",
+      "next_step": "Document current displayer configuration and determine missing control.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/199"
+      ]
+    },
+    {
+      "number": 188,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests list rename on analysis pages.",
+      "next_step": "Verify existing rename API and current page controls before designing UI work.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/188"
+      ]
+    },
+    {
+      "number": 53,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Export formats should reflect model capabilities.",
+      "next_step": "Specify format eligibility for queries with and without sequence/location data.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/53"
+      ]
+    },
+    {
+      "number": 425,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Unanalysed-gene links reportedly do nothing.",
+      "next_step": "Test a list containing excluded genes and inspect current link target.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/425"
+      ]
+    },
+    {
+      "number": 1556,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Publication row selection reportedly disables other rows.",
+      "next_step": "Reproduce multi-selection with publication summary columns and inspect im-tables integration.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1556"
+      ]
+    },
+    {
+      "number": 376,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests comparison between attribute paths.",
+      "next_step": "Specify type compatibility, null behavior and generated SQL for path comparisons.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/376"
+      ]
+    },
+    {
+      "number": 1447,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Nested PathQuery support changes parsing and validation contracts.",
+      "next_step": "Inventory existing subquery support and specify serialization plus resource limits.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1447"
+      ]
+    },
+    {
+      "number": 977,
+      "component": "data-model",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "FALDO mapping is an interoperability proposal.",
+      "next_step": "Define RDF mapping and coordinate conversion examples against current exports.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/977"
+      ]
+    },
+    {
+      "number": 1463,
+      "component": "data-model",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Character attributes affect schema and serialization types.",
+      "next_step": "Measure actual storage need and specify persistence/serialization compatibility.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1463"
+      ]
+    },
+    {
+      "number": 1401,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests configurable default enrichment correction.",
+      "next_step": "Inspect current defaults and define configuration precedence and UI disclosure.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1401"
+      ]
+    },
+    {
+      "number": 640,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Aggregates require query-language and result-contract design.",
+      "next_step": "Inventory aggregate support and specify grouping, types and client serialization.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/640"
+      ]
+    },
+    {
+      "number": 713,
+      "component": "performance",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Precomputation may index columns unused by the view.",
+      "next_step": "Measure generated columns, index work and query time on a bounded fixture.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/713"
+      ]
+    },
+    {
+      "number": 725,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "Complex precomputed queries reportedly fail SQL parsing.",
+      "next_step": "Reduce the failing generated SQL and add a parser regression before selecting an ANTLR migration.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/725"
+      ]
+    },
+    {
+      "number": 731,
+      "component": "performance",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "In-memory item storage is an unmeasured optimization proposal.",
+      "next_step": "Benchmark item loading and quantify memory/recovery constraints before changing storage.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/731"
+      ]
+    },
+    {
+      "number": 939,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Conditional caching depends on database, list and authorization changes.",
+      "next_step": "Specify cache invalidation and private-response behavior before adding HTTP validators.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/939"
+      ]
+    },
+    {
+      "number": 1004,
+      "component": "data-loaders",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests taxon inference for many genome inputs.",
+      "next_step": "Define explicit filename/data mapping, validation and precedence over project configuration.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1004"
+      ]
+    },
+    {
+      "number": 1039,
+      "component": "clients",
+      "disposition": "route-to-repository",
+      "priority": "P2",
+      "rationale": "Trace originates in the Perl client list factory.",
+      "next_step": "Reproduce with current Perl client and confirm owner before proposing transfer.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1039"
+      ]
+    },
+    {
+      "number": 1097,
+      "component": "performance",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "Repeated source names may inflate tracking storage.",
+      "next_step": "Measure tracker size and design normalized source IDs plus migration benchmarks.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1097"
+      ]
+    },
+    {
+      "number": 1098,
+      "component": "performance",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Optional reduced provenance changes merge correctness assumptions.",
+      "next_step": "Define retained provenance and prove merge equivalence before measuring storage savings.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1098"
+      ]
+    },
+    {
+      "number": 1265,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Link-based private sharing changes authorization.",
+      "next_step": "Specify revocation, token lifetime and access semantics before implementation.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1265"
+      ]
+    },
+    {
+      "number": 1268,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Large exports reportedly expose a transient offset error.",
+      "next_step": "Use a bounded large-result fixture to trace count/export request ordering.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1268"
+      ]
+    },
+    {
+      "number": 257,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Incremental template import needs conflict semantics.",
+      "next_step": "Specify add/replace rules and transaction behavior for mixed template imports.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/257"
+      ]
+    },
+    {
+      "number": 1422,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Widget configuration inequalities reportedly produce misleading 404 errors.",
+      "next_step": "Test escaped inequality constraints and trace configuration parsing versus widget lookup.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1422"
+      ]
+    },
+    {
+      "number": 87,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Correction-result display requires consistent statistical terminology.",
+      "next_step": "Verify current adjusted-p-value output and define labels for each correction method.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/87"
+      ]
+    },
+    {
+      "number": 217,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests type narrowing of heterogeneous lists.",
+      "next_step": "Verify existing filtering/conversion capabilities and specify subtype membership rules.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/217"
+      ]
+    },
+    {
+      "number": 225,
+      "component": "lists-auth",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "User-profile pooling request predates current connection architecture.",
+      "next_step": "Inspect actual profile datasource lifecycle and concurrent transaction behavior.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/225"
+      ]
+    },
+    {
+      "number": 1264,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Persistent list-upgrade history needs a data-retention contract.",
+      "next_step": "Specify identifier lineage, retention and access controls before schema changes.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1264"
+      ]
+    },
+    {
+      "number": 332,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests toggling result-cell formatters.",
+      "next_step": "Check im-tables ownership and define reversible raw/formatted display behavior.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/332"
+      ]
+    },
+    {
+      "number": 488,
+      "component": "performance",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "NotXML encoding redesign changes stored format compatibility.",
+      "next_step": "Profile current parsing and benchmark alternatives with old-data round trips.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/488"
+      ]
+    },
+    {
+      "number": 490,
+      "component": "performance",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "tokenHasMoreUses remains synchronized; contention is unmeasured.",
+      "next_step": "Benchmark concurrent token consumption and verify atomic usage limits before changing locking.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/490",
+        "intermine/api/src/main/java/org/intermine/api/profile/ProfileManager.java"
+      ]
+    },
+    {
+      "number": 587,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests stable links to template result pages.",
+      "next_step": "Check current navigation URLs and specify parameter persistence and access behavior.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/587"
+      ]
+    },
+    {
+      "number": 585,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Constraint codes are still restricted to a single Latin letter.",
+      "next_step": "Test 26 and 27 constraints across parser, logic editor and clients before choosing an extension.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/585",
+        "intermine/pathquery/src/main/java/org/intermine/pathquery/PathQuery.java"
+      ]
+    },
+    {
+      "number": 556,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Embedding template forms is an integration feature.",
+      "next_step": "Check current embedding support and specify authentication and host-page behavior.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/556"
+      ]
+    },
+    {
+      "number": 651,
+      "component": "api-query",
+      "disposition": "verify-existing-fix",
+      "priority": "P1",
+      "rationale": "Current calculation rejects unknown correction names; HTTP semantics and discovery remain unverified.",
+      "next_step": "Exercise invalid, omitted and valid correction values end to end before proposing closure.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/651",
+        "intermine/webapp/src/main/java/org/intermine/web/logic/widget/EnrichmentCalculation.java"
+      ]
+    },
+    {
+      "number": 759,
+      "component": "lists-auth",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "Email change affects login and account recovery identity.",
+      "next_step": "Specify verified email updates and recovery destination across local/OAuth accounts.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/759"
+      ]
+    },
+    {
+      "number": 803,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Coordinate mapping needs a defined synteny contract.",
+      "next_step": "Specify assembly IDs, ambiguous mappings and coordinate conventions using fixtures.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/803"
+      ]
+    },
+    {
+      "number": 1090,
+      "component": "lists-auth",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "Outer-join queries reportedly fail list creation with SELECT-count errors.",
+      "next_step": "Reproduce with nullable outer-joined targets and compare query results with list membership.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1090"
+      ]
+    },
+    {
+      "number": 1137,
+      "component": "api-query",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests exporting subregions and flanking sequence alone.",
+      "next_step": "Define strand-aware coordinates and clipping behavior for sequence exports.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1137"
+      ]
+    },
+    {
+      "number": 924,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests multi-column plotting and image export.",
+      "next_step": "Identify current results-table owner and define numeric/missing-data handling.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/924"
+      ]
+    },
+    {
+      "number": 1156,
+      "component": "legacy-ui",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "Discussion identifies a download-link workaround but discoverability is unclear.",
+      "next_step": "Inspect current export controls and verify a reusable results URL is available.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1156"
+      ]
+    },
+    {
+      "number": 1408,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "Editing a template reportedly activates disabled constraints and changes results.",
+      "next_step": "Compare template execution with generated PathQuery while optional constraints are off.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1408"
+      ]
+    },
+    {
+      "number": 297,
+      "component": "data-loaders",
+      "disposition": "needs-design",
+      "priority": "P2",
+      "rationale": "Dataset version provenance crosses download scripts and converters.",
+      "next_step": "Inventory version propagation and specify source-to-dataset mappings with fixture manifests.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/297"
+      ]
+    },
+    {
+      "number": 817,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P1",
+      "rationale": "Reported JSON escaping alters returned biological data strings.",
+      "next_step": "Round-trip backslashes through each JSON formatter and compare with TSV/database values.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/817"
+      ]
+    },
+    {
+      "number": 1527,
+      "component": "legacy-ui",
+      "disposition": "needs-design",
+      "priority": "P3",
+      "rationale": "Requests coordinate display formatting in tabular exports.",
+      "next_step": "Specify presentation format separately from raw coordinate columns and test escaping.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/1527"
+      ]
+    },
+    {
+      "number": 616,
+      "component": "api-query",
+      "disposition": "needs-reproduction",
+      "priority": "P2",
+      "rationale": "QueryMonitor exists today; cancellation wiring and cleanup need checking.",
+      "next_step": "Trace UI/service cancellation to database statement cancellation and resource release.",
+      "evidence": [
+        "https://github.com/intermine/intermine/issues/616",
+        "intermine/webapp/src/main/java/org/intermine/web/logic/query/QueryMonitor.java"
+      ]
+    }
+  ]
+}
