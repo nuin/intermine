@@ -29,3 +29,13 @@ The scan also identified string concatenation in the portable INSERT writer. A s
 All 102 integrate tests pass on Java 21 with PostgreSQL 14. Logs are in `intermine/build/reliability-tracker-{red,portable-red,final}.log` (ignored build outputs).
 
 The tracker scan scores 99. Three SQL injection reports are false positives: two SQL expressions concatenate only literals, and the lookup concatenates a typed `Integer`. Four nonfixable warnings remain for the existing large class, long prefetch method and nesting in prefetch/write methods. Refactoring tracker threading and lifecycle is outside this encoding fix.
+
+## JSON object ordering — #1639
+
+The JSON object query transformation discarded every requested order and sorted solely by ascending root ID. It now preserves requested root and single-valued reference keys and directions, using root ID as a tie-breaker. Explicit root-ID direction is retained without adding a conflicting duplicate. Collection keys order entries within each object, after its root keys and ID, so tied values cannot split one object into multiple JSON objects.
+
+Ten regressions cover descending order, multiple keys, references, explicit IDs, default ordering, simple classes, collection grouping and flat-result pagination. Eight failed before the fix. Four run the actual query executor and JSON iterator against PostgreSQL. All 234 webapp tests and 102 integrate tests now pass on Java 21, with Checkstyle for both modules; the combined run took 1m40s (`intermine/build/reliability-java21-green.log`).
+
+The existing `start`/`size` contract limits flattened rows, so a page boundary through an inner-joined collection may return a partial collection. This change does not redesign collection pagination. Collection sort keys apply within a parent; they do not globally order parents by an aggregate of child values.
+
+The changed query builder has no Aislop errors or warnings; its existing simple-class workaround is reported as informational. Combined tracker/query scan score: 99.

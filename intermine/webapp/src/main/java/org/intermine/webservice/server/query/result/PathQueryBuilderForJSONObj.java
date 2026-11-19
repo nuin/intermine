@@ -88,7 +88,7 @@ public class PathQueryBuilderForJSONObj extends PathQueryBuilder
         afterChanges.addViews(newViews);
         try {
             // this will throw a PathException if the root class does not have an id
-            String rootClass = afterChanges.getRootClass();
+            afterChanges.getRootClass();
         } catch (PathException e) {
             // HACK: remove the inserted id from the view if it's on a simple class
             Pattern pattern = Pattern.compile("Path\\s(.*?)\\sin\\sview\\slist");
@@ -100,8 +100,34 @@ public class PathQueryBuilderForJSONObj extends PathQueryBuilder
             }
             // restore original order by
             afterChanges.addOrderBys(beforeChanges.getOrderBy());
+            return afterChanges;
         }
+        preserveOrder(beforeChanges, afterChanges, newViews.get(0));
         return afterChanges;
+    }
+
+    private static void preserveOrder(PathQuery beforeChanges, PathQuery afterChanges,
+            String rootId) {
+        afterChanges.clearOrderBy();
+        List<OrderElement> collectionOrder = new ArrayList<OrderElement>();
+        boolean orderedById = false;
+        for (OrderElement order : beforeChanges.getOrderBy()) {
+            try {
+                if (beforeChanges.makePath(order.getOrderPath()).containsCollections()) {
+                    collectionOrder.add(order);
+                } else {
+                    afterChanges.addOrderBy(order);
+                    orderedById |= rootId.equals(order.getOrderPath());
+                }
+            } catch (PathException e) {
+                throw new IllegalArgumentException("Invalid sort path " + order.getOrderPath(), e);
+            }
+        }
+        // Keep each object's rows together even when root sort values are tied.
+        if (!orderedById) {
+            afterChanges.addOrderBy(rootId, OrderDirection.ASC);
+        }
+        afterChanges.addOrderBys(collectionOrder);
     }
 
     /**

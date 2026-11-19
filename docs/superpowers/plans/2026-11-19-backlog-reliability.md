@@ -37,10 +37,10 @@
 
 ## Task 3: JSON object ordering (#1639)
 
-- [ ] Trace query transformation and object grouping before selecting a fix.
-- [ ] Add ordering regressions including descending, multiple keys, nested data and pagination where supported.
-- [ ] Observe the failure and preserve requested ordering without breaking object assembly.
-- [ ] Run focused query/formatter tests and the webapp suite on Java 21.
+- [x] Trace query transformation and object grouping before selecting a fix.
+- [x] Add ordering regressions including descending, multiple keys, nested data and pagination where supported.
+- [x] Observe the failure and preserve requested ordering without breaking object assembly.
+- [x] Run focused query/formatter tests and the webapp suite on Java 21.
   Expected: explicit ordering is retained and existing JSON object behavior passes.
 - [ ] Scan, commit separately, obtain a fresh review and address important findings.
 
