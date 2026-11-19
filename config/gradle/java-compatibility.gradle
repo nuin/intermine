@@ -1,0 +1,9 @@
+tasks.withType(JavaCompile).configureEach {
+    options.release.set(javaCompiler.map { compiler ->
+        compiler.metadata.languageVersion.asInt() >= 9 ? 8 : null
+    })
+}
+
+ext.intermineTestSystemProperties = System.properties.findAll { key, value ->
+    !['java.', 'sun.', 'jdk.'].any { prefix -> key.toString().startsWith(prefix) }
+}

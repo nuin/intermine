@@ -14,7 +14,7 @@ WORKSPACE_DIR=$1
 
 cd "$WORKSPACE_DIR"
 
-SOLR_VERSION=8.6.2
+SOLR_VERSION=8.11.4
 SOLR_PACKAGE=solr-${SOLR_VERSION}.tgz
 SOLR_DIR=solr-${SOLR_VERSION}
 SOLR=${SOLR_DIR}/bin/solr
@@ -35,7 +35,7 @@ create_solr_core() {
 
 if [ ! -d $SOLR_DIR ]; then
     if [ ! -f $SOLR_PACKAGE ]; then
-        wget http://archive.apache.org/dist/lucene/solr/${SOLR_VERSION}/${SOLR_PACKAGE}
+        wget https://archive.apache.org/dist/lucene/solr/${SOLR_VERSION}/${SOLR_PACKAGE}
     fi
 
     tar xzf $SOLR_PACKAGE

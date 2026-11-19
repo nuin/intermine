@@ -33,7 +33,6 @@ dependencies {
 
     api group: 'net.iharder', name: 'base64', version: '2.3.8' //not clear wich version is currently used
     api group: 'au.com.bytecode', name: 'opencsv', version: '2.4' //version 2.3 not available in maven
-    api group: 'org.ow2.asm', name: 'asm', version: '4.2'
     api group: 'mockobjects', name: 'mockobjects-core', version: '0.09'
     api group: 'mockobjects', name: 'mockobjects-jdk1.3', version: '0.09'
     provided fileTree(dir: 'libs', include: '*.jar') // eventually replace torque

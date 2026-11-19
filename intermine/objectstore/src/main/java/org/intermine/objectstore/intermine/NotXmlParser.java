@@ -18,7 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import net.sf.cglib.proxy.Factory;
+import javassist.util.proxy.Proxy;
+import javassist.util.proxy.ProxyFactory;
 
 import org.apache.log4j.Logger;
 import org.intermine.metadata.CollectionDescriptor;
@@ -93,7 +94,10 @@ public final class NotXmlParser
             if (!"".equals(a[1])) {
                 String[] b = SPACE_SPLITTER.split(a[1]);
                 for (int i = 0; i < b.length; i++) {
-                    classes.add(Class.forName(b[i]));
+                    // Older records may include the former proxy implementation interface.
+                    if (!"net.sf.cglib.proxy.Factory".equals(b[i])) {
+                        classes.add(Class.forName(b[i]));
+                    }
                 }
             }
             time1 = System.currentTimeMillis();
@@ -110,8 +114,8 @@ public final class NotXmlParser
         time2 = System.currentTimeMillis();
         createTime += time2 - time1;
 
-        if (retval instanceof Factory) {
-            DynamicBean bean = (DynamicBean) ((Factory) retval).getCallback(0);
+        if (retval instanceof Proxy) {
+            DynamicBean bean = (DynamicBean) ProxyFactory.getHandler((Proxy) retval);
             Map<String, Object> valueMap = bean.getMap();
             Map<String, FieldDescriptor> fields = os.getModel()
                 .getFieldDescriptorsForClass(retval.getClass());

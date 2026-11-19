@@ -184,6 +184,14 @@ public class CollectionUtilTest extends TestCase
         expected.put(Serializable.class, lSerialisables);
         expected.put(Comparable.class, lSerialisables);
 
+        if (!System.getProperty("java.specification.version").startsWith("1.")) {
+            int javaVersion = Integer.parseInt(System.getProperty("java.specification.version"));
+            if (javaVersion >= 12) {
+                expected.put(Class.forName("java.lang.constant.Constable"), lSerialisables);
+                expected.put(Class.forName("java.lang.constant.ConstantDesc"), lSerialisables);
+            }
+        }
+
         assertEquals(expected, CollectionUtil.groupByClass(c, true));
     }
 

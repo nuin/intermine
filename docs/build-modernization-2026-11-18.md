@@ -1,5 +1,8 @@
 # Build modernization — 18 November 2026
 
+For the subsequent Java 21 work, see the [Java migration guide](java21-migration-2026-11-19.md).
+The results below record the original Gradle migration on Java 8.
+
 This change moves the build from Gradle 4.9 to **Gradle 8.14.7** while retaining Java 8 source/target compatibility and application dependency versions. Gradle 8 is the bridge for the existing Java 8 application; moving the application to a newer JDK remains separate work.
 
 ## Changes

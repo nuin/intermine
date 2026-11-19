@@ -18,7 +18,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.cglib.proxy.Factory;
+import javassist.util.proxy.Proxy;
+import javassist.util.proxy.ProxyFactory;
 
 import org.intermine.metadata.StringUtil;
 import org.intermine.metadata.TypeUtil;
@@ -104,18 +105,24 @@ public final class DynamicUtil
                 }
             }
             if ((fpclazz == null) && (interfaces.size() == 1)) {
-                try {
-                    Class<FastPathObject> retval = (Class<FastPathObject>) Class.forName(interfaces
-                            .iterator().next().getName() + "Shadow");
+                Class<? extends FastPathObject> retval = findShadowClass(
+                        interfaces.iterator().next());
+                if (retval != null) {
                     classMap.put(classes, retval);
                     return createObject(retval);
-                } catch (ClassNotFoundException e) {
-                    // No problem - falling back on dynamic
                 }
             }
             FastPathObject retval = DynamicBean.create(fpclazz, interfaces.toArray(new Class[] {}));
             classMap.put(classes, retval.getClass());
             return retval;
+        }
+    }
+
+    private static Class<? extends FastPathObject> findShadowClass(Class<?> type) {
+        try {
+            return Class.forName(type.getName() + "Shadow").asSubclass(FastPathObject.class);
+        } catch (ClassNotFoundException e) {
+            return null;
         }
     }
 
@@ -152,8 +159,9 @@ public final class DynamicUtil
             e2.initCause(e);
             throw e2;
         }
-        if (retval instanceof Factory) {
-            ((Factory) retval).setCallback(0, new DynamicBean());
+        if (retval instanceof Proxy && !(ProxyFactory.getHandler((Proxy) retval)
+                instanceof DynamicBean)) {
+            ((Proxy) retval).setHandler(new DynamicBean());
         }
         return retval;
     }
@@ -193,9 +201,8 @@ public final class DynamicUtil
     }
 
     /**
-     * Return the Class for a set of Class objects. NOTE: Creating an instance of this class is not
-     * trivial: after calling Class.newInstance(), cast the Object to net.sf.cglib.proxy.Factory,
-     * and call interceptor(new org.intermine.util.DynamicBean()) on it.
+     * Return the Class for a set of Class objects.
+     * Use createObject(Class) to preserve constructor-initialized properties.
      *
      * @param classes the classes and interfaces to extend/implement
      * @return the Class
@@ -390,7 +397,7 @@ public final class DynamicUtil
                 type = TypeUtil.getFieldInfo(o.getClass(),
                         fieldName).getGetter().getReturnType().getName();
             } catch (Exception e3) {
-                // ignore
+                e.addSuppressed(e3);
             }
             IllegalArgumentException e2 = new IllegalArgumentException("Couldn't set field \""
                     + Util.getFriendlyName(o.getClass()) + "." + fieldName + "\""

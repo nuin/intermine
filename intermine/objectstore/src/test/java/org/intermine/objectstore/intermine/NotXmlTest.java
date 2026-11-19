@@ -10,8 +10,6 @@ package org.intermine.objectstore.intermine;
  *
  */
 
-import java.util.Map;
-
 import junit.framework.TestCase;
 
 import org.intermine.model.testmodel.Company;
@@ -20,7 +18,6 @@ import org.intermine.model.testmodel.Employee;
 import org.intermine.objectstore.ObjectStore;
 import org.intermine.objectstore.ObjectStoreFactory;
 import org.intermine.objectstore.proxy.ProxyReference;
-import org.intermine.util.DynamicBean;
 
 public class NotXmlTest extends TestCase
 {
@@ -80,8 +77,7 @@ public class NotXmlTest extends TestCase
         assertEquals("CompanyC", obj1.getName());
         assertEquals(100, obj1.getVatNumber());
         assertEquals(new Integer(74350), obj1.getId());
-        Map fieldMap = ((DynamicBean) ((net.sf.cglib.proxy.Factory) obj1).getCallback(0)).getMap();
-        ProxyReference addressRef = (ProxyReference) fieldMap.get("address");
+        ProxyReference addressRef = (ProxyReference) obj1.getFieldProxy("address");
         assertNotNull(addressRef);
         assertEquals(new Integer(74328), addressRef.getId());
     }

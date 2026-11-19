@@ -6,6 +6,7 @@ version '5.1.1'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+apply from: "${rootDir}/../config/gradle/java-compatibility.gradle"
 
 repositories {
     maven {
@@ -20,6 +21,14 @@ dependencies {
     api localGroovy()
     testImplementation gradleTestKit()
     testImplementation 'junit:junit:4.13.2'
+}
+
+test { testTask ->
+    // Gradle ProjectBuilder injects synthetic classes into its test classloader.
+    jvmArgumentProviders.add({ ->
+        testTask.javaLauncher.get().metadata.languageVersion.asInt() >= 9
+                ? ['--add-opens=java.base/java.lang=ALL-UNNAMED'] : []
+    } as org.gradle.process.CommandLineArgumentProvider)
 }
 
 ext.pomDescription = 'InterMine Plugin'

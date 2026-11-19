@@ -39,6 +39,7 @@ subprojects {
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
+    apply from: "${rootDir}/../../config/gradle/java-compatibility.gradle"
 
     // -------------------------
     // Build localDirs list
@@ -123,7 +124,7 @@ subprojects {
         testImplementation group: "org.intermine", name: "intermine-integrate", version: System.getProperty("imVersion"), classifier: "testClasses"
         testImplementation group: 'xmlunit', name: 'xmlunit', version: '1.0'
         testImplementation group: 'au.com.bytecode', name: 'opencsv', version: '2.4' //version 2.3 not available in maven
-        testImplementation group: 'cglib', name: 'cglib', version: '3.1'
+        testImplementation group: 'org.javassist', name: 'javassist', version: '3.33.0-GA'
         mergeModel group: 'ch.qos.reload4j', name: 'reload4j', version: '1.2.22'
         mergeModel group: 'org.slf4j', name: 'slf4j-reload4j', version: '1.7.36'
         mergeModel group : "org.intermine", name: "intermine-objectstore", version: System.getProperty("imVersion")
@@ -224,7 +225,7 @@ subprojects {
     }
 
     test {
-        systemProperties System.properties
+        systemProperties intermineTestSystemProperties
         ignoreFailures = false
         forkEvery = 1
     }

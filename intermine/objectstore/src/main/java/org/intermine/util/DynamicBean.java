@@ -10,20 +10,24 @@ package org.intermine.util;
  *
  */
 
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
-import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.CallbackFilter;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
-import net.sf.cglib.proxy.NoOp;
+import javassist.util.proxy.MethodFilter;
+import javassist.util.proxy.MethodHandler;
+import javassist.util.proxy.Proxy;
+import javassist.util.proxy.ProxyFactory;
 
 import org.intermine.metadata.StringUtil;
 import org.intermine.metadata.TypeUtil;
@@ -37,25 +41,30 @@ import org.intermine.objectstore.proxy.ProxyReference;
  * Class which represents a generic bean
  * @author Andrew Varley
  */
-public class DynamicBean implements MethodInterceptor
+public class DynamicBean implements MethodHandler
 {
 
-    private static class FinalizeFilter implements CallbackFilter
+    private static class FinalizeFilter implements MethodFilter
     {
 
         @Override
-        public int accept(Method method) {
-            if ("finalize".equals(method.getName())
+        public boolean isHandled(Method method) {
+            return !("finalize".equals(method.getName())
                     && method.getParameterTypes().length == 0
-                    && method.getReturnType() == Void.TYPE) {
-                return 1;
-            }
-            return 0;
+                    && method.getReturnType() == Void.TYPE);
         }
 
     }
 
-    private static final CallbackFilter FINALIZE_FILTER = new FinalizeFilter();
+    private static final MethodFilter FINALIZE_FILTER = new FinalizeFilter();
+    private static final Map<Class<?>, Object> PRIMITIVE_DEFAULTS = createPrimitiveDefaults();
+    private static final Map<List<Class<?>>, Class<? extends FastPathObject>> PROXY_CLASSES
+        = new HashMap<List<Class<?>>, Class<? extends FastPathObject>>();
+    private static final MethodHandler INITIALIZER = (obj, method, proceed, args) -> {
+        DynamicBean bean = new DynamicBean();
+        ((Proxy) obj).setHandler(bean);
+        return bean.invoke(obj, method, proceed, args);
+    };
     //private static final Logger LOG = Logger.getLogger(DynamicBean.class);
     private Map<String, Object> map = new HashMap<String, Object>();
 
@@ -77,18 +86,29 @@ public class DynamicBean implements MethodInterceptor
         if ((clazz != null) && clazz.isInterface()) {
             throw new IllegalArgumentException("clazz must not be an interface");
         }
-        // If Enhancer.create() called with a null class it will alter java.lang.Object
-        // this causes a security exception if run with Kaffe JRE
-        //if ( clazz == null) {
-        //    clazz = DynamicBean.class;
-        //}
-        Callback[] callbacks = {new DynamicBean(), NoOp.INSTANCE};
-        Enhancer e = new Enhancer();
-        e.setSuperclass(clazz);
-        e.setInterfaces(inter);
-        e.setCallbackFilter(FINALIZE_FILTER);
-        e.setCallbacks(callbacks);
-        return (FastPathObject) e.create();
+        return DynamicUtil.createObject(getProxyClass(clazz, inter));
+    }
+
+    private static synchronized Class<? extends FastPathObject> getProxyClass(
+            Class<? extends FastPathObject> clazz, Class<?>[] inter) {
+        List<Class<?>> key = new ArrayList<Class<?>>();
+        key.add(clazz);
+        if (inter != null) {
+            key.addAll(Arrays.asList(inter));
+        }
+        Class<? extends FastPathObject> proxyClass = PROXY_CLASSES.get(key);
+        if (proxyClass == null) {
+            ProxyFactory factory = new ProxyFactory();
+            factory.setSuperclass(clazz);
+            factory.setInterfaces(inter);
+            factory.setFilter(FINALIZE_FILTER);
+            factory.setUseWriteReplace(false);
+            // Constructor callbacks need a handler before super(); this disables factory caching.
+            factory.setHandler(INITIALIZER);
+            proxyClass = factory.createClass().asSubclass(FastPathObject.class);
+            PROXY_CLASSES.put(key, proxyClass);
+        }
+        return proxyClass;
     }
 
     /**
@@ -103,8 +123,46 @@ public class DynamicBean implements MethodInterceptor
      * @throws Throwable if an error occurs in executing the real method
      */
     @Override
-    public Object intercept(Object obj, Method method, Object[] args,
-            MethodProxy proxy) throws Throwable {
+    public Object invoke(Object obj, Method method, Method proxy, Object[] args) throws Throwable {
+        Object result = invokeModelMethod(obj, method, proxy, args);
+        Class<?> type = method.getReturnType();
+        if (result == null) {
+            return PRIMITIVE_DEFAULTS.get(type);
+        }
+        if (type.isPrimitive() && result instanceof Number) {
+            return convertNumber((Number) result, type);
+        }
+        return result;
+    }
+
+    private static Number convertNumber(Number value, Class<?> type) {
+        if (type == Byte.TYPE) {
+            return Byte.valueOf(value.byteValue());
+        } else if (type == Short.TYPE) {
+            return Short.valueOf(value.shortValue());
+        } else if (type == Integer.TYPE) {
+            return Integer.valueOf(value.intValue());
+        } else if (type == Long.TYPE) {
+            return Long.valueOf(value.longValue());
+        } else if (type == Float.TYPE) {
+            return Float.valueOf(value.floatValue());
+        } else if (type == Double.TYPE) {
+            return Double.valueOf(value.doubleValue());
+        }
+        return value;
+    }
+
+    private static Map<Class<?>, Object> createPrimitiveDefaults() {
+        Map<Class<?>, Object> defaults = new HashMap<Class<?>, Object>();
+        for (Class<?> type : new Class<?>[] {Boolean.TYPE, Byte.TYPE, Character.TYPE, Short.TYPE,
+            Integer.TYPE, Long.TYPE, Float.TYPE, Double.TYPE}) {
+            defaults.put(type, Array.get(Array.newInstance(type, 1), 0));
+        }
+        return Collections.unmodifiableMap(defaults);
+    }
+
+    private Object invokeModelMethod(Object obj, Method method, Method proxy, Object[] args)
+        throws Throwable {
         // java.lang.Object methods
         if ("equals".equals(method.getName())) {
             if (args[0] instanceof InterMineObject) {
@@ -157,14 +215,7 @@ public class DynamicBean implements MethodInterceptor
             }
         }
         if ("getElementType".equals(method.getName()) && (args.length == 1)) {
-            String methodName = "add" + StringUtil.reverseCapitalisation((String) args[0]);
-            Method[] methods = obj.getClass().getMethods();
-            for (Method addMethod : methods) {
-                if (addMethod.getName().equals(methodName)) {
-                    return addMethod.getParameterTypes()[0];
-                }
-            }
-            throw new RuntimeException("No such collection " + args[0]);
+            return getElementType(obj, (String) args[0]);
         }
         // Bean methods
         if (method.getName().startsWith("get") && (args.length == 0)) {
@@ -191,7 +242,21 @@ public class DynamicBean implements MethodInterceptor
                 && (method.getReturnType() == Void.TYPE)) {
             return handleAddObject(method, args);
         }
-        return proxy.invokeSuper(obj, args);
+        try {
+            return proxy.invoke(obj, args);
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
+        }
+    }
+
+    private Class<?> getElementType(Object obj, String fieldName) {
+        String methodName = "add" + StringUtil.reverseCapitalisation(fieldName);
+        for (Method addMethod : obj.getClass().getMethods()) {
+            if (addMethod.getName().equals(methodName)) {
+                return addMethod.getParameterTypes()[0];
+            }
+        }
+        throw new RuntimeException("No such collection " + fieldName);
     }
 
     private Object handleGetFieldValue(Object obj, Method method, Object[] args) {

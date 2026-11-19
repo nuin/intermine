@@ -139,7 +139,7 @@ public class DynamicUtilTest extends TestCase
     public void testConstructors() throws Exception {
         Class c = DynamicUtil.composeClass(Company.class, Broke.class);
         Company obj = (Company) c.newInstance();
-        ((net.sf.cglib.proxy.Factory) obj).setCallback(0, new DynamicBean());
+        ((javassist.util.proxy.ProxyObject) obj).setHandler(new DynamicBean());
         obj.setName("Fred");
         assertEquals("Fred", obj.getName());
     }

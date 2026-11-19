@@ -33,8 +33,9 @@ Getting Started With InterMine
 For a guide on getting started with InterMine, please visit:
 [tutorial][tutorial]
 
-For source builds, this checkout uses Gradle 8.14.7 and retains Java 8 compatibility.
-See the [build instructions and verification ledger](docs/build-modernization-2026-11-18.md).
+For source builds, use Java 21 and Gradle 8.14.7. Java 8 compatibility is retained.
+See the [Java migration guide](docs/java21-migration-2026-11-19.md) and
+[build instructions](docs/build-modernization-2026-11-18.md).
 
 3min bootstrap
 --------------------------------------

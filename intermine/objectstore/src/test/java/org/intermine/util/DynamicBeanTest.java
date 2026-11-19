@@ -10,10 +10,9 @@ package org.intermine.util;
  *
  */
 
-import java.util.List;
-
 import junit.framework.TestCase;
 
+import org.intermine.model.FastPathObject;
 import org.intermine.model.testmodel.*;
 
 public class DynamicBeanTest extends TestCase
@@ -65,5 +64,30 @@ public class DynamicBeanTest extends TestCase
         assertTrue(obj instanceof Department);
         assertTrue(obj instanceof Employable);
         assertTrue(obj instanceof ImportantPerson);
+    }
+
+    public interface PrimitiveValues extends FastPathObject {
+        boolean isEnabled();
+        byte getByteValue();
+        char getCharValue();
+        short getShortValue();
+        int getIntValue();
+        long getLongValue();
+        float getFloatValue();
+        double getDoubleValue();
+    }
+
+    public void testUnsetPrimitiveValues() {
+        PrimitiveValues obj = (PrimitiveValues) DynamicBean.create(null,
+                new Class<?>[] {PrimitiveValues.class});
+        assertFalse(obj.isEnabled());
+        assertEquals((byte) 0, obj.getByteValue());
+        assertEquals('\0', obj.getCharValue());
+        assertEquals((short) 0, obj.getShortValue());
+        assertEquals(0, obj.getIntValue());
+        assertEquals(0L, obj.getLongValue());
+        assertEquals(0.0f, obj.getFloatValue(), 0.0f);
+        assertEquals(0.0d, obj.getDoubleValue(), 0.0d);
+        assertEquals(0, obj.hashCode());
     }
 }

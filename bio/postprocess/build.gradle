@@ -40,6 +40,7 @@ subprojects {
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
+    apply from: "${rootDir}/../../config/gradle/java-compatibility.gradle"
 
     // -------------------------
     // Build localDirs list
@@ -183,7 +184,7 @@ subprojects {
 
     test {
         // we have a system property that we need to get to the tests
-        systemProperties System.properties
+        systemProperties intermineTestSystemProperties
         ignoreFailures = false
         forkEvery = 1
     }

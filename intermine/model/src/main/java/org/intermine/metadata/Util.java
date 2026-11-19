@@ -473,13 +473,11 @@ public final class Util
         if (type.equals(Character.TYPE.toString())) {
             return Character.class;
         }
-        Class<?> cls = null;
         try {
-            cls = Class.forName(type);
+            return Class.forName(type);
         } catch (Exception e) {
-            // do nothing
+            return null;
         }
-        return cls;
     }
 
 
@@ -610,14 +608,15 @@ public final class Util
     public static synchronized Set<Class<?>> decomposeClass(Class<?> clazz) {
         Set<Class<?>> retval = decomposeMap.get(clazz);
         if (retval == null) {
-            if (net.sf.cglib.proxy.Factory.class.isAssignableFrom(clazz)) {
+            if (javassist.util.proxy.Proxy.class.isAssignableFrom(clazz)) {
                 // Decompose
                 retval = new TreeSet<Class<?>>(new ClassNameComparator());
                 retval.add(clazz.getSuperclass());
                 Class<?>[] interfs = clazz.getInterfaces();
                 for (int i = 0; i < interfs.length; i++) {
                     Class<?> inter = interfs[i];
-                    if (net.sf.cglib.proxy.Factory.class != inter) {
+                    if (javassist.util.proxy.ProxyObject.class != inter
+                            && javassist.util.proxy.Proxy.class != inter) {
                         boolean notIn = true;
                         Iterator<Class<?>> inIter = retval.iterator();
                         while (inIter.hasNext() && notIn) {

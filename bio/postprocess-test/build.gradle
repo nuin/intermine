@@ -41,6 +41,7 @@ subprojects {
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
+    apply from: "${rootDir}/../../config/gradle/java-compatibility.gradle"
 
     // -------------------------
     // Build localDirs list
@@ -109,7 +110,7 @@ subprojects {
         testImplementation group: 'junit', name: 'junit', version: '4.8.2'
         testImplementation group: "org.intermine", name: "intermine-integrate", version: System.getProperty("imVersion")
         testImplementation group: 'xmlunit', name: 'xmlunit', version: '1.0'
-        testImplementation group: 'cglib', name: 'cglib', version: '3.1'
+        testImplementation group: 'org.javassist', name: 'javassist', version: '3.33.0-GA'
         mergeModel group : "org.intermine", name: "intermine-objectstore", version: System.getProperty("imVersion")
         api group: 'org.intermine', name: 'bio-postprocess-create-chromosome-locations-and-lengths', version: bioVersion
         testImplementation group: 'org.intermine', name: 'bio-postprocess-create-chromosome-locations-and-lengths', version: bioVersion
@@ -185,7 +186,7 @@ subprojects {
 
     test {
         // we have a system property that we need to get to the tests
-        systemProperties System.properties
+        systemProperties intermineTestSystemProperties
         ignoreFailures = false
         forkEvery = 1
     }

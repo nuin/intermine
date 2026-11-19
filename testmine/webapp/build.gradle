@@ -118,7 +118,7 @@ task summariseTestObjectStore {
 }
 
 
-task unwarIMWebApp(type: Copy) {
+task unwarIMWebApp(type: Sync) {
     description "Unwar intermine-webapp under the build/explodedWebAppDir directory"
     from { zipTree(configurations.imWebApp.singleFile) }
     destinationDir = new File("$explodedWebAppDir")

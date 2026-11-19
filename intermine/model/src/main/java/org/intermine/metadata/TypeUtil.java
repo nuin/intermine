@@ -34,6 +34,9 @@ import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import javassist.util.proxy.MethodHandler;
+import javassist.util.proxy.Proxy;
+
 import org.intermine.model.FastPathObject;
 
 
@@ -130,7 +133,7 @@ public final class TypeUtil
             try {
                 type = getFieldInfo(o.getClass(), fieldName).getGetter().getReturnType().getName();
             } catch (Exception e3) {
-                // ignore
+                e.addSuppressed(e3);
             }
             IllegalAccessException e2 = new IllegalAccessException("Couldn't proxyGet field \""
                     + o.getClass().getName() + "." + fieldName + "\""
@@ -305,8 +308,10 @@ public final class TypeUtil
                 Method[] methodArray = c.getMethods();
 
                 for (int i = 0; i < methodArray.length; i++) {
-                    String methodName = methodArray[i].getName();
-                    methods.put(methodName, methodArray[i]);
+                    if (!isProxyHandlerMethod(methodArray[i])) {
+                        String methodName = methodArray[i].getName();
+                        methods.put(methodName, methodArray[i]);
+                    }
                 }
 
                 for (String getterName : methods.keySet()) {
@@ -324,10 +329,7 @@ public final class TypeUtil
                             String fieldName = getterName.substring(3);
                             fieldName = StringUtil.reverseCapitalisation(fieldName).intern();
 
-                            // cglib Factory interface has getCallBack() and getCallBacks() methods
                             if ((!"getClass".equals(getter.getName()))
-                                    && (!"getCallback".equals(getter.getName()))
-                                    && (!"getCallbacks".equals(getter.getName()))
                                     && (!"getoBJECT".equals(getter.getName()))
                                     && (!"getFieldValue".equals(getter.getName()))
                                     && (!"getFieldProxy".equals(getter.getName()))
@@ -345,6 +347,17 @@ public final class TypeUtil
             }
         }
         return infos;
+    }
+
+    private static boolean isProxyHandlerMethod(Method method) {
+        if (!Proxy.class.isAssignableFrom(method.getDeclaringClass())) {
+            return false;
+        }
+        return ("getHandler".equals(method.getName())
+                && method.getReturnType() == MethodHandler.class
+                && method.getParameterTypes().length == 0)
+            || ("setHandler".equals(method.getName())
+                && Arrays.equals(method.getParameterTypes(), new Class<?>[] {MethodHandler.class}));
     }
 
     /**
@@ -370,10 +383,9 @@ public final class TypeUtil
         Collection<Method> getters = new HashSet<Method>();
         for (int i = 0; i < pd.length; i++) {
             Method getter = pd[i].getReadMethod();
-            if ((!"getClass".equals(getter.getName()))
+            if (getter != null && !isProxyHandlerMethod(getter)
+                    && (!"getClass".equals(getter.getName()))
                     && (!"getoBJECT".equals(getter.getName()))
-                    && (!"getCallback".equals(getter.getName()))
-                    && (!"getCallbacks".equals(getter.getName()))
                     && (!"getFieldValue".equals(getter.getName()))
                     && (!"getFieldProxy".equals(getter.getName()))
                     && (!"getFieldType".equals(getter.getName()))
@@ -482,13 +494,11 @@ public final class TypeUtil
         if (name.equals(Character.TYPE.toString())) {
             return Character.class;
         }
-        Class<?> cls = null;
         try {
-            cls = Class.forName(name);
+            return Class.forName(name);
         } catch (Exception e) {
-            // do nothing
+            return null;
         }
-        return cls;
     }
 
     /**

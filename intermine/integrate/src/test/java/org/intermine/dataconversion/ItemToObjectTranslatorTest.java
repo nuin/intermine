@@ -185,7 +185,7 @@ public class ItemToObjectTranslatorTest extends QueryTestCase
         assertEquals("Department1", ((Department) result).getName());
         assertEquals(10, ((Broke) result).getDebt());
 
-        Map fieldMap = ((DynamicBean) ((net.sf.cglib.proxy.Factory) result).getCallback(0)).getMap();
+        Map fieldMap = ((DynamicBean) ((javassist.util.proxy.ProxyObject) result).getHandler()).getMap();
         ProxyReference o = (ProxyReference) fieldMap.get("Company");
         assertNotNull(o);
         assertEquals(new Integer(2), o.getId());

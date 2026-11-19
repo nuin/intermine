@@ -126,8 +126,6 @@ public class EntrezGeneIdResolverFactory extends IdResolverFactory
     /**
      * Build an IdResolver from Entrez Gene gene_info file
      * @param taxonId string representing taxonomic identifier
-     * @throws IOException
-     * @throws FileNotFoundException
      */
     protected void createIdResolver(String taxonId) {
         // Don't pass null to asList - java bug (SUN already fixed it???)
