@@ -27,6 +27,7 @@ tasks.test.dependsOn(':intermine-testresources:buildDB')
 dependencies {
     api project(':intermine-model')
     api group: 'commons-lang', name: 'commons-lang', version: '2.6'
-    antlr name: 'antlr-2.7.6-caching'
+    api group: 'antlr', name: 'antlr', version: '2.7.6'
+    antlr files('../libs/antlr-2.7.6-caching.jar')
     runtimeOnly group: 'stax', name: 'stax', version: '1.2.0'
 }

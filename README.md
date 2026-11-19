@@ -37,6 +37,10 @@ For source builds, use Java 21 and Gradle 8.14.7. Java 8 compatibility is retain
 See the [Java migration guide](docs/java21-migration-2026-11-19.md) and
 [build instructions](docs/build-modernization-2026-11-18.md).
 
+Before building testmine directly, run `./gradlew install` in `intermine` so local
+artifacts and their dependency metadata are available. The setup script performs
+this step automatically. See the [runtime dependency audit](docs/runtime-dependencies-2026-11-19.md).
+
 3min bootstrap
 --------------------------------------
 

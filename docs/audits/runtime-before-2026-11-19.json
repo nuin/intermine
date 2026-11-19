@@ -1,0 +1,1753 @@
+{
+  "date": "2026-11-19",
+  "commit": "d803440c877fad78c6708d07a838c16fed9a2171",
+  "war": "testmine/webapp/build/libs/webapp.war",
+  "sha256": "761e6026c378bcf3e388237f0f7d985ea99ca6209df4438a33ef8cd6b8d0c217",
+  "jars": [
+    {
+      "file": "HikariCP-3.2.0.jar",
+      "sha256": "b008de68bbd85811f4b6e8f0860d0966c6acb4f2e75fabd46ec2094569cbefeb",
+      "maven": [
+        {
+          "groupId": "com.zaxxer",
+          "artifactId": "HikariCP",
+          "version": "3.2.0"
+        }
+      ],
+      "resolved": {
+        "groupId": "com.zaxxer",
+        "artifactId": "HikariCP",
+        "version": "3.2.0"
+      }
+    },
+    {
+      "file": "activation-1.1.jar",
+      "sha256": "2881c79c9d6ef01c58e62beea13e9d1ac8b8baa16f2fc198ad6e6776defdcdd3",
+      "maven": [],
+      "resolved": {
+        "groupId": "javax.activation",
+        "artifactId": "activation",
+        "version": "1.1"
+      }
+    },
+    {
+      "file": "ant-1.6.5.jar",
+      "sha256": "f06a601c718a7c9262d74b7ec3baad14c82584e89235089b4f821d6a44d9e1e4",
+      "maven": [],
+      "resolved": {
+        "groupId": "ant",
+        "artifactId": "ant",
+        "version": "1.6.5"
+      }
+    },
+    {
+      "file": "antlr-2.7.2.jar",
+      "sha256": "2a53206963dfa78e33746b6f8367f7d9970fa36865a825d7bfbce1784dc0f4d4",
+      "maven": [],
+      "resolved": {
+        "groupId": "antlr",
+        "artifactId": "antlr",
+        "version": "2.7.2"
+      }
+    },
+    {
+      "file": "antlr-2.7.6.jar",
+      "sha256": "df74f330d36526ff9e717731fd855152fcff51618f0b5785d0049022f89d568b",
+      "maven": [],
+      "resolved": {
+        "groupId": "antlr",
+        "artifactId": "antlr",
+        "version": "2.7.6"
+      }
+    },
+    {
+      "file": "aopalliance-repackaged-2.5.0-b30.jar",
+      "sha256": "09467ab735ab2f83323f9a4bf5dad8b866abc9bab20eb009ff0195b79e8b817b",
+      "maven": [
+        {
+          "groupId": "org.glassfish.hk2.external",
+          "artifactId": "aopalliance-repackaged",
+          "version": "2.5.0-b30"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.glassfish.hk2.external",
+        "artifactId": "aopalliance-repackaged",
+        "version": "2.5.0-b30"
+      }
+    },
+    {
+      "file": "base64-2.3.8.jar",
+      "sha256": "bbf41fda22877a538f6bc2d5ad0aa372a7ddf4a756af3386aa09d3d4eea84f7f",
+      "maven": [
+        {
+          "groupId": "net.iharder",
+          "artifactId": "base64",
+          "version": "2.3.8"
+        }
+      ],
+      "resolved": {
+        "groupId": "net.iharder",
+        "artifactId": "base64",
+        "version": "2.3.8"
+      }
+    },
+    {
+      "file": "commons-beanutils-1.8.0.jar",
+      "sha256": "13543939b86e3bb8339019d6acc08ecb04e4b095a82baf984e505b3afb54742a",
+      "maven": [
+        {
+          "groupId": "commons-beanutils",
+          "artifactId": "commons-beanutils",
+          "version": "1.8.0"
+        }
+      ],
+      "resolved": {
+        "groupId": "commons-beanutils",
+        "artifactId": "commons-beanutils",
+        "version": "1.8.0"
+      }
+    },
+    {
+      "file": "commons-chain-1.2.jar",
+      "sha256": "d5489b5f6b54b74665ad76ad3ffb3ad904830fe4863392784f311897ffcbfca8",
+      "maven": [
+        {
+          "groupId": "commons-chain",
+          "artifactId": "commons-chain",
+          "version": "1.2"
+        }
+      ],
+      "resolved": {
+        "groupId": "commons-chain",
+        "artifactId": "commons-chain",
+        "version": "1.2"
+      }
+    },
+    {
+      "file": "commons-codec-1.15.jar",
+      "sha256": "b3e9f6d63a790109bf0d056611fbed1cf69055826defeb9894a71369d246ed63",
+      "maven": [
+        {
+          "groupId": "commons-codec",
+          "artifactId": "commons-codec",
+          "version": "1.15"
+        }
+      ],
+      "resolved": {
+        "groupId": "commons-codec",
+        "artifactId": "commons-codec",
+        "version": "1.15"
+      }
+    },
+    {
+      "file": "commons-codec-1.9.jar",
+      "sha256": "ad19d2601c3abf0b946b5c3a4113e226a8c1e3305e395b90013b78dd94a723ce",
+      "maven": [
+        {
+          "groupId": "commons-codec",
+          "artifactId": "commons-codec",
+          "version": "1.9"
+        }
+      ],
+      "resolved": {
+        "groupId": "commons-codec",
+        "artifactId": "commons-codec",
+        "version": "1.9"
+      }
+    },
+    {
+      "file": "commons-collections-3.2.jar",
+      "sha256": "093fea360752de55afcb80cf713403eb1a66cb7dc0d529955b6f4a96f975df5c",
+      "maven": [],
+      "resolved": {
+        "groupId": "commons-collections",
+        "artifactId": "commons-collections",
+        "version": "3.2"
+      }
+    },
+    {
+      "file": "commons-digester-1.8.1.jar",
+      "sha256": "b97b72b4201137262215dca60ceb84e6b664bf7fe428a4d62729de0239cafdb6",
+      "maven": [
+        {
+          "groupId": "commons-digester",
+          "artifactId": "commons-digester",
+          "version": "1.8.1"
+        }
+      ],
+      "resolved": {
+        "groupId": "commons-digester",
+        "artifactId": "commons-digester",
+        "version": "1.8.1"
+      }
+    },
+    {
+      "file": "commons-digester-1.8.jar",
+      "sha256": "05662373044f3dff112567b7bb5dfa1174e91e074c0c727b4412788013f49d56",
+      "maven": [],
+      "resolved": {
+        "groupId": "commons-digester",
+        "artifactId": "commons-digester",
+        "version": "1.8"
+      }
+    },
+    {
+      "file": "commons-fileupload-1.2.2.jar",
+      "sha256": "939e5d9a239407f57237b2fb2ad02cefca782905b2ac32f83826a7c4ad083667",
+      "maven": [
+        {
+          "groupId": "commons-fileupload",
+          "artifactId": "commons-fileupload",
+          "version": "1.2.2"
+        }
+      ],
+      "resolved": {
+        "groupId": "commons-fileupload",
+        "artifactId": "commons-fileupload",
+        "version": "1.2.2"
+      }
+    },
+    {
+      "file": "commons-httpclient-3.0.jar",
+      "sha256": "7afd18f30e98c92bf873b64bafeea43b4abdeaba62a4e50e1b6b2d00405ef7ef",
+      "maven": [],
+      "resolved": {
+        "groupId": "commons-httpclient",
+        "artifactId": "commons-httpclient",
+        "version": "3.0"
+      }
+    },
+    {
+      "file": "commons-io-2.11.0.jar",
+      "sha256": "961b2f6d87dbacc5d54abf45ab7a6e2495f89b75598962d8c723cea9bc210908",
+      "maven": [
+        {
+          "groupId": "commons-io",
+          "artifactId": "commons-io",
+          "version": "2.11.0"
+        }
+      ],
+      "resolved": {
+        "groupId": "commons-io",
+        "artifactId": "commons-io",
+        "version": "2.11.0"
+      }
+    },
+    {
+      "file": "commons-lang-2.6.jar",
+      "sha256": "50f11b09f877c294d56f24463f47d28f929cf5044f648661c0f0cfbae9a2f49c",
+      "maven": [
+        {
+          "groupId": "commons-lang",
+          "artifactId": "commons-lang",
+          "version": "2.6"
+        }
+      ],
+      "resolved": {
+        "groupId": "commons-lang",
+        "artifactId": "commons-lang",
+        "version": "2.6"
+      }
+    },
+    {
+      "file": "commons-logging-1.3.5.jar",
+      "sha256": "6d7a744e4027649fbb50895df9497d109f98c766a637062fe8d2eabbb3140ba4",
+      "maven": [
+        {
+          "groupId": "commons-logging",
+          "artifactId": "commons-logging",
+          "version": "1.3.5"
+        }
+      ],
+      "resolved": {
+        "groupId": "commons-logging",
+        "artifactId": "commons-logging",
+        "version": "1.3.5"
+      }
+    },
+    {
+      "file": "commons-math3-3.6.1.jar",
+      "sha256": "1e56d7b058d28b65abd256b8458e3885b674c1d588fa43cd7d1cbb9c7ef2b308",
+      "maven": [
+        {
+          "groupId": "org.apache.commons",
+          "artifactId": "commons-math3",
+          "version": "3.6.1"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.apache.commons",
+        "artifactId": "commons-math3",
+        "version": "3.6.1"
+      }
+    },
+    {
+      "file": "commons-validator-1.3.1.jar",
+      "sha256": "d3680636c84e5cea6bfe43f338f8bab03d6a3e18cc663fc8b671684ef66c0c8d",
+      "maven": [],
+      "resolved": {
+        "groupId": "commons-validator",
+        "artifactId": "commons-validator",
+        "version": "1.3.1"
+      }
+    },
+    {
+      "file": "commons-validator-1.5.1.jar",
+      "sha256": "142f83e56fed6d46d0472779cdbd52cd856894bc5189ac73f3e02b79f84b3dd6",
+      "maven": [
+        {
+          "groupId": "commons-validator",
+          "artifactId": "commons-validator",
+          "version": "1.5.1"
+        }
+      ],
+      "resolved": {
+        "groupId": "commons-validator",
+        "artifactId": "commons-validator",
+        "version": "1.5.1"
+      }
+    },
+    {
+      "file": "dbmodel.jar",
+      "sha256": "4084f289f76c082a7daf4437ad0aac9eedbe0d8e26c893ddfda4fc83af0a08a8",
+      "maven": [],
+      "resolved": {
+        "groupId": "testmine",
+        "artifactId": "dbmodel",
+        "version": "unspecified"
+      }
+    },
+    {
+      "file": "dwr-2.0.1.jar",
+      "sha256": "22a335f4507c88414f40641f80a81a7a0134c4bbb9e03fc149360e02e6fb0f4d",
+      "maven": [],
+      "resolved": {
+        "groupId": "org.directwebremoting",
+        "artifactId": "dwr",
+        "version": "2.0.1"
+      }
+    },
+    {
+      "file": "fastutil-5.0.9.jar",
+      "sha256": "10eff994259e33d6cd62754a4559e078cfc6635e433891b87b113a03d6531a9e",
+      "maven": [],
+      "resolved": {
+        "groupId": "fastutil",
+        "artifactId": "fastutil",
+        "version": "5.0.9"
+      }
+    },
+    {
+      "file": "guava-19.0.jar",
+      "sha256": "58d4cc2e05ebb012bbac568b032f75623be1cb6fb096f3c60c72a86f7f057de4",
+      "maven": [
+        {
+          "groupId": "com.google.guava",
+          "artifactId": "guava",
+          "version": "19.0"
+        }
+      ],
+      "resolved": {
+        "groupId": "com.google.guava",
+        "artifactId": "guava",
+        "version": "19.0"
+      }
+    },
+    {
+      "file": "hk2-api-2.5.0-b30.jar",
+      "sha256": "836ba0e916acd7cd3601c85c25bdf0f5ed3bb3c4c3b23e4b559e5ba6b9dc0968",
+      "maven": [
+        {
+          "groupId": "org.glassfish.hk2",
+          "artifactId": "hk2-api",
+          "version": "2.5.0-b30"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.glassfish.hk2",
+        "artifactId": "hk2-api",
+        "version": "2.5.0-b30"
+      }
+    },
+    {
+      "file": "hk2-locator-2.5.0-b30.jar",
+      "sha256": "bd39489a84819fd33dfd46a74ce4a0c7e2b88d9b5578f5324a66440f49b0fdee",
+      "maven": [
+        {
+          "groupId": "org.glassfish.hk2",
+          "artifactId": "hk2-locator",
+          "version": "2.5.0-b30"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.glassfish.hk2",
+        "artifactId": "hk2-locator",
+        "version": "2.5.0-b30"
+      }
+    },
+    {
+      "file": "hk2-utils-2.5.0-b30.jar",
+      "sha256": "5dfadeafcbe26622d4867c474b162ddf1b154bd6119da2c905cd3c7fca41c3fb",
+      "maven": [
+        {
+          "groupId": "org.jvnet",
+          "artifactId": "tiger-types",
+          "version": "1.4"
+        },
+        {
+          "groupId": "org.glassfish.hk2",
+          "artifactId": "hk2-utils",
+          "version": "2.5.0-b30"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.glassfish.hk2",
+        "artifactId": "hk2-utils",
+        "version": "2.5.0-b30"
+      }
+    },
+    {
+      "file": "http2-client-9.4.53.v20231009.jar",
+      "sha256": "31a086495b0aec03dcbe478df3a9785bde181b4f4ec423e085137247c9bc4410",
+      "maven": [
+        {
+          "groupId": "org.eclipse.jetty.http2",
+          "artifactId": "http2-client",
+          "version": "9.4.53.v20231009"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.eclipse.jetty.http2",
+        "artifactId": "http2-client",
+        "version": "9.4.53.v20231009"
+      }
+    },
+    {
+      "file": "http2-common-9.4.53.v20231009.jar",
+      "sha256": "7ac9ae234cbeb06a32fc4b4e9ff1a57a9c7e30803a3618461f93e507862fe6e4",
+      "maven": [
+        {
+          "groupId": "org.eclipse.jetty.http2",
+          "artifactId": "http2-common",
+          "version": "9.4.53.v20231009"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.eclipse.jetty.http2",
+        "artifactId": "http2-common",
+        "version": "9.4.53.v20231009"
+      }
+    },
+    {
+      "file": "http2-hpack-9.4.53.v20231009.jar",
+      "sha256": "d4573925bc87f86d31df08af661bf75b0adb367699e58b04fc84e182e754e068",
+      "maven": [
+        {
+          "groupId": "org.eclipse.jetty.http2",
+          "artifactId": "http2-hpack",
+          "version": "9.4.53.v20231009"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.eclipse.jetty.http2",
+        "artifactId": "http2-hpack",
+        "version": "9.4.53.v20231009"
+      }
+    },
+    {
+      "file": "http2-http-client-transport-9.4.53.v20231009.jar",
+      "sha256": "6ed66b29fcff6bc5707c3164604d19316ec74f31a97f3699b20caa4299510618",
+      "maven": [
+        {
+          "groupId": "org.eclipse.jetty.http2",
+          "artifactId": "http2-http-client-transport",
+          "version": "9.4.53.v20231009"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.eclipse.jetty.http2",
+        "artifactId": "http2-http-client-transport",
+        "version": "9.4.53.v20231009"
+      }
+    },
+    {
+      "file": "httpclient-4.5.13.jar",
+      "sha256": "6fe9026a566c6a5001608cf3fc32196641f6c1e5e1986d1037ccdbd5f31ef743",
+      "maven": [
+        {
+          "groupId": "org.apache.httpcomponents",
+          "artifactId": "httpclient",
+          "version": "4.5.13"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.apache.httpcomponents",
+        "artifactId": "httpclient",
+        "version": "4.5.13"
+      }
+    },
+    {
+      "file": "httpcore-4.4.14.jar",
+      "sha256": "f956209e450cb1d0c51776dfbd23e53e9dd8db9a1298ed62b70bf0944ba63b28",
+      "maven": [
+        {
+          "groupId": "org.apache.httpcomponents",
+          "artifactId": "httpcore",
+          "version": "4.4.14"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.apache.httpcomponents",
+        "artifactId": "httpcore",
+        "version": "4.4.14"
+      }
+    },
+    {
+      "file": "httpmime-4.5.13.jar",
+      "sha256": "06e754d99245b98dcc2860dcb43d20e737d650da2bf2077a105f68accbd5c5cc",
+      "maven": [
+        {
+          "groupId": "org.apache.httpcomponents",
+          "artifactId": "httpmime",
+          "version": "4.5.13"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.apache.httpcomponents",
+        "artifactId": "httpmime",
+        "version": "4.5.13"
+      }
+    },
+    {
+      "file": "intermine-api-5.1.1.jar",
+      "sha256": "c68397f54175de1489c93bf500676bf573ce45a4183c6e6f867391c9039de2da",
+      "maven": [],
+      "resolved": {
+        "groupId": "org.intermine",
+        "artifactId": "intermine-api",
+        "version": "5.1.1"
+      }
+    },
+    {
+      "file": "intermine-integrate-5.1.1.jar",
+      "sha256": "e81e25b0e023b1337ea4d1b3f5d4dfadb06018c3ca6b18c671a5e83fb14204a3",
+      "maven": [],
+      "resolved": {
+        "groupId": "org.intermine",
+        "artifactId": "intermine-integrate",
+        "version": "5.1.1"
+      }
+    },
+    {
+      "file": "intermine-model-5.1.1.jar",
+      "sha256": "2bffd3f772eceb1d2e0628b17e9e441f4611b7503f1e2a791c860f8239bba4f2",
+      "maven": [],
+      "resolved": {
+        "groupId": "org.intermine",
+        "artifactId": "intermine-model",
+        "version": "5.1.1"
+      }
+    },
+    {
+      "file": "intermine-objectstore-5.1.1.jar",
+      "sha256": "6e426fa020c10c9af30d00da24ad0c1a2abaf9260eee80e07c3127355855d611",
+      "maven": [],
+      "resolved": {
+        "groupId": "org.intermine",
+        "artifactId": "intermine-objectstore",
+        "version": "5.1.1"
+      }
+    },
+    {
+      "file": "intermine-pathquery-5.1.1.jar",
+      "sha256": "0339b0fb21723c132f80a442af97e9f9f2aad042d59bc3f9a0d5e62318faa432",
+      "maven": [],
+      "resolved": {
+        "groupId": "org.intermine",
+        "artifactId": "intermine-pathquery",
+        "version": "5.1.1"
+      }
+    },
+    {
+      "file": "intermine-webapp-5.1.1-classes.jar",
+      "sha256": "d042937fb0d6a82aedac484d8ba26071980d8ed2f195ac391ca6d6975af82a75",
+      "maven": [],
+      "resolved": {
+        "groupId": "org.intermine",
+        "artifactId": "intermine-webapp",
+        "version": "5.1.1"
+      }
+    },
+    {
+      "file": "intermine-webtasks-5.1.1.jar",
+      "sha256": "3463fe82bc3597aa4199e4d2a4bd01df37217699318bb2024185fb7e0be664c1",
+      "maven": [],
+      "resolved": {
+        "groupId": "org.intermine",
+        "artifactId": "intermine-webtasks",
+        "version": "5.1.1"
+      }
+    },
+    {
+      "file": "istack-commons-runtime-3.0.12.jar",
+      "sha256": "27d85fc134c9271d5c79d3300fc4669668f017e72409727c428f54f2417f04cd",
+      "maven": [
+        {
+          "groupId": "com.sun.istack",
+          "artifactId": "istack-commons-runtime",
+          "version": "3.0.12"
+        }
+      ],
+      "resolved": {
+        "groupId": "com.sun.istack",
+        "artifactId": "istack-commons-runtime",
+        "version": "3.0.12"
+      }
+    },
+    {
+      "file": "jackson-jaxrs-base-2.8.4.jar",
+      "sha256": "f33eebc483f6f23a3afb160a5d0199aa9e932f0bd554a2f04ad0e26b3d80e2dc",
+      "maven": [
+        {
+          "groupId": "com.fasterxml.jackson.jaxrs",
+          "artifactId": "jackson-jaxrs-base",
+          "version": "2.8.4"
+        }
+      ],
+      "resolved": {
+        "groupId": "com.fasterxml.jackson.jaxrs",
+        "artifactId": "jackson-jaxrs-base",
+        "version": "2.8.4"
+      }
+    },
+    {
+      "file": "jackson-jaxrs-json-provider-2.8.4.jar",
+      "sha256": "27e4110361836b62e3fdb8909e058518ef2f0e208ee744b4daf4ce2d644726c7",
+      "maven": [
+        {
+          "groupId": "com.fasterxml.jackson.jaxrs",
+          "artifactId": "jackson-jaxrs-json-provider",
+          "version": "2.8.4"
+        }
+      ],
+      "resolved": {
+        "groupId": "com.fasterxml.jackson.jaxrs",
+        "artifactId": "jackson-jaxrs-json-provider",
+        "version": "2.8.4"
+      }
+    },
+    {
+      "file": "jackson-module-jaxb-annotations-2.8.4.jar",
+      "sha256": "07fa24560b69913166d584eb4806e09515e6dd5f2a6858defa1239119466c790",
+      "maven": [
+        {
+          "groupId": "com.fasterxml.jackson.module",
+          "artifactId": "jackson-module-jaxb-annotations",
+          "version": "2.8.4"
+        }
+      ],
+      "resolved": {
+        "groupId": "com.fasterxml.jackson.module",
+        "artifactId": "jackson-module-jaxb-annotations",
+        "version": "2.8.4"
+      }
+    },
+    {
+      "file": "jakarta.activation-1.2.2.jar",
+      "sha256": "02156773e4ae9d048d14a56ad35d644bee9f1052a791d072df3ded3c656e6e1a",
+      "maven": [
+        {
+          "groupId": "com.sun.activation",
+          "artifactId": "jakarta.activation",
+          "version": "1.2.2"
+        }
+      ],
+      "resolved": {
+        "groupId": "com.sun.activation",
+        "artifactId": "jakarta.activation",
+        "version": "1.2.2"
+      }
+    },
+    {
+      "file": "javassist-3.33.0-GA.jar",
+      "sha256": "1620478adc5f4d2eccd356e59513c270f1508bed53ce75deffb3107b7b43db2c",
+      "maven": [
+        {
+          "groupId": "org.javassist",
+          "artifactId": "javassist",
+          "version": "3.33.0-GA"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.javassist",
+        "artifactId": "javassist",
+        "version": "3.33.0-GA"
+      }
+    },
+    {
+      "file": "javax.activation-api-1.2.0.jar",
+      "sha256": "43fdef0b5b6ceb31b0424b208b930c74ab58fac2ceeb7b3f6fd3aeb8b5ca4393",
+      "maven": [
+        {
+          "groupId": "javax.activation",
+          "artifactId": "javax.activation-api",
+          "version": "1.2.0"
+        }
+      ],
+      "resolved": {
+        "groupId": "javax.activation",
+        "artifactId": "javax.activation-api",
+        "version": "1.2.0"
+      }
+    },
+    {
+      "file": "javax.inject-1.jar",
+      "sha256": "91c77044a50c481636c32d916fd89c9118a72195390452c81065080f957de7ff",
+      "maven": [],
+      "resolved": {
+        "groupId": "javax.inject",
+        "artifactId": "javax.inject",
+        "version": "1"
+      }
+    },
+    {
+      "file": "javax.inject-2.5.0-b30.jar",
+      "sha256": "3f8c7b75c0c31760ee525cc0a0e126a32b0d263be6c123c3af11b9336ec31ba5",
+      "maven": [
+        {
+          "groupId": "org.glassfish.hk2.external",
+          "artifactId": "javax.inject",
+          "version": "2.5.0-b30"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.glassfish.hk2.external",
+        "artifactId": "javax.inject",
+        "version": "2.5.0-b30"
+      }
+    },
+    {
+      "file": "javax.servlet-api-3.1.0.jar",
+      "sha256": "af456b2dd41c4e82cf54f3e743bc678973d9fe35bd4d3071fa05c7e5333b8482",
+      "maven": [
+        {
+          "groupId": "javax.servlet",
+          "artifactId": "javax.servlet-api",
+          "version": "3.1.0"
+        }
+      ],
+      "resolved": {
+        "groupId": "javax.servlet",
+        "artifactId": "javax.servlet-api",
+        "version": "3.1.0"
+      }
+    },
+    {
+      "file": "javax.servlet.jsp-api-2.3.1.jar",
+      "sha256": "b1306f5cc721e25e290d2b244af7bfb870a7e072bd32f17350712d1626a74f4b",
+      "maven": [
+        {
+          "groupId": "javax.servlet.jsp",
+          "artifactId": "javax.servlet.jsp-api",
+          "version": "2.3.1"
+        }
+      ],
+      "resolved": {
+        "groupId": "javax.servlet.jsp",
+        "artifactId": "javax.servlet.jsp-api",
+        "version": "2.3.1"
+      }
+    },
+    {
+      "file": "javax.ws.rs-api-2.0.1.jar",
+      "sha256": "38607d626f2288d8fbc1b1f8a62c369e63806d9a313ac7cbc5f9d6c94f4b466d",
+      "maven": [
+        {
+          "groupId": "javax.ws.rs",
+          "artifactId": "javax.ws.rs-api",
+          "version": "2.0.1"
+        }
+      ],
+      "resolved": {
+        "groupId": "javax.ws.rs",
+        "artifactId": "javax.ws.rs-api",
+        "version": "2.0.1"
+      }
+    },
+    {
+      "file": "jaxb-api-2.3.1.jar",
+      "sha256": "88b955a0df57880a26a74708bc34f74dcaf8ebf4e78843a28b50eae945732b06",
+      "maven": [
+        {
+          "groupId": "javax.xml.bind",
+          "artifactId": "jaxb-api",
+          "version": "2.3.1"
+        }
+      ],
+      "resolved": {
+        "groupId": "javax.xml.bind",
+        "artifactId": "jaxb-api",
+        "version": "2.3.1"
+      }
+    },
+    {
+      "file": "jaxb-runtime-2.3.9.jar",
+      "sha256": "ba88e5bde7c0d878c3e1f2ec2fcabaf51d201eaf93b3bb9cfecfc1f11b2304d4",
+      "maven": [
+        {
+          "groupId": "org.glassfish.jaxb",
+          "artifactId": "jaxb-runtime",
+          "version": "2.3.9"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.glassfish.jaxb",
+        "artifactId": "jaxb-runtime",
+        "version": "2.3.9"
+      }
+    },
+    {
+      "file": "jcl-over-slf4j-1.7.36.jar",
+      "sha256": "ab57ca8fd223772c17365d121f59e94ecbf0ae59d08c03a3cb5b81071c019195",
+      "maven": [
+        {
+          "groupId": "org.slf4j",
+          "artifactId": "jcl-over-slf4j",
+          "version": "1.7.36"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.slf4j",
+        "artifactId": "jcl-over-slf4j",
+        "version": "1.7.36"
+      }
+    },
+    {
+      "file": "jersey-client-2.25.jar",
+      "sha256": "a143ccf1a59f8050b295e297e8583fbdafa3fd5a895b09f28b807e8a2492367e",
+      "maven": [
+        {
+          "groupId": "org.glassfish.jersey.core",
+          "artifactId": "jersey-client",
+          "version": "2.25"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.glassfish.jersey.core",
+        "artifactId": "jersey-client",
+        "version": "2.25"
+      }
+    },
+    {
+      "file": "jersey-common-2.25.jar",
+      "sha256": "e47a0b2bd5977fdcdc1c3fae49137202e37b3d87a76d77bcef02d4f82c5338e0",
+      "maven": [
+        {
+          "groupId": "org.glassfish.jersey.core",
+          "artifactId": "jersey-common",
+          "version": "2.25"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.glassfish.jersey.core",
+        "artifactId": "jersey-common",
+        "version": "2.25"
+      }
+    },
+    {
+      "file": "jersey-entity-filtering-2.25.jar",
+      "sha256": "a5014ae03993ccc9c48a0b30cd207b7ee275278556273bd162b1bff7864772a1",
+      "maven": [
+        {
+          "groupId": "org.glassfish.jersey.ext",
+          "artifactId": "jersey-entity-filtering",
+          "version": "2.25"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.glassfish.jersey.ext",
+        "artifactId": "jersey-entity-filtering",
+        "version": "2.25"
+      }
+    },
+    {
+      "file": "jersey-guava-2.25.jar",
+      "sha256": "df1f638adaf00064ca2e44f53d9395ec3373c23664c71a064912bb0d6080270a",
+      "maven": [
+        {
+          "groupId": "org.glassfish.jersey.bundles.repackaged",
+          "artifactId": "jersey-guava",
+          "version": "2.25"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.glassfish.jersey.bundles.repackaged",
+        "artifactId": "jersey-guava",
+        "version": "2.25"
+      }
+    },
+    {
+      "file": "jersey-media-json-jackson-2.25.jar",
+      "sha256": "a77a041220517ed8843e65ed03873ae22fe68443f1535e9f7f4d2c6e78378618",
+      "maven": [
+        {
+          "groupId": "org.glassfish.jersey.media",
+          "artifactId": "jersey-media-json-jackson",
+          "version": "2.25"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.glassfish.jersey.media",
+        "artifactId": "jersey-media-json-jackson",
+        "version": "2.25"
+      }
+    },
+    {
+      "file": "jetty-alpn-client-9.4.53.v20231009.jar",
+      "sha256": "d28732d58add71647c01c9892d481eb30053d8327afad24a31645b22c2fc5c1c",
+      "maven": [
+        {
+          "groupId": "org.eclipse.jetty",
+          "artifactId": "jetty-alpn-client",
+          "version": "9.4.53.v20231009"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.eclipse.jetty",
+        "artifactId": "jetty-alpn-client",
+        "version": "9.4.53.v20231009"
+      }
+    },
+    {
+      "file": "jetty-alpn-java-client-9.4.53.v20231009.jar",
+      "sha256": "6a52f75aa20153bdd6dd6563df312c30893b3e5d9f9d9281ecaecd63cec09a06",
+      "maven": [
+        {
+          "groupId": "org.eclipse.jetty",
+          "artifactId": "jetty-alpn-java-client",
+          "version": "9.4.53.v20231009"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.eclipse.jetty",
+        "artifactId": "jetty-alpn-java-client",
+        "version": "9.4.53.v20231009"
+      }
+    },
+    {
+      "file": "jetty-client-9.4.53.v20231009.jar",
+      "sha256": "9f5b83f64307bbb5d42dd4273e88d642214b275490363bac954369f029643c66",
+      "maven": [
+        {
+          "groupId": "org.eclipse.jetty",
+          "artifactId": "jetty-client",
+          "version": "9.4.53.v20231009"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.eclipse.jetty",
+        "artifactId": "jetty-client",
+        "version": "9.4.53.v20231009"
+      }
+    },
+    {
+      "file": "jetty-http-9.4.53.v20231009.jar",
+      "sha256": "c0a0cbd25998a13ce68481d6002757e6489ea0253463db761fec0cb30d15d612",
+      "maven": [
+        {
+          "groupId": "org.eclipse.jetty",
+          "artifactId": "jetty-http",
+          "version": "9.4.53.v20231009"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.eclipse.jetty",
+        "artifactId": "jetty-http",
+        "version": "9.4.53.v20231009"
+      }
+    },
+    {
+      "file": "jetty-io-9.4.53.v20231009.jar",
+      "sha256": "779a91750a60957c613ce5013404269717c504c2b21f3a73145e81c3dc41c67f",
+      "maven": [
+        {
+          "groupId": "org.eclipse.jetty",
+          "artifactId": "jetty-io",
+          "version": "9.4.53.v20231009"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.eclipse.jetty",
+        "artifactId": "jetty-io",
+        "version": "9.4.53.v20231009"
+      }
+    },
+    {
+      "file": "jetty-util-9.4.53.v20231009.jar",
+      "sha256": "7e5370022ecd1f682653641169a33e62e26730dd1e786433bed506cb0dcb1abc",
+      "maven": [
+        {
+          "groupId": "org.eclipse.jetty",
+          "artifactId": "jetty-util",
+          "version": "9.4.53.v20231009"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.eclipse.jetty",
+        "artifactId": "jetty-util",
+        "version": "9.4.53.v20231009"
+      }
+    },
+    {
+      "file": "json-20170516.jar",
+      "sha256": "813f37e4820f1854e8a4eb4f80df94bf1b1f2ec6c3b72692f23ab9a556256af6",
+      "maven": [
+        {
+          "groupId": "org.json",
+          "artifactId": "json",
+          "version": "20170516"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.json",
+        "artifactId": "json",
+        "version": "20170516"
+      }
+    },
+    {
+      "file": "jstl-1.2.jar",
+      "sha256": "c6273119354a41522877e663582041012b22f8204fe72bba337ed84c7e649b0a",
+      "maven": [],
+      "resolved": {
+        "groupId": "javax.servlet",
+        "artifactId": "jstl",
+        "version": "1.2"
+      }
+    },
+    {
+      "file": "junit-3.8.1.jar",
+      "sha256": "b58e459509e190bed737f3592bc1950485322846cf10e78ded1d065153012d70",
+      "maven": [],
+      "resolved": {
+        "groupId": "junit",
+        "artifactId": "junit",
+        "version": "3.8.1"
+      }
+    },
+    {
+      "file": "lucene-analyzers-3.0.2.jar",
+      "sha256": "b38380a2c0ccb39628a10a54911f1b0e6d2f5018e2c3a6a197c346cd76ca9b74",
+      "maven": [],
+      "resolved": {
+        "groupId": "org.apache.lucene",
+        "artifactId": "lucene-analyzers",
+        "version": "3.0.2"
+      }
+    },
+    {
+      "file": "lucene-core-3.0.2.jar",
+      "sha256": "d8251f9aaa13180b0083a037463dc4ea929805d8410e58c234d5307364bf8496",
+      "maven": [],
+      "resolved": {
+        "groupId": "org.apache.lucene",
+        "artifactId": "lucene-core",
+        "version": "3.0.2"
+      }
+    },
+    {
+      "file": "lucene-snowball-3.0.2.jar",
+      "sha256": "5fcfd6b96013204b91824c3d3cae90e40a225e04bc81449756162d5fc10bfa61",
+      "maven": [],
+      "resolved": {
+        "groupId": "org.apache.lucene",
+        "artifactId": "lucene-snowball",
+        "version": "3.0.2"
+      }
+    },
+    {
+      "file": "mail-1.4.jar",
+      "sha256": "96868f82264ebd9b7d41f04d78cbe87ab75d68a7bbf8edfb82416aabe9b54b6c",
+      "maven": [],
+      "resolved": {
+        "groupId": "javax.mail",
+        "artifactId": "mail",
+        "version": "1.4"
+      }
+    },
+    {
+      "file": "netty-buffer-4.1.99.Final.jar",
+      "sha256": "a144d6807e51ab451f6c9b2acd5b729f1a10bb6c192890403f5df73c9b10ee3e",
+      "maven": [
+        {
+          "groupId": "io.netty",
+          "artifactId": "netty-buffer",
+          "version": "4.1.99.Final"
+        }
+      ],
+      "resolved": {
+        "groupId": "io.netty",
+        "artifactId": "netty-buffer",
+        "version": "4.1.99.Final"
+      }
+    },
+    {
+      "file": "netty-codec-4.1.99.Final.jar",
+      "sha256": "822a998126408411feef09cf5f51fafee21895f3312d9f8ede77f5978ae28c4f",
+      "maven": [
+        {
+          "groupId": "io.netty",
+          "artifactId": "netty-codec",
+          "version": "4.1.99.Final"
+        }
+      ],
+      "resolved": {
+        "groupId": "io.netty",
+        "artifactId": "netty-codec",
+        "version": "4.1.99.Final"
+      }
+    },
+    {
+      "file": "netty-common-4.1.99.Final.jar",
+      "sha256": "65fb8f86768f458703f98a5e04cb543d9bf360c0dcc83396cf6c09be51f9f534",
+      "maven": [
+        {
+          "groupId": "io.netty",
+          "artifactId": "netty-common",
+          "version": "4.1.99.Final"
+        },
+        {
+          "groupId": "org.jctools",
+          "artifactId": "jctools-core",
+          "version": "3.1.0"
+        }
+      ],
+      "resolved": {
+        "groupId": "io.netty",
+        "artifactId": "netty-common",
+        "version": "4.1.99.Final"
+      }
+    },
+    {
+      "file": "netty-handler-4.1.99.Final.jar",
+      "sha256": "f3988be5dffb5a99a2b05741b46df1ff0f1d911da6185c87596b0ffb5734e751",
+      "maven": [
+        {
+          "groupId": "io.netty",
+          "artifactId": "netty-handler",
+          "version": "4.1.99.Final"
+        }
+      ],
+      "resolved": {
+        "groupId": "io.netty",
+        "artifactId": "netty-handler",
+        "version": "4.1.99.Final"
+      }
+    },
+    {
+      "file": "netty-resolver-4.1.99.Final.jar",
+      "sha256": "e228b16f97b1d0c95df0893055b9b57faf2f1d7afc8508a74877018d00d1da27",
+      "maven": [
+        {
+          "groupId": "io.netty",
+          "artifactId": "netty-resolver",
+          "version": "4.1.99.Final"
+        }
+      ],
+      "resolved": {
+        "groupId": "io.netty",
+        "artifactId": "netty-resolver",
+        "version": "4.1.99.Final"
+      }
+    },
+    {
+      "file": "netty-transport-4.1.99.Final.jar",
+      "sha256": "ceab3b2e7a92f4f152cf9cb9c4fc732e54091c9d2c128170131e5ffd9ee16329",
+      "maven": [
+        {
+          "groupId": "io.netty",
+          "artifactId": "netty-transport",
+          "version": "4.1.99.Final"
+        }
+      ],
+      "resolved": {
+        "groupId": "io.netty",
+        "artifactId": "netty-transport",
+        "version": "4.1.99.Final"
+      }
+    },
+    {
+      "file": "netty-transport-classes-epoll-4.1.99.Final.jar",
+      "sha256": "8fff8c2e4b361b0144de2f73580133270123c35c4949ebfeb7e7c83e643fedbd",
+      "maven": [
+        {
+          "groupId": "io.netty",
+          "artifactId": "netty-transport-classes-epoll",
+          "version": "4.1.99.Final"
+        }
+      ],
+      "resolved": {
+        "groupId": "io.netty",
+        "artifactId": "netty-transport-classes-epoll",
+        "version": "4.1.99.Final"
+      }
+    },
+    {
+      "file": "netty-transport-native-epoll-4.1.99.Final.jar",
+      "sha256": "99d5210e0a3c69ac72c5daedb0d10a736bca43d6e659c8376cc02ae5d4e01b5c",
+      "maven": [
+        {
+          "groupId": "io.netty",
+          "artifactId": "netty-transport-native-epoll",
+          "version": "4.1.99.Final"
+        }
+      ],
+      "resolved": {
+        "groupId": "io.netty",
+        "artifactId": "netty-transport-native-epoll",
+        "version": "4.1.99.Final"
+      }
+    },
+    {
+      "file": "netty-transport-native-unix-common-4.1.99.Final.jar",
+      "sha256": "723dc7beba85250900d4005a83fcd02cdfcec41b5a57d9ca16b84052f56939dc",
+      "maven": [
+        {
+          "groupId": "io.netty",
+          "artifactId": "netty-transport-native-unix-common",
+          "version": "4.1.99.Final"
+        }
+      ],
+      "resolved": {
+        "groupId": "io.netty",
+        "artifactId": "netty-transport-native-unix-common",
+        "version": "4.1.99.Final"
+      }
+    },
+    {
+      "file": "org.apache.oltu.oauth2.client-1.0.1.jar",
+      "sha256": "8838e5bea946c03a2103f68faa685cb7081ef6531bee762b4421e9ee7abcc476",
+      "maven": [
+        {
+          "groupId": "org.apache.oltu.oauth2",
+          "artifactId": "org.apache.oltu.oauth2.client",
+          "version": "1.0.1"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.apache.oltu.oauth2",
+        "artifactId": "org.apache.oltu.oauth2.client",
+        "version": "1.0.1"
+      }
+    },
+    {
+      "file": "org.apache.oltu.oauth2.common-1.0.1.jar",
+      "sha256": "71a5b39c3a740509056fbdbc2fabaf48e52ce6404ae5e7776dcc59a7ea866dd9",
+      "maven": [
+        {
+          "groupId": "org.apache.oltu.oauth2",
+          "artifactId": "org.apache.oltu.oauth2.common",
+          "version": "1.0.1"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.apache.oltu.oauth2",
+        "artifactId": "org.apache.oltu.oauth2.common",
+        "version": "1.0.1"
+      }
+    },
+    {
+      "file": "org.everit.json.schema-1.5.1.jar",
+      "sha256": "34d617d01debeda2c70a7864c4ac7b398f4ebc1c2d27735dec5186a73ddc3760",
+      "maven": [
+        {
+          "groupId": "org.everit.json",
+          "artifactId": "org.everit.json.schema",
+          "version": "1.5.1"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.everit.json",
+        "artifactId": "org.everit.json.schema",
+        "version": "1.5.1"
+      }
+    },
+    {
+      "file": "oro-2.0.8.jar",
+      "sha256": "e00ccdad5df7eb43fdee44232ef64602bf63807c2d133a7be83ba09fd49af26e",
+      "maven": [],
+      "resolved": {
+        "groupId": "oro",
+        "artifactId": "oro",
+        "version": "2.0.8"
+      }
+    },
+    {
+      "file": "osgi-resource-locator-1.0.1.jar",
+      "sha256": "775003be577e8806f51b6e442be1033d83be2cb2207227b349be0bf16e6c0843",
+      "maven": [
+        {
+          "groupId": "org.glassfish.hk2",
+          "artifactId": "osgi-resource-locator",
+          "version": "1.0.1"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.glassfish.hk2",
+        "artifactId": "osgi-resource-locator",
+        "version": "1.0.1"
+      }
+    },
+    {
+      "file": "postgresql-42.2.2.jar",
+      "sha256": "1996524026a3027853f3932e8639ef813807d1b63fe14832f410fffa4274fa70",
+      "maven": [
+        {
+          "groupId": "org.postgresql",
+          "artifactId": "postgresql",
+          "version": "42.2.2"
+        },
+        {
+          "groupId": "com.ongres.scram",
+          "artifactId": "client",
+          "version": "1.0.0-beta.2"
+        },
+        {
+          "groupId": "com.ongres.scram",
+          "artifactId": "common",
+          "version": "1.0.0-beta.2"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.postgresql",
+        "artifactId": "postgresql",
+        "version": "42.2.2"
+      }
+    },
+    {
+      "file": "reload4j-1.2.22.jar",
+      "sha256": "222f90d3e69541218ef6e70547749d693bd4c1846817e5bd7949b3e28950f99f",
+      "maven": [
+        {
+          "groupId": "ch.qos.reload4j",
+          "artifactId": "reload4j",
+          "version": "1.2.22"
+        }
+      ],
+      "resolved": {
+        "groupId": "ch.qos.reload4j",
+        "artifactId": "reload4j",
+        "version": "1.2.22"
+      }
+    },
+    {
+      "file": "slf4j-api-1.7.36.jar",
+      "sha256": "d3ef575e3e4979678dc01bf1dcce51021493b4d11fb7f1be8ad982877c16a1c0",
+      "maven": [
+        {
+          "groupId": "org.slf4j",
+          "artifactId": "slf4j-api",
+          "version": "1.7.36"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.slf4j",
+        "artifactId": "slf4j-api",
+        "version": "1.7.36"
+      }
+    },
+    {
+      "file": "slf4j-reload4j-1.7.36.jar",
+      "sha256": "ae6fdd5c9547896114d5ec7fa7503733b7d2890573d3886fb548b3119c4d3f67",
+      "maven": [
+        {
+          "groupId": "org.slf4j",
+          "artifactId": "slf4j-reload4j",
+          "version": "1.7.36"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.slf4j",
+        "artifactId": "slf4j-reload4j",
+        "version": "1.7.36"
+      }
+    },
+    {
+      "file": "snappy-java-1.1.10.1.jar",
+      "sha256": "5a6224cb7f946f5a7db9c77e86af6ccd43ba5ae38b1a15bea23113cc83f8fabd",
+      "maven": [],
+      "resolved": {
+        "groupId": "org.xerial.snappy",
+        "artifactId": "snappy-java",
+        "version": "1.1.10.1"
+      }
+    },
+    {
+      "file": "solr-solrj-8.11.4.jar",
+      "sha256": "b274e65f3607224b3337e9fc797137d8093c7981bcb54b695644dfd5d2242517",
+      "maven": [],
+      "resolved": {
+        "groupId": "org.apache.solr",
+        "artifactId": "solr-solrj",
+        "version": "8.11.4"
+      }
+    },
+    {
+      "file": "stax2-api-4.2.1.jar",
+      "sha256": "678567e48b51a42c65c699f266539ad3d676d4b1a5b0ad7d89ece8b9d5772579",
+      "maven": [
+        {
+          "groupId": "org.codehaus.woodstox",
+          "artifactId": "stax2-api",
+          "version": "4.2.1"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.codehaus.woodstox",
+        "artifactId": "stax2-api",
+        "version": "4.2.1"
+      }
+    },
+    {
+      "file": "string-1.1.0.jar",
+      "sha256": "f453e157ca4711f838eca7752fbd6fb21c88db1cdc6fb9f70d49ed4fbd93a66d",
+      "maven": [],
+      "resolved": {
+        "groupId": "taglibs",
+        "artifactId": "string",
+        "version": "1.1.0"
+      }
+    },
+    {
+      "file": "stringtree-json-2.0.5.jar",
+      "sha256": "28bb7d590dd3e8179fcdcb0328562f1b1d4f794322555e5e88bbc3b859ee08fa",
+      "maven": []
+    },
+    {
+      "file": "struts-core-1.3.10.jar",
+      "sha256": "2974f8de85382f119509e455407640dc74071dadc20d0a6f4d66f0026b5be6bb",
+      "maven": [
+        {
+          "groupId": "org.apache.struts",
+          "artifactId": "struts-core",
+          "version": "1.3.10"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.apache.struts",
+        "artifactId": "struts-core",
+        "version": "1.3.10"
+      }
+    },
+    {
+      "file": "struts-extras-1.3.10.jar",
+      "sha256": "a5f60d351a4ba50def2f1dff8a8b035b9a706475f59f53f06a1f56f0442572e8",
+      "maven": [
+        {
+          "groupId": "org.apache.struts",
+          "artifactId": "struts-extras",
+          "version": "1.3.10"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.apache.struts",
+        "artifactId": "struts-extras",
+        "version": "1.3.10"
+      }
+    },
+    {
+      "file": "struts-taglib-1.3.10.jar",
+      "sha256": "6aededa9c434f4e02bc0241db2481accfce50b573e5b68d84b8f6dd9efe58768",
+      "maven": [
+        {
+          "groupId": "org.apache.struts",
+          "artifactId": "struts-taglib",
+          "version": "1.3.10"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.apache.struts",
+        "artifactId": "struts-taglib",
+        "version": "1.3.10"
+      }
+    },
+    {
+      "file": "struts-tiles-1.3.10.jar",
+      "sha256": "ad0c3941a82f016ddf3130a6f6f4bee9d07c1c0b1e2ea41fcb1b62d87eacf28d",
+      "maven": [
+        {
+          "groupId": "org.apache.struts",
+          "artifactId": "struts-tiles",
+          "version": "1.3.10"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.apache.struts",
+        "artifactId": "struts-tiles",
+        "version": "1.3.10"
+      }
+    },
+    {
+      "file": "txw2-2.3.9.jar",
+      "sha256": "973018b87af911ecf6e6d861dd0d6a477e4d8ae6a883ec5d073d3df1330b87f0",
+      "maven": [
+        {
+          "groupId": "org.glassfish.jaxb",
+          "artifactId": "txw2",
+          "version": "2.3.9"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.glassfish.jaxb",
+        "artifactId": "txw2",
+        "version": "2.3.9"
+      }
+    },
+    {
+      "file": "woodstox-core-6.5.1.jar",
+      "sha256": "c928d60665c6415fb1c39775cf95cfc44f7f4580cf5ab01b1c380ebffd76887f",
+      "maven": [
+        {
+          "groupId": "com.fasterxml.woodstox",
+          "artifactId": "woodstox-core",
+          "version": "6.5.1"
+        },
+        {
+          "groupId": "com.sun.xml.bind.jaxb",
+          "artifactId": "isorelax",
+          "version": "20090621"
+        },
+        {
+          "groupId": "net.java.dev.msv",
+          "artifactId": "xsdlib",
+          "version": "2013.6.1"
+        }
+      ],
+      "resolved": {
+        "groupId": "com.fasterxml.woodstox",
+        "artifactId": "woodstox-core",
+        "version": "6.5.1"
+      }
+    },
+    {
+      "file": "zookeeper-3.6.2.jar",
+      "sha256": "68294c8f41552add34d92181edf18d6e40ad949113c73a50518818a05ac95d76",
+      "maven": [
+        {
+          "groupId": "org.apache.zookeeper",
+          "artifactId": "zookeeper",
+          "version": "3.6.2"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.apache.zookeeper",
+        "artifactId": "zookeeper",
+        "version": "3.6.2"
+      }
+    },
+    {
+      "file": "zookeeper-jute-3.6.2.jar",
+      "sha256": "f95a9c95598daffc707ec074411e4b52eef3e7426cedd3e4b3cb1b982e8c783f",
+      "maven": [
+        {
+          "groupId": "org.apache.zookeeper",
+          "artifactId": "zookeeper-jute",
+          "version": "3.6.2"
+        }
+      ],
+      "resolved": {
+        "groupId": "org.apache.zookeeper",
+        "artifactId": "zookeeper-jute",
+        "version": "3.6.2"
+      }
+    }
+  ],
+  "advisory_matches": [
+    {
+      "package": "com.google.guava:guava",
+      "version": "19.0",
+      "ids": [
+        "GHSA-5mg8-w23w-74h3",
+        "GHSA-7g45-4rm6-3mm3",
+        "GHSA-mvr2-9pj6-7w5j",
+        "GHSA-xxph-c9ww-hj94"
+      ]
+    },
+    {
+      "package": "commons-beanutils:commons-beanutils",
+      "version": "1.8.0",
+      "ids": [
+        "GHSA-6phf-73q6-gh87",
+        "GHSA-p66x-2cv9-qq3v",
+        "GHSA-wxr5-93ph-8wr9"
+      ]
+    },
+    {
+      "package": "commons-collections:commons-collections",
+      "version": "3.2",
+      "ids": [
+        "GHSA-6hgm-866r-3cjv",
+        "GHSA-fjq5-5j5f-mvxh"
+      ]
+    },
+    {
+      "package": "commons-fileupload:commons-fileupload",
+      "version": "1.2.2",
+      "ids": [
+        "GHSA-7x9j-7223-rg5m",
+        "GHSA-fvm3-cfvj-gxqq",
+        "GHSA-hfrx-6qgj-fp6c",
+        "GHSA-qx6h-9567-5fqw",
+        "GHSA-vv7r-c36w-3prj",
+        "GHSA-xx68-jfcg-xmmf"
+      ]
+    },
+    {
+      "package": "commons-httpclient:commons-httpclient",
+      "version": "3.0",
+      "ids": [
+        "GHSA-3832-9276-x7gf"
+      ]
+    },
+    {
+      "package": "commons-io:commons-io",
+      "version": "2.11.0",
+      "ids": [
+        "GHSA-78wr-2p64-hpwj"
+      ]
+    },
+    {
+      "package": "commons-lang:commons-lang",
+      "version": "2.6",
+      "ids": [
+        "GHSA-j288-q9x7-2f5v"
+      ]
+    },
+    {
+      "package": "io.netty:netty-codec",
+      "version": "4.1.99.Final",
+      "ids": [
+        "GHSA-3p8m-j85q-pgmj",
+        "GHSA-558v-64gr-wgg4",
+        "GHSA-mj4r-2hfc-f8p6"
+      ]
+    },
+    {
+      "package": "io.netty:netty-common",
+      "version": "4.1.99.Final",
+      "ids": [
+        "GHSA-389x-839f-4rhx",
+        "GHSA-xq3w-v528-46rv"
+      ]
+    },
+    {
+      "package": "io.netty:netty-handler",
+      "version": "4.1.99.Final",
+      "ids": [
+        "GHSA-3qp7-7mw8-wx86",
+        "GHSA-4g8c-wm8x-jfhw",
+        "GHSA-c4c3-7fpv-j4q5",
+        "GHSA-c653-97m9-rcg9",
+        "GHSA-fccg-mwvh-qqg4",
+        "GHSA-x4gw-5cx5-pgmh"
+      ]
+    },
+    {
+      "package": "io.netty:netty-transport-native-epoll",
+      "version": "4.1.99.Final",
+      "ids": [
+        "GHSA-w573-9ffj-6ff9"
+      ]
+    },
+    {
+      "package": "org.apache.struts:struts-core",
+      "version": "1.3.10",
+      "ids": [
+        "GHSA-4g42-gqrg-4633",
+        "GHSA-5ggr-mpgw-3mgx",
+        "GHSA-7jw3-5q4w-89qg",
+        "GHSA-cvvx-r33m-v7pq"
+      ]
+    },
+    {
+      "package": "org.apache.struts:struts-extras",
+      "version": "1.3.10",
+      "ids": [
+        "GHSA-cx25-xg7c-xfm5"
+      ]
+    },
+    {
+      "package": "org.apache.struts:struts-tiles",
+      "version": "1.3.10",
+      "ids": [
+        "GHSA-qw4h-3xjj-84cc"
+      ]
+    },
+    {
+      "package": "org.apache.zookeeper:zookeeper",
+      "version": "3.6.2",
+      "ids": [
+        "GHSA-7286-pgfv-vxvh",
+        "GHSA-r978-9m6m-6gm6"
+      ]
+    },
+    {
+      "package": "org.directwebremoting:dwr",
+      "version": "2.0.1",
+      "ids": [
+        "GHSA-hqw5-62gp-rqgm",
+        "GHSA-q5v2-2v66-6hwm"
+      ]
+    },
+    {
+      "package": "org.eclipse.jetty.http2:http2-common",
+      "version": "9.4.53.v20231009",
+      "ids": [
+        "GHSA-mmxm-8w33-wc4h",
+        "GHSA-rggv-cv7r-mw98"
+      ]
+    },
+    {
+      "package": "org.eclipse.jetty:jetty-http",
+      "version": "9.4.53.v20231009",
+      "ids": [
+        "GHSA-355h-qmc2-wpwf",
+        "GHSA-qh8g-58pp-2wxh",
+        "GHSA-wjpw-4j6x-6rwh"
+      ]
+    },
+    {
+      "package": "org.json:json",
+      "version": "20170516",
+      "ids": [
+        "GHSA-3vqj-43w4-2q58",
+        "GHSA-4jq9-2xhw-jpx7",
+        "GHSA-ghc9-756g-vrcv"
+      ]
+    },
+    {
+      "package": "org.postgresql:postgresql",
+      "version": "42.2.2",
+      "ids": [
+        "GHSA-24rp-q3w6-vc56",
+        "GHSA-562r-vg33-8x8h",
+        "GHSA-673j-qm5f-xpv8",
+        "GHSA-727h-hrw8-jg8q",
+        "GHSA-88cc-g835-76rp",
+        "GHSA-98qh-xjc8-98pq",
+        "GHSA-r38f-c4h4-hqq2",
+        "GHSA-v7wg-cpwc-24m4"
+      ]
+    },
+    {
+      "package": "org.xerial.snappy:snappy-java",
+      "version": "1.1.10.1",
+      "ids": [
+        "GHSA-55g7-9cwv-5qfv",
+        "GHSA-gwq9-9ffj-mvrv",
+        "GHSA-q233-g92q-qxp6",
+        "GHSA-xqrx-qh46-34m7"
+      ]
+    }
+  ]
+}

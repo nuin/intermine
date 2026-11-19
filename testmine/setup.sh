@@ -107,4 +107,7 @@ echo "------> Running ./gradlew cargoRunLocal"
 
 wait-for-it "${SERVER}:${PORT}" --timeout=300
 
+"${PYTHON:-python3}" "${WORKSPACE_DIR}/config/lib/verify_war.py" \
+    "${TESTMINE_DIR}/webapp/build/libs/webapp.war"
+
 echo "------> Finished"

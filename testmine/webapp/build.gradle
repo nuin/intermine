@@ -53,7 +53,7 @@ dependencies {
     api group: 'javax.mail', name: 'mail', version: '1.4'
     api group: 'org.directwebremoting', name: 'dwr', version: '2.0.1'
     runtimeOnly group: 'commons-codec', name: 'commons-codec', version: '1.9'
-    runtimeOnly group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.3.1'
+    providedCompile group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.3.1'
     runtimeOnly group: 'taglibs', name: 'string', version: '1.1.0'
     runtimeOnly group: 'commons-httpclient', name: 'commons-httpclient', version: '3.0'
     runtimeOnly group: 'commons-fileupload', name: 'commons-fileupload', version: '1.2.2'
@@ -75,7 +75,14 @@ tasks.register('copyModelProperties') {
 war {
     dependsOn 'mergeProperties', 'summariseTestObjectStore', 'unwarIMWebApp'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from "${explodedWebAppDir}"
+    from(explodedWebAppDir) {
+        exclude "WEB-INF/lib/**"
+    }
+    // File dependencies have no Maven metadata; retain the core's vendored JSON library.
+    from("${explodedWebAppDir}/WEB-INF/lib") {
+        include "stringtree-json-2.0.5.jar"
+        into "WEB-INF/lib"
+    }
     exclude "WEB-INF/web.properties"
     webInf { from "${mergePropsDir}" }
 }
