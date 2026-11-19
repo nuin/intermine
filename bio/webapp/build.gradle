@@ -49,7 +49,7 @@ dependencies {
     imWebApp group: "org.intermine", name: "intermine-webapp", version: System.getProperty("imVersion"), transitive: false, ext: "war"
 }
 
-task unwarIMWebApp(type: Copy) {
+task unwarIMWebApp(type: Sync) {
     description "Unwar intermine-webapp under the build/explodedWebAppDir directory"
     from { zipTree(configurations.imWebApp.singleFile) }
     destinationDir = new File("$explodedWebAppDir")

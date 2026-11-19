@@ -20,6 +20,8 @@ Before version upgrades, the corrected WAR contains 139 JARs and 138 external Ma
 
 `python3 config/lib/verify_war.py testmine/webapp/build/libs/webapp.war` checks one provider for 14 critical runtime classes, including JAXB and StringTree, and rejects bundled servlet/JSP APIs. The setup script runs this gate after deployment. This is a targeted packaging check, not a complete duplicate-class or vulnerability scanner.
 
+The bio core-WAR overlay now uses `Sync`, matching testmine's extraction behavior. An incremental build retained 11 files absent from the current core WAR, including old FileUpload, Jackson, Guava, ANTLR, Javassist and servlet API JARs. After synchronization, all 1,924 overlay files exactly match the current core WAR, with no obsolete entries. The bio WAR is an intermediate overlay with provided libraries, so the complete testmine-WAR class gate is not applicable to it. Downstream mine assemblies still need their own inventory.
+
 ## Compatible upgrade batch
 
 The selected releases retain the existing package namespaces and Java 8 support:
@@ -49,6 +51,23 @@ Xalan 2.7.3's published POM omits its serializer dependency. The existing profil
 
 FileUpload's file-count limit is opt-in; updating the library alone does not configure limits in Struts' multipart handler. The remaining Struts work must cover request size, part-count limits, and error handling rather than treating a clean package-version lookup as sufficient protection.
 
+## Post-upgrade artifact audit
+
+The [final inventory](audits/runtime-after-2026-11-19.json) records 145 JARs, their SHA-256 hashes, and 141 external Maven package/version queries from the assembled testmine WAR. Its SHA-256 is `7c5b7e896e0faf4d14bba70916f3e3f1368bd4b3e4a67bc5b7b14d53491b9082`. OSV returned 34 unique advisory IDs across 15 versions, with no pagination. That removes 57 IDs from the corrected pre-upgrade graph and adds none. The initial incomplete WAR had 60 IDs; the graph correction first raised that count to 91 by restoring required transitive libraries.
+
+| Remaining package family | Versions with matches | Matched IDs per artifact |
+| --- | --- | --- |
+| Commons HttpClient / Lang 2 | 3.0 / 2.6 | 1 / 1 |
+| Netty codec / common / handler / native epoll | 4.1.99.Final | 3 / 2 / 6 / 1 |
+| Jena core / Thrift | 3.16.0 / 0.13.0 | 1 / 4 |
+| Struts core / extras / tiles | 1.3.10 | 4 / 1 / 1 |
+| ZooKeeper / DWR | 3.6.2 / 2.0.1 | 2 / 2 |
+| Jetty HTTP2 common / HTTP | 9.4.53.v20231009 | 2 / 3 |
+
+Per-artifact counts can share advisory IDs; the distinct total is 34. No selected upgraded package/version matched the OSV response on this date. These are database matches, not proof of exploitability or a guarantee that other libraries are safe.
+
+A class-file scan found one pre-existing Java 9 transport provider, `jetty-alpn-java-client`, alongside Java 8-compatible base classes elsewhere (excluding module descriptors and multi-release entries). [Jetty loads ALPN providers conditionally](https://github.com/jetty/jetty.project/blob/jetty-9.4.53.v20231009/jetty-alpn/jetty-alpn-client/src/main/java/org/eclipse/jetty/alpn/client/ALPNClientConnectionFactory.java) and handles unavailable providers. The full Java 8 test result covers the exercised InterMine paths; it is not a claim that every optional transport or every class in the WAR runs on Java 8.
+
 ## Remaining support work
 
 - **Struts 1, Tiles, and DWR:** Struts 1.3.10 is [unsupported](https://struts.apache.org/struts1eol-announcement.html) and has no drop-in supported replacement. The baseline also matches DWR advisories. Replace or isolate these legacy web paths in the separate framework migration.
@@ -64,4 +83,8 @@ Those runs exposed an existing ownership defect: registration with an authentica
 
 `config/ci/registration.test.cjs` reproduces this using disposable accounts and a private fixture list. The authenticated case failed against the original service; anonymous-list migration passed. Registration now transfers lists only from anonymous profiles and initializes an empty merge result for other requests. Both live regressions pass after the fix. The full webapp suite passes 235/235 on Java 21 and Java 8, with Checkstyle passing. The full live suites pass again (JavaScript 405 plus one upstream pending; Python 74), and all 11 fixture list records remain in PostgreSQL afterward. The live gate runs after the JavaScript client suite in CI. The upgraded deployment will also verify these lists after a restart.
 
-Final upgrade-suite results and the post-upgrade inventory remain in progress. Aislop reports no errors or fixable warnings; three existing nonfixable broad-`throws Exception` warnings in the registration service's framework/mail callbacks remain for separate exception-API cleanup.
+After both upgrade batches, core tests pass 2,143/2,143 on Java 21 and Java 8, with no skips. Checkstyle and Maven publication pass. The three new runtime compatibility checks pass before and after the second batch. The rebuilt WAR passes all 14 provider checks; restarting on the upgraded deployment preserves all eight currently valid fixture lists. The JavaScript live suite passes 405 tests plus one upstream pending test, and both registration regressions pass.
+
+Bio and Python validation, final review, and hosted CI are still being completed. One local bio-importer attempt exhausted PostgreSQL's connection slots while the core suite and live server ran concurrently; remaining suites run sequentially after those processes finish. This changes test scheduling, not database limits or application behavior.
+
+Aislop reports a score of 100 with no errors or fixable warnings; three existing nonfixable broad-`throws Exception` warnings in the registration service's framework/mail callbacks remain for separate exception-API cleanup.
