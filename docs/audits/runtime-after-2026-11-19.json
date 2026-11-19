@@ -1,8 +1,8 @@
 {
   "date": "2026-11-19",
-  "commit": "3f7e883b144d9386d8d9f6d0b25417766e382e20",
+  "commit": "90d660f3b8b329ce72b73923786c64f94e18cc36",
   "war": "testmine/webapp/build/libs/webapp.war",
-  "sha256": "5eedf54a8fb72cee1d284bac1b461b475e49e28f3c9041daac7be6b31620142e",
+  "sha256": "db72ccacc272e9b2afa3bf632f9d1806c70b27c6c8321c10ac34f9b073de8a08",
   "jars": [
     {
       "file": "HikariCP-3.2.0.jar",
@@ -613,7 +613,7 @@
     },
     {
       "file": "intermine-api-5.1.1.jar",
-      "sha256": "c68397f54175de1489c93bf500676bf573ce45a4183c6e6f867391c9039de2da",
+      "sha256": "faabf6860819f8e3bfef9dc4696b9086da656d1edfbdbed22540b2edf493aa6d",
       "maven": [],
       "resolved": {
         "groupId": "org.intermine",
