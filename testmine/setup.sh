@@ -68,8 +68,8 @@ fi
 
 echo "------> Creating databases..."
 for db in $USERPROFILEDB $PRODDB; do
-    sudo -E -u postgres dropdb -h "$PSQL_HOST" --if-exists ${db}
-    sudo -E -u postgres createdb -h "$PSQL_HOST" ${db}
+    dropdb --no-password -U postgres -h "$PSQL_HOST" --if-exists ${db}
+    createdb --no-password -U postgres -h "$PSQL_HOST" ${db}
 done
 
 ##########

@@ -30,20 +30,20 @@ GIT_GET="git clone --single-branch --depth 1"
 export KEYSTORE=${PWD}/keystore.jks
 
 setup_postgres() {
-    sudo -E -u postgres dropdb -h "$PSQL_HOST" --if-exists flatmodetest
-    sudo -E -u postgres dropdb -h "$PSQL_HOST" --if-exists fulldatatest
-    sudo -E -u postgres dropdb -h "$PSQL_HOST" --if-exists notxmltest
-    sudo -E -u postgres dropdb -h "$PSQL_HOST" --if-exists truncunittest
-    sudo -E -u postgres dropdb -h "$PSQL_HOST" --if-exists unittest
-    sudo -E -u postgres dropdb -h "$PSQL_HOST" --if-exists userprofile-test
-    sudo -E -u postgres dropdb -h "$PSQL_HOST" --if-exists bio-test
-    sudo -E -u postgres dropdb -h "$PSQL_HOST" --if-exists bio-fulldata-test
-    sudo -E -u postgres dropdb -h "$PSQL_HOST" --if-exists intermine-demo
-    sudo -E -u postgres dropdb -h "$PSQL_HOST" --if-exists userprofile-demo
+    dropdb --no-password -U postgres -h "$PSQL_HOST" --if-exists flatmodetest
+    dropdb --no-password -U postgres -h "$PSQL_HOST" --if-exists fulldatatest
+    dropdb --no-password -U postgres -h "$PSQL_HOST" --if-exists notxmltest
+    dropdb --no-password -U postgres -h "$PSQL_HOST" --if-exists truncunittest
+    dropdb --no-password -U postgres -h "$PSQL_HOST" --if-exists unittest
+    dropdb --no-password -U postgres -h "$PSQL_HOST" --if-exists userprofile-test
+    dropdb --no-password -U postgres -h "$PSQL_HOST" --if-exists bio-test
+    dropdb --no-password -U postgres -h "$PSQL_HOST" --if-exists bio-fulldata-test
+    dropdb --no-password -U postgres -h "$PSQL_HOST" --if-exists intermine-demo
+    dropdb --no-password -U postgres -h "$PSQL_HOST" --if-exists userprofile-demo
 
-    sudo -E -u postgres dropuser -h "$PSQL_HOST" --if-exists test
-    sudo -E -u postgres createuser -h "$PSQL_HOST" test
-    sudo -E -u postgres psql -h "$PSQL_HOST" -c "alter user test with encrypted password 'test';"
+    dropuser --no-password -U postgres -h "$PSQL_HOST" --if-exists test
+    createuser --no-password -U postgres -h "$PSQL_HOST" test
+    psql --no-password -U postgres -h "$PSQL_HOST" -c "alter user test with encrypted password 'test';"
 }
 
 setup_python() {

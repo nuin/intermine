@@ -22,15 +22,8 @@ if [ "$CLIENT" = "JS" ]; then
         exit 1
     fi
 
-    # Installing acorn before everything else prevents a bizarre error
-    # where the installation fails saying it's missing acorn
-    # The error only happens in a fresh environment without node_modules and
-    # bower_components installed, so devs don't usually see the error,
-    # but Travis always does.
-    # try to no install acorn anymore
-    # npm install acorn
-    npm install # installs deps
-    grunt test  # runs tests
+    npm ci
+    npm test
 
 elif [ "$CLIENT" = "PY" ]; then
 

@@ -37,7 +37,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U postgres"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -86,7 +86,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U postgres"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -100,6 +100,12 @@ jobs:
         client: [JS, PY]
     steps:
     - uses: actions/checkout@v7
+    - name: Set up Node.js for JavaScript client tests
+      if: matrix.client == 'JS'
+      uses: actions/setup-node@v7
+      with:
+        node-version: '22'
+        package-manager-cache: false
     - name: Set up Java 11 for Solr
       id: solr-java
       uses: actions/setup-java@v6

@@ -42,7 +42,7 @@
 - [x] Observe the failure and preserve requested ordering without breaking object assembly.
 - [x] Run focused query/formatter tests and the webapp suite on Java 21.
   Expected: explicit ordering is retained and existing JSON object behavior passes.
-- [ ] Scan, commit separately, obtain a fresh review and address important findings.
+- [x] Scan, commit separately, obtain a fresh review and address important findings.
 
 ## Following phases
 
