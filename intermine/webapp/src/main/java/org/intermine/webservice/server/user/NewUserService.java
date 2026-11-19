@@ -13,12 +13,14 @@ package org.intermine.webservice.server.user;
 import static org.apache.commons.lang.StringUtils.isBlank;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import org.directwebremoting.util.Logger;
 import org.intermine.api.InterMineAPI;
+import org.intermine.api.bag.UnknownBagTypeException;
+import org.intermine.api.profile.BagState;
 import org.intermine.api.profile.Profile;
 import org.intermine.api.profile.ProfileManager;
 import org.intermine.api.profile.InterMineBag;
@@ -206,29 +208,28 @@ public class NewUserService extends JSONService
      * @param fromProfile The profile to take information from.
      * @param newProfile The new profile to attach into.
      * @return A map of bags, from old name to new name.
+     * @throws ObjectStoreException if a list cannot be copied or removed
+     * @throws UnknownBagTypeException if a list type is absent from the model
      */
-    private ProfileMergeIssues attachAnonSavedBags(Profile fromProfile, Profile newProfile) {
-        Map<String, InterMineBag> mergeBags = Collections.emptyMap();
+    private ProfileMergeIssues attachAnonSavedBags(Profile fromProfile, Profile newProfile)
+        throws ObjectStoreException, UnknownBagTypeException {
         ProfileMergeIssues issues = new ProfileMergeIssues();
-        if (fromProfile != null) {
-            mergeBags = fromProfile.getSavedBags();
-        }
-
-        // attach anonymous bags to the new profile
-        for (Map.Entry<String, InterMineBag> entry : mergeBags.entrySet()) {
-            InterMineBag bag = entry.getValue();
-            // Make sure the userId gets set to be the profile one
-            try {
-                bag.setProfileId(newProfile.getUserId());
+        synchronized (fromProfile) {
+            Map<String, InterMineBag> mergeBags = new LinkedHashMap<String, InterMineBag>(
+                    fromProfile.getSavedBags());
+            for (Map.Entry<String, InterMineBag> entry : mergeBags.entrySet()) {
+                InterMineBag bag = entry.getValue();
                 String name = NameUtil.validateName(newProfile.getSavedBags().keySet(),
                         entry.getKey());
                 if (!entry.getKey().equals(name)) {
                     issues.addRenamedBag(entry.getKey(), name);
                 }
-                bag.setName(name);
-                newProfile.saveBag(name, bag);
-            } catch (ObjectStoreException iex) {
-                throw new RuntimeException(iex.getMessage());
+                InterMineBag copy = new InterMineBag(name, bag.getType(), bag.getDescription(),
+                        bag.getDateCreated(), BagState.valueOf(bag.getState()), im.getObjectStore(),
+                        newProfile.getUserId(), bag.getUserProfileWriter(), bag.getKeyFieldNames());
+                copy.addIdsToBag(bag.getContentsAsIds(), bag.getType());
+                newProfile.saveBag(name, copy);
+                fromProfile.deleteBag(entry.getKey());
             }
         }
         return issues;

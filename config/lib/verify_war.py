@@ -20,6 +20,8 @@ REQUIRED_CLASSES = (
     "javax/activation/DataHandler.class",
     "javax/inject/Inject.class",
     "org/apache/commons/logging/LogFactory.class",
+    "org/apache/oltu/oauth2/client/OAuthClient.class",
+    "org/apache/oltu/oauth2/common/OAuth.class",
     "com/sun/xml/bind/v2/ContextFactory.class",
     "org/stringtree/json/JSONWriter.class",
 )

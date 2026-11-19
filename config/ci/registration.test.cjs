@@ -62,5 +62,27 @@ test('registration retains lists created by an anonymous session', async () => {
     await createList(session.token, name);
     await withUser(session.token, async newcomer => {
         assert.ok((await listNames(newcomer)).includes(name));
+        assert.equal((await api('lists', newcomer)).lists.find(list => list.name === name).size, 1);
+        assert.ok(!(await listNames(session.token)).includes(name),
+            'The anonymous session must lose access to the transferred list');
+        await withUser(session.token, async second => {
+            assert.ok(!(await listNames(second)).includes(name),
+                'Reusing an anonymous session must not transfer the list again');
+        });
+        assert.ok((await listNames(newcomer)).includes(name),
+            'Deleting a later account must preserve the first account’s list');
+        assert.equal((await api('lists', newcomer)).lists.find(list => list.name === name).size, 1);
     });
+});
+
+test('concurrent registrations transfer an anonymous list to only one account', async () => {
+    const session = await api('session');
+    const name = `concurrent-list-${randomUUID()}`;
+    await createList(session.token, name);
+    const owners = [];
+    await Promise.all([0, 1].map(() => withUser(session.token, async newcomer => {
+        owners.push((await listNames(newcomer)).includes(name));
+    })));
+    assert.equal(owners.filter(Boolean).length, 1);
+    assert.ok(!(await listNames(session.token)).includes(name));
 });
