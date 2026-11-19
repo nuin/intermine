@@ -43,6 +43,8 @@ dependencies {
         }
     }
     api group: "org.intermine", name: "intermine-webapp", version: imVersion, classifier: "classes"
+    providedCompile(group: "org.intermine", name: "intermine-webapp", version: imVersion,
+            classifier: "classes") { transitive = false }
     api group: "org.intermine", name: "intermine-api", version: imVersion
     api group: "org.intermine", name: "intermine-webtasks", version: imVersion
     api group: "javax.servlet", name: "jstl", version: "1.2"

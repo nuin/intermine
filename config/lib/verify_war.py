@@ -1,4 +1,4 @@
-"""Check runtime class providers in an assembled InterMine WAR."""
+"""Check required classes and conflicting class definitions in an InterMine WAR."""
 
 import argparse
 import io
@@ -17,6 +17,9 @@ REQUIRED_CLASSES = (
     "org/postgresql/Driver.class",
     "org/json/JSONObject.class",
     "javax/xml/bind/JAXBContext.class",
+    "javax/activation/DataHandler.class",
+    "javax/inject/Inject.class",
+    "org/apache/commons/logging/LogFactory.class",
     "com/sun/xml/bind/v2/ContextFactory.class",
     "org/stringtree/json/JSONWriter.class",
 )
@@ -28,12 +31,20 @@ def verify(war_path):
     container_providers = []
     with zipfile.ZipFile(war_path) as war:
         for name in war.namelist():
-            if not name.startswith("WEB-INF/lib/") or not name.endswith(".jar"):
+            if name.startswith("WEB-INF/classes/") and name.endswith(".class"):
+                entries = {name[len("WEB-INF/classes/") :]}
+            elif name.startswith("WEB-INF/lib/") and name.endswith(".jar"):
+                with zipfile.ZipFile(io.BytesIO(war.read(name))) as library:
+                    entries = set(library.namelist())
+            else:
                 continue
-            with zipfile.ZipFile(io.BytesIO(war.read(name))) as library:
-                entries = set(library.namelist())
-            for class_name in providers.keys() & entries:
-                providers[class_name].append(name)
+            for class_name in sorted(entries):
+                if (
+                    class_name.endswith(".class")
+                    and not class_name.startswith("META-INF/")
+                    and not class_name.endswith("module-info.class")
+                ):
+                    providers.setdefault(class_name, []).append(name)
             if CONTAINER_CLASSES & entries:
                 container_providers.append(name)
     errors = [
@@ -45,7 +56,10 @@ def verify(war_path):
         errors.append(f"Servlet/JSP APIs must come from Tomcat: {container_providers}")
     if errors:
         raise SystemExit("\n".join(errors))
-    print(f"WAR runtime checks passed: {len(providers)} unique class providers")
+    print(
+        f"WAR runtime checks passed: {len(REQUIRED_CLASSES)} required providers, "
+        f"{len(providers)} unique runtime classes"
+    )
 
 
 if __name__ == "__main__":
