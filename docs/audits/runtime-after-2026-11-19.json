@@ -1,8 +1,8 @@
 {
   "date": "2026-11-19",
-  "commit": "65e1402803270e6c1959996bff96d5cbd8a663f1",
+  "commit": "cf1a76faca3b40543237cb8fb768d845dd8c7345",
   "war": "testmine/webapp/build/libs/webapp.war",
-  "sha256": "7c5b7e896e0faf4d14bba70916f3e3f1368bd4b3e4a67bc5b7b14d53491b9082",
+  "sha256": "1ac4ec7b17d8343cd73ea433daf2c7b256fc52636144077d9da6468097e6d2e4",
   "jars": [
     {
       "file": "HikariCP-3.2.0.jar",
@@ -18,16 +18,6 @@
         "groupId": "com.zaxxer",
         "artifactId": "HikariCP",
         "version": "3.2.0"
-      }
-    },
-    {
-      "file": "activation-1.1.jar",
-      "sha256": "2881c79c9d6ef01c58e62beea13e9d1ac8b8baa16f2fc198ad6e6776defdcdd3",
-      "maven": [],
-      "resolved": {
-        "groupId": "javax.activation",
-        "artifactId": "activation",
-        "version": "1.1"
       }
     },
     {
@@ -682,16 +672,6 @@
       }
     },
     {
-      "file": "intermine-webapp-5.1.1-classes.jar",
-      "sha256": "b64e46346c6e3ce67d526cf5b85f410f10f0921aa5404919813fb9f5c2c582b7",
-      "maven": [],
-      "resolved": {
-        "groupId": "org.intermine",
-        "artifactId": "intermine-webapp",
-        "version": "5.1.1"
-      }
-    },
-    {
       "file": "intermine-webtasks-5.1.1.jar",
       "sha256": "3463fe82bc3597aa4199e4d2a4bd01df37217699318bb2024185fb7e0be664c1",
       "maven": [],
@@ -846,22 +826,6 @@
       }
     },
     {
-      "file": "jakarta.activation-api-1.2.2.jar",
-      "sha256": "a187a939103aef5849a7af84bd7e27be2d120c410af291437375ffe061f4f09d",
-      "maven": [
-        {
-          "groupId": "jakarta.activation",
-          "artifactId": "jakarta.activation-api",
-          "version": "1.2.2"
-        }
-      ],
-      "resolved": {
-        "groupId": "jakarta.activation",
-        "artifactId": "jakarta.activation-api",
-        "version": "1.2.2"
-      }
-    },
-    {
       "file": "javassist-3.33.0-GA.jar",
       "sha256": "1620478adc5f4d2eccd356e59513c270f1508bed53ce75deffb3107b7b43db2c",
       "maven": [
@@ -878,22 +842,6 @@
       }
     },
     {
-      "file": "javax.activation-api-1.2.0.jar",
-      "sha256": "43fdef0b5b6ceb31b0424b208b930c74ab58fac2ceeb7b3f6fd3aeb8b5ca4393",
-      "maven": [
-        {
-          "groupId": "javax.activation",
-          "artifactId": "javax.activation-api",
-          "version": "1.2.0"
-        }
-      ],
-      "resolved": {
-        "groupId": "javax.activation",
-        "artifactId": "javax.activation-api",
-        "version": "1.2.0"
-      }
-    },
-    {
       "file": "javax.annotation-api-1.3.2.jar",
       "sha256": "e04ba5195bcd555dc95650f7cc614d151e4bcd52d29a10b8aa2197f3ab89ab9b",
       "maven": [
@@ -907,16 +855,6 @@
         "groupId": "javax.annotation",
         "artifactId": "javax.annotation-api",
         "version": "1.3.2"
-      }
-    },
-    {
-      "file": "javax.inject-1.jar",
-      "sha256": "91c77044a50c481636c32d916fd89c9118a72195390452c81065080f957de7ff",
-      "maven": [],
-      "resolved": {
-        "groupId": "javax.inject",
-        "artifactId": "javax.inject",
-        "version": "1"
       }
     },
     {
@@ -981,22 +919,6 @@
         "groupId": "org.glassfish.jaxb",
         "artifactId": "jaxb-runtime",
         "version": "2.3.9"
-      }
-    },
-    {
-      "file": "jcl-over-slf4j-1.7.36.jar",
-      "sha256": "ab57ca8fd223772c17365d121f59e94ecbf0ae59d08c03a3cb5b81071c019195",
-      "maven": [
-        {
-          "groupId": "org.slf4j",
-          "artifactId": "jcl-over-slf4j",
-          "version": "1.7.36"
-        }
-      ],
-      "resolved": {
-        "groupId": "org.slf4j",
-        "artifactId": "jcl-over-slf4j",
-        "version": "1.7.36"
       }
     },
     {

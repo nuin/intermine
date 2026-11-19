@@ -23,12 +23,17 @@
 
 ## Task 2: Compatible security batch
 
-- [ ] Update pgJDBC, Commons BeanUtils/Collections/IO/FileUpload, JSON-java, and Tomcat 9 from verified upstream releases; keep declarations consistent across core, bio, and testmine.
-- [ ] Apply a second compatible batch for Jackson 2 LTS, Ant, Guava, Commons Compress/Lang 3, Xalan, and Snappy, addressing transitive libraries exposed by the corrected graph. Centralize shared versions/constraints and verify JSON/Jersey and Jena runtime compatibility.
-- [ ] Run affected suites on Java 21 first, investigate any compatibility changes, then full core/bio tests on Java 8 and 21 and live JavaScript/Python clients.
-- [ ] Rebuild and inspect the WAR, query its final Maven versions against OSV, and document remaining findings and support migrations.
+- [x] Update pgJDBC, Commons BeanUtils/Collections/IO/FileUpload, JSON-java, and Tomcat 9 from verified upstream releases; keep declarations consistent across core, bio, and testmine.
+- [x] Apply a second compatible batch for Jackson 2 LTS, Ant, Guava, Commons Compress/Lang 3, Xalan, and Snappy, addressing transitive libraries exposed by the corrected graph. Centralize shared versions/constraints and verify JSON/Jersey and Jena runtime compatibility.
+- [x] Run affected suites on Java 21 first, investigate any compatibility changes, then full core/bio tests on Java 8 and 21 and live JavaScript/Python clients.
+- [x] Rebuild and inspect the WAR, query its final Maven versions against OSV, and document remaining findings and support migrations.
   Expected: upgraded libraries are the ones deployed, no duplicate checked providers, suites pass without locally disabled tests, and unresolved advisories remain visible.
-- [ ] Scan, commit, push, obtain one fresh review for this phase, address important findings, and verify hosted CI.
+- [x] Scan, commit, and push the tested implementation and audit.
+
+## Final branch gates
+
+- [ ] Obtain one fresh review for this phase and address important findings with regression checks.
+- [ ] Verify hosted CI on the final code and integrate into the fork's `beta`.
 
 ## Audit scope
 
