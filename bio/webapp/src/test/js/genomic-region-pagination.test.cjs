@@ -10,8 +10,13 @@ const script = readFileSync(resolve(__dirname,
 function search(total, finished = total) {
     const requests = [];
     const timers = new Map();
+    const elements = new Map();
     let nextTimer = 0;
-    const jQuery = () => ({ready() {}, html() {}});
+    const jQuery = (selector) => ({
+        ready() {}, html() {},
+        empty() { elements.set(selector, ''); return this; },
+        append(html) { elements.set(selector, elements.get(selector) + html); return this; }
+    });
     jQuery.post = (url, data) => requests.push({url, ...data});
     const context = vm.createContext({
         document: {}, jQuery, span_query_total_count: total, span_uuid_string: 'test-search',
@@ -24,7 +29,7 @@ function search(total, finished = total) {
     vm.runInContext(script, context);
     context.finishedQueryCount = finished;
     context.is_all_queries_finished = finished === total;
-    return {context, requests, timers};
+    return {context, requests, timers, elements};
 }
 
 function expectedRequest(fromIdx, toIdx) {
@@ -75,3 +80,21 @@ test('changing page cancels polling for the previous page', () => {
     assert.deepEqual(requests, [expectedRequest(0, 4)]);
     assert.equal(timers.size, 0);
 });
+
+for (const page of [1, 2]) {
+    for (const finished of [10, 30]) {
+        test(`Last navigation on page ${page} with ${finished}/30 regions complete`, () => {
+            const {context, elements} = search(30, finished);
+            context.current_page_no = page;
+            if (finished === 30) {
+                context.updatePageNavBarAfterQueryFinish(page, 10);
+            } else {
+                context.updatePageNavBarBeforeQueryFinish();
+            }
+            for (const selector of ['#upperNav', '#lowerNav']) {
+                assert.equal(elements.get(selector).includes("onclick=\"pageNavigate('last');\""),
+                    finished === 30);
+            }
+        });
+    }
+}

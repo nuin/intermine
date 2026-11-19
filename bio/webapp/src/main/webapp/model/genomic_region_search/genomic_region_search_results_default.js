@@ -71,7 +71,7 @@
         jQuery.post("genomicRegionSearchAjax.do", { spanUUIDString: span_uuid_string, isEmptyFeature: "true" }, function(isEmptyFeature){
             if (isEmptyFeature.trim() == "hasFeature") {
                 jQuery.post("genomicRegionSearchAjax.do", { spanUUIDString: span_uuid_string, generateCreateListHtml: "true" }, function(createListHtml){
-                    var exportButtonsHtml = '<span class="export-region">Export data for all features within all regions:</span>' 
+                    var exportButtonsHtml = '<span class="export-region">Export data for all features within all regions:</span>'
                         + '<span class="tab export-region">'
                         + '<a title="Export data for all features within all regions in tab-delimited format" href="javascript: exportFeatures(\'all\', \'SequenceFeature\', \'tab\');"></a></span>'
                         + '<span class="csv export-region">'
@@ -202,6 +202,13 @@
     }
 
     function updatePageNavBarAfterQueryFinish(current_page_no, current_page_size) {
+        renderPageNavBar(current_page_no, current_page_size, true);
+    }
+
+    function renderPageNavBar(current_page_no, current_page_size, lastPageAvailable) {
+        var lastPageLink = lastPageAvailable
+            ? '<span class="fakelink" onclick="pageNavigate(\'last\');"> Last <span style="font-family:\'Comic Sans MS\';">>></span></span>'
+            : '<span style="color:grey;"> Last <span style="font-family:\'Comic Sans MS\';">>></span></span>';
         jQuery("#upperNav").empty();
         jQuery("#lowerNav").empty();
 
@@ -225,13 +232,13 @@
                                    .append('<span style="color:grey;"><span style="font-family:\'Comic Sans MS\';"><</span> Prev </span>')
                                    .append('<span style="color:grey;">|</span>')
                                    .append('<span class="fakelink" onclick="pageNavigate(\'next\');"> Next <span style="font-family:\'Comic Sans MS\';">></span></span>')
-                                   .append('<span class="fakelink" onclick="pageNavigate(\'last\');"> Last <span style="font-family:\'Comic Sans MS\';">>></span></span>');
+                                   .append(lastPageLink);
 
                 jQuery("#lowerNav").append('<span style="color:grey;"><span style="font-family:\'Comic Sans MS\';"><<</span> First </span>')
                                    .append('<span style="color:grey;"><span style="font-family:\'Comic Sans MS\';"><</span> Prev </span>')
                                    .append('<span style="color:grey;">1 - '+current_page_no*current_page_size+' of '+span_query_total_count+'</span>')
                                    .append('<span class="fakelink" onclick="pageNavigate(\'next\');"> Next <span style="font-family:\'Comic Sans MS\';">></span></span>')
-                                   .append('<span class="fakelink" onclick="pageNavigate(\'last\');"> Last <span style="font-family:\'Comic Sans MS\';">>></span></span>');
+                                   .append(lastPageLink);
             }
             else if (current_page_no >= total_page) {
                 jQuery("#upperNav").append('<span class="fakelink" onclick="pageNavigate(\'first\');"><span style="font-family:\'Comic Sans MS\';"><<</span> First </span>')
@@ -251,19 +258,19 @@
                                    .append('<span class="fakelink" onclick="pageNavigate(\'prev\');"><span style="font-family:\'Comic Sans MS\';"><</span> Prev </span>')
                                    .append('<span style="color:grey;">|</span>')
                                    .append('<span class="fakelink" onclick="pageNavigate(\'next\');"> Next <span style="font-family:\'Comic Sans MS\';">></span></span>')
-                                   .append('<span class="fakelink" onclick="pageNavigate(\'last\');"> Last <span style="font-family:\'Comic Sans MS\';">>></span></span>');
+                                   .append(lastPageLink);
 
                 jQuery("#lowerNav").append('<span class="fakelink" onclick="pageNavigate(\'first\');"><span style="font-family:\'Comic Sans MS\';"><<</span> First </span>')
                                    .append('<span class="fakelink" onclick="pageNavigate(\'prev\');"><span style="font-family:\'Comic Sans MS\';"><</span> Prev </span>')
                                    .append('<span style="color:grey;">'+((current_page_no-1)*current_page_size+1)+' - '+current_page_no*current_page_size+' of '+span_query_total_count+'</span>')
                                    .append('<span class="fakelink" onclick="pageNavigate(\'next\');"> Next <span style="font-family:\'Comic Sans MS\';">></span></span>')
-                                   .append('<span class="fakelink" onclick="pageNavigate(\'last\');"> Last <span style="font-family:\'Comic Sans MS\';">>></span></span>');
+                                   .append(lastPageLink);
             }
         }
     }
 
     function updatePageNavBarBeforeQueryFinish() {
-        updatePageNavBarAfterQueryFinish(current_page_no, current_page_size);
+        renderPageNavBar(current_page_no, current_page_size, false);
     }
 
     function pageNavigate(method) {
