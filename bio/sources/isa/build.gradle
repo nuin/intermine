@@ -20,9 +20,9 @@ sourceSets {
 dependencies {
     api group: 'org.intermine', name: 'bio-model', version: bioVersion, transitive: false
     api group: 'org.intermine', name: 'intermine-integrate', version: imVersion
-    api group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.8'
-    api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
-    api group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.8'
+    api group: 'com.fasterxml.jackson.core', name: 'jackson-core'
+    api group: 'com.fasterxml.jackson.core', name: 'jackson-databind'
+    api group: 'com.fasterxml.jackson.core', name: 'jackson-annotations'
     runtimeOnly fileTree(dir: 'libs', include: '*.jar') //antlr-2.7.6-caching.jar
     bioModel group: 'org.intermine', name: 'bio-model', version: bioVersion, transitive: false
 }

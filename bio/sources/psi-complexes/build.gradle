@@ -32,7 +32,7 @@ dependencies {
     api group: 'psidev.psi.mi.jami', name: 'jami-mitab', version: '3.0.0'
     api group: 'psidev.psi.mi.jami', name: 'jami-xml', version: '3.0.0'
     bioModel group: 'org.intermine', name: 'bio-model', version: bioVersion, transitive: false
-    api group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+    api group: 'org.apache.commons', name: 'commons-lang3', version: runtimeVersions.lang3
 }
 
 processResources {

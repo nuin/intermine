@@ -5,10 +5,18 @@ ext.runtimeVersions = [
     io: '2.22.0',
     fileupload: '1.6.0',
     json: '20260814',
-    tomcat: '9.0.124'
+    tomcat: '9.0.124',
+    jacksonBom: '2.21.8',
+    ant: '1.10.18',
+    guava: '33.7.2-jre',
+    compress: '1.28.0',
+    lang3: '3.22.0',
+    xalan: '2.7.3',
+    snappy: '1.1.10.12'
 ]
 
 dependencies {
+    api platform("com.fasterxml.jackson:jackson-bom:${runtimeVersions.jacksonBom}")
     constraints {
         api "org.postgresql:postgresql:${runtimeVersions.postgresql}"
         api "commons-beanutils:commons-beanutils:${runtimeVersions.beanutils}"
@@ -16,5 +24,13 @@ dependencies {
         api "commons-io:commons-io:${runtimeVersions.io}"
         api "commons-fileupload:commons-fileupload:${runtimeVersions.fileupload}"
         api "org.json:json:${runtimeVersions.json}"
+        api "org.apache.ant:ant:${runtimeVersions.ant}"
+        api "org.apache.ant:ant-launcher:${runtimeVersions.ant}"
+        api "com.google.guava:guava:${runtimeVersions.guava}"
+        api "org.apache.commons:commons-compress:${runtimeVersions.compress}"
+        api "org.apache.commons:commons-lang3:${runtimeVersions.lang3}"
+        api "xalan:xalan:${runtimeVersions.xalan}"
+        api "xalan:serializer:${runtimeVersions.xalan}"
+        api "org.xerial.snappy:snappy-java:${runtimeVersions.snappy}"
     }
 }

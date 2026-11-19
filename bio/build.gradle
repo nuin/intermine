@@ -53,7 +53,7 @@ subprojects {
     }
 
     dependencies {
-        api group: 'ant', name: 'ant', version: '1.6.5'
+        api group: 'org.apache.ant', name: 'ant', version: runtimeVersions.ant
         api group: "org.intermine", name: "intermine-webtasks", version: System.getProperty("imVersion")
         testImplementation group: 'org.apache.lucene', name: 'lucene-analyzers', version: '3.0.2'
         testImplementation group: 'au.com.bytecode', name: 'opencsv', version: '2.4'

@@ -30,7 +30,7 @@ subprojects {
 
     if (it.name != 'intermine-resources') {
         dependencies {
-            api group: 'org.apache.ant', name: 'ant', version: '1.7.0'
+            api group: 'org.apache.ant', name: 'ant', version: runtimeVersions.ant
             api group: 'ch.qos.reload4j', name: 'reload4j', version: '1.2.22'
             api group: 'org.slf4j', name: 'slf4j-reload4j', version: '1.7.36'
             testImplementation group: 'junit', name: 'junit', version: '4.8.2'

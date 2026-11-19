@@ -33,15 +33,28 @@ The selected releases retain the existing package namespaces and Java 8 support:
 | Commons FileUpload | 1.2.2 | 1.6.0 | [Security fixes](https://commons.apache.org/proper/commons-fileupload/security.html), [Java 8 release](https://commons.apache.org/proper/commons-fileupload/download_fileupload.cgi) |
 | JSON-java | 20170516 | 20260814 | [Security release history](https://github.com/stleary/JSON-java/releases), [Java 8 build target](https://github.com/stleary/JSON-java/blob/20260814/pom.xml) |
 | Tomcat | 9.0.115 | 9.0.124 | [Changelog](https://tomcat.apache.org/tomcat-9.0-doc/changelog.html), [Java support](https://tomcat.apache.org/whichversion.html) |
+| Jackson | Core/Databind 2.10.1; JAX-RS/JAXB modules 2.8.4 | 2.21.8 BOM | [Java 8 LTS branch](https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.21) |
+| Ant | 1.6.5 / 1.7.0 | 1.10.18 | [Java 8 release](https://ant.apache.org/bindownload) |
+| Guava | 19.0 | 33.7.2-jre | [Security patch](https://github.com/google/guava/releases/tag/v33.7.2) |
+| Commons Compress | 1.20 | 1.28.0 | [Java 8 support](https://commons.apache.org/proper/commons-compress/) |
+| Commons Lang 3 | 3.10 | 3.22.0 | [Release history](https://commons.apache.org/proper/commons-lang/changes.html) |
+| Xalan and serializer | 2.7.2 | 2.7.3 | [Java 8 security release](https://xalan.apache.org/xalan-j/readme.html) |
+| Snappy | 1.1.10.1 | 1.1.10.12 | [Security and subsequent compatibility fixes](https://github.com/xerial/snappy-java/releases), [Java 8 compilation](https://github.com/xerial/snappy-java/blob/v1.1.10.12/build.sbt) |
+
+`config/gradle/runtime-dependencies.gradle` supplies shared versions and dependency constraints across the core, bio, and testmine builds. Constraints upgrade libraries already needed by a module without adding each library to every module. Jackson uses its BOM to align the older Jersey provider with Databind and the JAXB annotation module; the `javax` providers are retained. The BOM controls each module's version, including Jackson's separate annotation-version scheme. Legacy `ant:ant` coordinates are normalized to `org.apache.ant:ant` so Gradle resolves one Ant family.
+
+Guava 33.8.0 is also available; this batch deliberately uses the verified security patch 33.7.2. Snappy 1.1.10.12 includes fixes following the 1.1.10.9 security release. `RuntimeCompatibilityTest` checks Jersey JSON over loopback HTTP, Jena Turtle serialization, and native Snappy compression before and after the second batch.
+
+Xalan 2.7.3's published POM omits its serializer dependency. The existing profile XML export test failed with a missing `SerializerTrace` class after the version update; `intermine-api` now declares the matching serializer explicitly.
 
 FileUpload's file-count limit is opt-in; updating the library alone does not configure limits in Struts' multipart handler. The remaining Struts work must cover request size, part-count limits, and error handling rather than treating a clean package-version lookup as sufficient protection.
 
 ## Remaining support work
 
 - **Struts 1, Tiles, and DWR:** Struts 1.3.10 is [unsupported](https://struts.apache.org/struts1eol-announcement.html) and has no drop-in supported replacement. The baseline also matches DWR advisories. Replace or isolate these legacy web paths in the separate framework migration.
-- **Solr/Lucene and their networking dependencies:** [Solr's support policy](https://solr.apache.org/downloads.html) marks versions older than 9.11 EOL. Solr 8.11.4 retains older Jetty, Netty, ZooKeeper, and Snappy dependencies with advisory matches. A supported search-stack migration needs index/configuration compatibility and integration tests; Java 8 compatibility constrains the available client versions.
+- **Solr/Lucene and their networking dependencies:** [Solr's support policy](https://solr.apache.org/downloads.html) marks versions older than 9.11 EOL. Solr 8.11.4 retains older Jetty, Netty, and ZooKeeper dependencies with advisory matches. A supported search-stack migration needs index/configuration compatibility and integration tests; Java 8 compatibility constrains the available client versions.
 - **PostgreSQL server:** PostgreSQL 14 [reached EOL on 2026-11-12](https://www.postgresql.org/support/versioning/). The JDBC upgrade does not upgrade an operator's database. Plan and test a supported server version, backup/restore or `pg_upgrade`, and query-performance checks separately.
-- **Other legacy libraries:** Commons HttpClient 3, Commons Lang 2, Guava, older Jackson/Jersey/Jena components, and vendored libraries remain audit targets. The final artifact scan below will enumerate current matches without implying that unmatched packages are supported or safe.
+- **Other legacy libraries:** Commons HttpClient 3, Commons Lang 2, Jersey/Jena and Thrift, and vendored libraries remain audit targets. The final artifact scan below will enumerate current matches without implying that unmatched packages are supported or safe. Embedded Torque/Velocity bytecode without Maven metadata and downstream mine WARs also require separate inventories.
 
 ## Validation
 
