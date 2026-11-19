@@ -71,7 +71,7 @@
         jQuery.post("genomicRegionSearchAjax.do", { spanUUIDString: span_uuid_string, isEmptyFeature: "true" }, function(isEmptyFeature){
             if (isEmptyFeature.trim() == "hasFeature") {
                 jQuery.post("genomicRegionSearchAjax.do", { spanUUIDString: span_uuid_string, generateCreateListHtml: "true" }, function(createListHtml){
-                    exportButtonsHtml = '<span class="export-region">Export data for all features within all regions:</span>' 
+                    var exportButtonsHtml = '<span class="export-region">Export data for all features within all regions:</span>' 
                         + '<span class="tab export-region">'
                         + '<a title="Export data for all features within all regions in tab-delimited format" href="javascript: exportFeatures(\'all\', \'SequenceFeature\', \'tab\');"></a></span>'
                         + '<span class="csv export-region">'
@@ -125,7 +125,7 @@
     function exportToGalaxy(genomicRegion) {
         jQuery.post("genomicRegionSearchAjax.do", { spanUUIDString: span_uuid_string, getFeatures: "true", grString: genomicRegion }, function(featureIds){
             featureIds ='<input type="hidden" name="featureIds" value="' + featureIds + '" />';
-            orgName ='<input type="hidden" name="orgName" value="' + genomicRegion.split("|")[genomicRegion.split("|").length - 1] + '" />';
+            var orgName ='<input type="hidden" name="orgName" value="' + genomicRegion.split("|")[genomicRegion.split("|").length - 1] + '" />';
             jQuery('<form action="galaxyExportOptions.do" method="post">' + featureIds + orgName + '</form>').appendTo('body').submit().remove();
         }, "text");
     }
@@ -149,10 +149,10 @@
 
         var from_index = (page_num - 1) * page_size; // the start index in the result map
         var to_index = page_num * page_size -1; // the end index in the result map
-        if (to_index > span_query_total_count)
+        if (to_index >= span_query_total_count)
             { to_index = span_query_total_count - 1;}
 
-        if (is_all_queries_finished == true || (finishedQueryCount - 1) > to_index) {
+        if (is_all_queries_finished == true || (finishedQueryCount - 1) >= to_index) {
             paginationGetResult(from_index, to_index);
         }
 
@@ -179,14 +179,13 @@
 
     function addResultToTable(spanResult) {
         jQuery("#genomic-region-results-table").empty();
-        resultToDisplay = spanResult.paginatedSpanResult;
         jQuery("#genomic-region-results-table").append(spanResult);
     }
 
     function gbrowseThumbnail(title, organism, url) {
 
-        gb_img_url = gbrowse_image_url + organism + "/?" + url+";width=600;b=1";
-        gb_server_url = gbrowse_base_url + organism + "/?" + url;
+        var gb_img_url = gbrowse_image_url + organism + "/?" + url+";width=600;b=1";
+        var gb_server_url = gbrowse_base_url + organism + "/?" + url;
         jQuery("#gbrowseThumbnail").html("<a href='" + gb_server_url + "' target='_blank'><img title='GBrowse' src='" + gb_img_url + "'></a>");
 
         jQuery("#gbrowseThumbnail").dialog( "destroy" );
@@ -206,7 +205,7 @@
         jQuery("#upperNav").empty();
         jQuery("#lowerNav").empty();
 
-        total_page = getTotalPageNumber();
+        var total_page = getTotalPageNumber();
         if (total_page <= 1) {
           jQuery("#upperNav").append('<span style="color:grey;"><span style="font-family:\'Comic Sans MS\';"><<</span> First </span>')
                              .append('<span style="color:grey;"><span style="font-family:\'Comic Sans MS\';"><</span> Prev </span>')
@@ -264,64 +263,7 @@
     }
 
     function updatePageNavBarBeforeQueryFinish() {
-        jQuery("#upperNav").empty();
-        jQuery("#lowerNav").empty();
-
-        total_page = getTotalPageNumber();
-        if (total_page <= 1) {
-          jQuery("#upperNav").append('<span style="color:grey;"><span style="font-family:\'Comic Sans MS\';"><<</span> First </span>')
-                             .append('<span style="color:grey;"><span style="font-family:\'Comic Sans MS\';"><</span> Prev </span>')
-                             .append('<span style="color:grey;">|</span>')
-                             .append('<span style="color:grey;"> Next <span style="font-family:\'Comic Sans MS\';">></span></span>')
-                             .append('<span style="color:grey;"> Last <span style="font-family:\'Comic Sans MS\';">>></span></span>');
-
-          jQuery("#lowerNav").append('<span style="color:grey;"><span style="font-family:\'Comic Sans MS\';"><<</span> First </span>')
-                             .append('<span style="color:grey;"><span style="font-family:\'Comic Sans MS\';"><</span> Prev </span>')
-                             .append('<span style="color:grey;">1 - '+span_query_total_count+' of '+span_query_total_count+'</span>')
-                             .append('<span style="color:grey;"> Next <span style="font-family:\'Comic Sans MS\';">></span></span>')
-                             .append('<span style="color:grey;"> Last <span style="font-family:\'Comic Sans MS\';">>></span></span>');
-        }
-        else {
-            if (current_page_no <= 1) {
-                jQuery("#upperNav").append('<span style="color:grey;"><span style="font-family:\'Comic Sans MS\';"><<</span> First </span>')
-                                   .append('<span style="color:grey;"><span style="font-family:\'Comic Sans MS\';"><</span> Prev </span>')
-                                   .append('<span style="color:grey;">|</span>')
-                                   .append('<span class="fakelink" onclick="pageNavigate(\'next\');"> Next <span style="font-family:\'Comic Sans MS\';">></span></span>')
-                                   .append('<span style="color:grey;"> Last <span style="font-family:\'Comic Sans MS\';">>></span></span>');
-
-                jQuery("#lowerNav").append('<span style="color:grey;"><span style="font-family:\'Comic Sans MS\';"><<</span> First </span>')
-                                   .append('<span style="color:grey;"><span style="font-family:\'Comic Sans MS\';"><</span> Prev </span>')
-                                   .append('<span style="color:grey;">1 - '+current_page_no*current_page_size+' of '+span_query_total_count+'</span>')
-                                   .append('<span class="fakelink" onclick="pageNavigate(\'next\');"> Next <span style="font-family:\'Comic Sans MS\';">></span></span>')
-                                   .append('<span style="color:grey;"> Last <span style="font-family:\'Comic Sans MS\';">>></span></span>');
-            }
-            else if (current_page_no >= total_page) {
-                jQuery("#upperNav").append('<span class="fakelink" onclick="pageNavigate(\'first\');"><span style="font-family:\'Comic Sans MS\';"><<</span> First </span>')
-                                   .append('<span class="fakelink" onclick="pageNavigate(\'prev\');"><span style="font-family:\'Comic Sans MS\';"><</span> Prev </span>')
-                                   .append('<span style="color:grey;">|</span>')
-                                   .append('<span style="color:grey;"> Next <span style="font-family:\'Comic Sans MS\';">></span></span>')
-                                   .append('<span style="color:grey;"> Last <span style="font-family:\'Comic Sans MS\';">>></span></span>');
-
-                jQuery("#lowerNav").append('<span class="fakelink" onclick="pageNavigate(\'first\');"><span style="font-family:\'Comic Sans MS\';"><<</span> First </span>')
-                                   .append('<span class="fakelink" onclick="pageNavigate(\'prev\');"><span style="font-family:\'Comic Sans MS\';"><</span> Prev </span>')
-                                   .append('<span style="color:grey;">'+((current_page_no-1)*current_page_size+1)+' - '+span_query_total_count+' of '+span_query_total_count+'</span>')
-                                   .append('<span style="color:grey;"> Next <span style="font-family:\'Comic Sans MS\';">></span></span>')
-                                   .append('<span style="color:grey;"> Last <span style="font-family:\'Comic Sans MS\';">>></span></span>');
-            }
-            else {
-                jQuery("#upperNav").append('<span class="fakelink" onclick="pageNavigate(\'first\');"><span style="font-family:\'Comic Sans MS\';"><<</span> First </span>')
-                                   .append('<span class="fakelink" onclick="pageNavigate(\'prev\');"><span style="font-family:\'Comic Sans MS\';"><</span> Prev </span>')
-                                   .append('<span style="color:grey;">|</span>')
-                                   .append('<span class="fakelink" onclick="pageNavigate(\'next\');"> Next <span style="font-family:\'Comic Sans MS\';">></span></span>')
-                                   .append('<span style="color:grey;"> Last <span style="font-family:\'Comic Sans MS\';">>></span></span>');
-
-                jQuery("#lowerNav").append('<span class="fakelink" onclick="pageNavigate(\'first\');"><span style="font-family:\'Comic Sans MS\';"><<</span> First </span>')
-                                   .append('<span class="fakelink" onclick="pageNavigate(\'prev\');"><span style="font-family:\'Comic Sans MS\';"><</span> Prev </span>')
-                                   .append('<span style="color:grey;">'+((current_page_no-1)*current_page_size+1)+' - '+current_page_no*current_page_size+' of '+span_query_total_count+'</span>')
-                                   .append('<span class="fakelink" onclick="pageNavigate(\'next\');"> Next <span style="font-family:\'Comic Sans MS\';">></span></span>')
-                                   .append('<span style="color:grey;"> Last <span style="font-family:\'Comic Sans MS\';">>></span></span>');
-            }
-        }
+        updatePageNavBarAfterQueryFinish(current_page_no, current_page_size);
     }
 
     function pageNavigate(method) {
@@ -341,7 +283,7 @@
     }
 
     function getTotalPageNumber() {
-        total_page = Math.floor(span_query_total_count / current_page_size);
+        var total_page = Math.floor(span_query_total_count / current_page_size);
         if (span_query_total_count % current_page_size != 0) { total_page++; }
 
         return total_page;
@@ -352,7 +294,7 @@
           var regions = data.split(",");
 
           jQuery.each(regions, function(index, value) {
-              bits = value.split("|"); // e.g. 2L:14615455..14619002|0|D. melanogaster
+              var bits = value.split("|"); // e.g. 2L:14615455..14619002|0|D. melanogaster
               jQuery('#region-select-list').append( new Option(bits[0],jQuery.trim(value)) );
 
           });
