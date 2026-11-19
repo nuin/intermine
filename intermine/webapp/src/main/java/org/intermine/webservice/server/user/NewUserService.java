@@ -95,8 +95,8 @@ public class NewUserService extends JSONService
             throw new ServiceException("Creating a new profile failed");
         }
 
-        ProfileMergeIssues issues = null;
-        if (currentProfile != null) {
+        ProfileMergeIssues issues = new ProfileMergeIssues();
+        if (currentProfile != null && !currentProfile.isLoggedIn()) {
             //attach the anonymously created lists to the new profile
             issues = attachAnonSavedBags(currentProfile, newProfile);
         }

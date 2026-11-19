@@ -24,6 +24,7 @@ if [ "$CLIENT" = "JS" ]; then
 
     npm ci
     npm test
+    node --test "${WORKSPACE_DIR}/config/ci/registration.test.cjs"
 
 elif [ "$CLIENT" = "PY" ]; then
 
