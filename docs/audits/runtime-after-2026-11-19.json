@@ -1,8 +1,8 @@
 {
   "date": "2026-11-19",
-  "commit": "cf1a76faca3b40543237cb8fb768d845dd8c7345",
+  "commit": "3f7e883b144d9386d8d9f6d0b25417766e382e20",
   "war": "testmine/webapp/build/libs/webapp.war",
-  "sha256": "1ac4ec7b17d8343cd73ea433daf2c7b256fc52636144077d9da6468097e6d2e4",
+  "sha256": "5eedf54a8fb72cee1d284bac1b461b475e49e28f3c9041daac7be6b31620142e",
   "jars": [
     {
       "file": "HikariCP-3.2.0.jar",
@@ -1688,6 +1688,33 @@
         "groupId": "au.com.bytecode",
         "artifactId": "opencsv",
         "version": "2.4"
+      }
+    },
+    {
+      "file": "org.apache.oltu.oauth2.client-1.0.1.jar",
+      "sha256": "8838e5bea946c03a2103f68faa685cb7081ef6531bee762b4421e9ee7abcc476",
+      "maven": [
+        {
+          "groupId": "org.apache.oltu.oauth2",
+          "artifactId": "org.apache.oltu.oauth2.client",
+          "version": "1.0.1"
+        }
+      ],
+      "embedded": [
+        {
+          "groupId": "org.apache.oltu.oauth2",
+          "artifactId": "org.apache.oltu.oauth2.common",
+          "version": "1.0.1",
+          "evidence": {
+            "matchingClasses": 39,
+            "referenceJarSha256": "71a5b39c3a740509056fbdbc2fabaf48e52ce6404ae5e7776dcc59a7ea866dd9"
+          }
+        }
+      ],
+      "resolved": {
+        "groupId": "org.apache.oltu.oauth2",
+        "artifactId": "org.apache.oltu.oauth2.client",
+        "version": "1.0.1"
       }
     },
     {

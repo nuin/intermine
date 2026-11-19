@@ -48,5 +48,5 @@
 
 - [x] Run full JavaScript and Python client suites against the deployed Java 21 test mine.
 - [x] Check hosted CI, repair any verified failures, and integrate into the fork's beta branch once green.
-- [ ] Audit resolved runtime artifacts against primary security/support sources.
-- [ ] Upgrade compatible dependency batches, validate, document unresolved major migrations, commit and push.
+- [x] Audit resolved runtime artifacts against primary security/support sources.
+- [x] Upgrade compatible dependency batches, validate, document unresolved major migrations, commit and push.

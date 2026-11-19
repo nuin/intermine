@@ -32,7 +32,7 @@
 
 ## Final branch gates
 
-- [ ] Obtain one fresh review for this phase and address important findings with regression checks.
+- [x] Obtain one fresh review for this phase and address important findings with regression checks.
 - [ ] Verify hosted CI on the final code and integrate into the fork's `beta`.
 
 ## Audit scope
