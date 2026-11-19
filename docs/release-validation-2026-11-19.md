@@ -22,4 +22,12 @@ Public client revisions fetched for validation:
 
 The Python skips are the upstream `RegistryTest` class, marked `Flymine not available`. No tests were disabled locally. Client checkouts and logs are outside the repository under `/private/tmp/intermine-release-2026-11-19`.
 
-Live client validation, final hosted CI, and integration are still in progress.
+Both live suites passed against Tomcat 9.0.115 running Java 21.0.13, with PostgreSQL 14 and Solr 8.11.4:
+
+- JavaScript: 405 passed in 10 seconds; one upstream `it.skip` for Unicode query constraints remains pending.
+- Python: 74 passed in 13.657 seconds. Its registry live test is an upstream no-op, so this is not registry coverage.
+- A deployed `Employee.name DESC` query returned the same ordered names in `jsonobjects` and ordinary JSON rows.
+
+The client suites ran sequentially to avoid overlapping mutations of fixture lists. No local tests were disabled. The local combined data-load/index/WAR process logged connection-pool capacity warnings; deployment rebuilt the summary in its separate Gradle process and both live suites passed. CI already invokes those setup stages in separate processes.
+
+The replacement hosted [CI run](https://github.com/nuin/intermine/actions/runs/44605617121) passed on `3824e5e08412529c63ee853c75abdc43a84a80d6`: browser regressions, core and bio suites on Java 8 and Java 21, and both web-service client jobs. The corresponding [Checkstyle run](https://github.com/nuin/intermine/actions/runs/44605617246) also passed. These results clear the Java 21 and reliability changes for integration into the fork's `beta` branch.
