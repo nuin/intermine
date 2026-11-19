@@ -33,7 +33,7 @@ dependencies {
     api group: 'org.apache.lucene', name: 'lucene-snowball', version: '3.0.2'
     api group: 'org.apache.lucene', name: 'lucene-highlighter', version: '3.0.2'
     api group: 'org.apache.lucene', name: 'lucene-queries', version: '3.0.2'
-    api group: 'org.json', name: 'json', version: '20170516'
+    api group: 'org.json', name: 'json', version: runtimeVersions.json
     api group: "org.apache.jena", name: "apache-jena-libs", version: "3.16.0"
     testImplementation project(path: ':intermine-testresources', configuration: 'testArtifacts')
     testImplementation group: 'xmlunit', name: 'xmlunit', version: '1.0'

@@ -1,0 +1,20 @@
+ext.runtimeVersions = [
+    postgresql: '42.7.14',
+    beanutils: '1.11.0',
+    collections: '3.2.2',
+    io: '2.22.0',
+    fileupload: '1.6.0',
+    json: '20260814',
+    tomcat: '9.0.124'
+]
+
+dependencies {
+    constraints {
+        api "org.postgresql:postgresql:${runtimeVersions.postgresql}"
+        api "commons-beanutils:commons-beanutils:${runtimeVersions.beanutils}"
+        api "commons-collections:commons-collections:${runtimeVersions.collections}"
+        api "commons-io:commons-io:${runtimeVersions.io}"
+        api "commons-fileupload:commons-fileupload:${runtimeVersions.fileupload}"
+        api "org.json:json:${runtimeVersions.json}"
+    }
+}

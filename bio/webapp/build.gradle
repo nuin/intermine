@@ -34,7 +34,7 @@ dependencies {
 
     api (project(':bio-tools')) { transitive = false }
     api group: "org.intermine", name: "intermine-jbrowse-endpoint", version: System.getProperty("imVersion")
-    api group: 'commons-io', name: 'commons-io', version: '1.2'
+    api group: 'commons-io', name: 'commons-io', version: runtimeVersions.io
     api group: 'psidev.psi.mi.jami.bridges', name: 'bridges-core', version: '3.2.12'
     api group: 'psidev.psi.mi.jami.bridges', name: 'jami-ols', version: '3.2.12'
     api group: 'psidev.psi.mi.jami', name: 'jami-core', version: '3.2.12'
@@ -42,7 +42,7 @@ dependencies {
     api group: "org.biojava", name: "biojava-core", version: "4.2.0"
     api group: "org.biojava", name: "biojava-genome", version: "4.2.0"
     api group: "org.biojava", name: "biojava-ontology", version: "4.2.0"
-    api group: 'org.json', name: 'json', version: '20170516'
+    api group: 'org.json', name: 'json', version: runtimeVersions.json
 
     runtimeOnly group: 'org.apache.lucene', name: 'lucene-snowball', version: '3.0.2'
 

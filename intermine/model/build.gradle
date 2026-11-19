@@ -22,8 +22,8 @@ tasks.test.dependsOn(':intermine-testresources:buildDB')
 
 dependencies {
     api group: 'commons-lang', name: 'commons-lang', version: '2.6'
-    api group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    api group: 'commons-collections', name: 'commons-collections', version: runtimeVersions.collections
     api group: 'org.javassist', name: 'javassist', version: '3.33.0-GA'
-    api group: 'commons-io', name: 'commons-io', version: '1.2'
+    api group: 'commons-io', name: 'commons-io', version: runtimeVersions.io
     api group: 'org.skyscreamer', name: 'jsonassert', version: '1.2.3'
 }

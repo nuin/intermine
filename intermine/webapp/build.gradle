@@ -34,7 +34,7 @@ dependencies {
     api group: 'org.apache.struts', name: 'struts-tiles', version: '1.3.10'
     api group: "javax.servlet", name: "jstl", version: "1.2"
     api group: 'org.apache.taglibs', name: 'taglibs-standard', version: '1.2.5'
-    api group: 'commons-fileupload', name: 'commons-fileupload', version: '1.2.2'
+    api group: 'commons-fileupload', name: 'commons-fileupload', version: runtimeVersions.fileupload
     api group: 'commons-httpclient', name: 'commons-httpclient', version: '3.0'
     api group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
     api group: 'org.everit.json', name: 'org.everit.json.schema', version: '1.5.1'
@@ -54,8 +54,8 @@ dependencies {
     api group: 'org.apache.commons', name: 'commons-math3', version: '3.2'
     providedCompile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.50'
 
-    runtimeOnly group: 'commons-io', name: 'commons-io', version: '1.2'
-    runtimeOnly group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    runtimeOnly group: 'commons-io', name: 'commons-io', version: runtimeVersions.io
+    runtimeOnly group: 'commons-collections', name: 'commons-collections', version: runtimeVersions.collections
     runtimeOnly group: 'commons-lang', name: 'commons-lang', version: '2.6'
     runtimeOnly group: 'commons-codec', name: 'commons-codec', version: '1.15'
     runtimeOnly 'taglibs:string:1.1.0'
@@ -64,7 +64,7 @@ dependencies {
     runtimeOnly('org.glassfish.jaxb:jaxb-runtime:2.3.9') {
         exclude group: 'jakarta.xml.bind', module: 'jakarta.xml.bind-api'
     }
-    runtimeOnly group: 'org.json', name: 'json', version: '20170516'
+    runtimeOnly group: 'org.json', name: 'json', version: runtimeVersions.json
 
     testImplementation project(path: ':intermine-testresources', configuration: 'testArtifacts')
     testImplementation project(':intermine-objectstore').sourceSets.test.output

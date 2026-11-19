@@ -41,6 +41,7 @@ subprojects {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
     apply from: "${rootDir}/../../config/gradle/java-compatibility.gradle"
+    apply from: "${rootDir}/../../config/gradle/runtime-dependencies.gradle"
 
     // -------------------------
     // Build localDirs list
@@ -105,9 +106,9 @@ subprojects {
         api group : "org.intermine", name: "intermine-model", version: System.getProperty("imVersion")
         api group : "org.intermine", name: "intermine-objectstore", version: System.getProperty("imVersion")
         api group : "org.intermine", name: "intermine-resources", version: System.getProperty("imVersion") // log4j
-        api group: 'commons-collections', name: 'commons-collections', version: '3.2'
+        api group: 'commons-collections', name: 'commons-collections', version: runtimeVersions.collections
         api group: 'commons-lang', name: 'commons-lang', version: '2.6'
-        api group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
+        api group: 'org.postgresql', name: 'postgresql', version: runtimeVersions.postgresql
 
         testImplementation group: 'junit', name: 'junit', version: '4.8.2'
         testImplementation group: "org.intermine", name: "intermine-integrate", version: System.getProperty("imVersion")

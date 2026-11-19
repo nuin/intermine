@@ -24,9 +24,9 @@ tasks.test.dependsOn(':intermine-testresources:buildDB')
 
 dependencies {
     api project(':intermine-model')
-    api group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
-    api group: 'commons-io', name: 'commons-io', version: '1.2'
-    api group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.3'
+    api group: 'org.postgresql', name: 'postgresql', version: runtimeVersions.postgresql
+    api group: 'commons-io', name: 'commons-io', version: runtimeVersions.io
+    api group: 'commons-beanutils', name: 'commons-beanutils', version: runtimeVersions.beanutils
     api group: 'com.zaxxer', name: 'HikariCP', version: '3.2.0', transitive: false // conflict with log4j library this JAR needs
     api group: 'ch.qos.reload4j', name: 'reload4j', version: '1.2.22'
     api group: 'org.slf4j', name: 'slf4j-reload4j', version: '1.7.36'
