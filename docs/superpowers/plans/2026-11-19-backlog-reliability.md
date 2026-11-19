@@ -29,11 +29,11 @@
 
 ## Task 2: Unicode tracking (#2355)
 
-- [ ] Add database round-trip tests for accented, CJK and supplementary Unicode source/field names.
-- [ ] Observe the existing COPY encoding failure, then encode lengths and values as UTF-8 bytes.
-- [ ] Run focused DataTracking tests and the integrate suite with PostgreSQL on Java 21.
+- [x] Add database round-trip tests for accented, CJK and supplementary Unicode source/field names.
+- [x] Observe the existing COPY encoding failure, then encode lengths and values as UTF-8 bytes.
+- [x] Run focused DataTracking tests and the integrate suite with PostgreSQL on Java 21.
   Expected: persisted provenance survives closing and reopening, and existing integration behavior passes.
-- [ ] Scan touched files and commit separately.
+- [x] Scan touched files and commit separately.
 
 ## Task 3: JSON object ordering (#1639)
 

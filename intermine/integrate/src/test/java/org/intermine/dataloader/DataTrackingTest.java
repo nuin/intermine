@@ -11,11 +11,14 @@ package org.intermine.dataloader;
  */
 
 import java.sql.Connection;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 
 import junit.framework.TestCase;
 
 import org.intermine.sql.Database;
 import org.intermine.sql.DatabaseFactory;
+import org.intermine.sql.DatabaseConnectionException;
 
 public class DataTrackingTest extends TestCase {
     protected DataTracker dt;
@@ -68,6 +71,61 @@ public class DataTrackingTest extends TestCase {
         }
 
         assertEquals(source1.getName(), dt.getSource(new Integer(13), "name").getName());
+    }
+
+    public void testUnicodeSourceNamesPersist() throws Exception {
+        String[] names = {
+            "vigun.iSelect-consensus-2016.gen.Mu\u00f1oz-Amatria\u00edn_Mirebrahim_2017",
+            "\u57fa\u56e0\u6570\u636e", "source-\ud83e\uddec", "ASCII-source"
+        };
+        for (int i = 0; i < names.length; i++) {
+            dt.setSource(i + 100, "name", dt.stringToSource(names[i]));
+        }
+        dt.close();
+        dt = new DataTracker(DatabaseFactory.getDatabase("db.unittest"), 30, 10);
+        for (int i = 0; i < names.length; i++) {
+            assertEquals(names[i], dt.getSource(i + 100, "name").getName());
+        }
+    }
+
+    public void testUnicodeFieldNamesPersist() throws Exception {
+        String[] fields = {"na\u00efve", "\u540d\u79f0", "field-\ud83e\uddec"};
+        for (String field : fields) {
+            dt.setSource(101, field, source1);
+        }
+        dt.close();
+        dt = new DataTracker(DatabaseFactory.getDatabase("db.unittest"), 30, 10);
+        for (String field : fields) {
+            assertEquals("Source1", dt.getSource(101, field).getName());
+        }
+    }
+
+    public void testPortableWriterPreservesQuotedNames() throws Exception {
+        dt.close();
+        final Database database = DatabaseFactory.getDatabase("db.unittest");
+        Database portableDatabase = new Database() {
+            @Override
+            public Connection getConnection() throws DatabaseConnectionException {
+                final Connection connection = database.getConnection();
+                return (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(),
+                    new Class<?>[] {Connection.class}, (proxy, method, args) -> {
+                        if ("isWrapperFor".equals(method.getName())) {
+                            return false;
+                        }
+                        try {
+                            return method.invoke(connection, args);
+                        } catch (InvocationTargetException e) {
+                            throw e.getCause();
+                        }
+                    });
+            }
+        };
+        dt = new DataTracker(portableDatabase, 30, 10);
+        String name = "O'Brien-\u57fa\u56e0";
+        dt.setSource(102, "field'name", dt.stringToSource(name));
+        dt.close();
+        dt = new DataTracker(database, 30, 10);
+        assertEquals(name, dt.getSource(102, "field'name").getName());
     }
     
     // This is to investigate a possible bug where the version numbers are initialised from zero

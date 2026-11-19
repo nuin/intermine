@@ -14,7 +14,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -117,10 +119,7 @@ public class DataTracker
      */
     public void clear() throws SQLException {
         Statement s = conn.createStatement();
-        try {
-            s.executeQuery("drop table tracker");
-        } catch (SQLException e) {
-        }
+        s.execute("DROP TABLE IF EXISTS tracker");
         s = conn.createStatement();
         s.execute("create table tracker (objectid int, fieldname text, sourcename text,"
                 + " version int)");
@@ -495,7 +494,7 @@ public class DataTracker
             org.postgresql.copy.CopyManager copyManager = null;
             ByteArrayOutputStream baos = null;
             DataOutputStream dos = null;
-            Statement s = null;
+            PreparedStatement s = null;
             if (storeConn.isWrapperFor(org.postgresql.PGConnection.class)) {
                 copyManager = (storeConn.unwrap(org.postgresql.PGConnection.class)).getCopyAPI();
                 baos = new ByteArrayOutputStream();
@@ -508,7 +507,8 @@ public class DataTracker
                 dos.writeInt(0); // Length of header extension
             }
             if (copyManager == null) {
-                s = storeConn.createStatement();
+                s = storeConn.prepareStatement("INSERT INTO tracker"
+                        + " (objectid, fieldname, sourcename, version) VALUES (?, ?, ?, ?)");
                 LOG.warn("Using slow portable writing method");
             }
             for (Map.Entry<Integer, ObjectDescription> entry : map.entrySet()) {
@@ -526,17 +526,21 @@ public class DataTracker
                                 dos.writeShort(4); // Number of fields
                                 dos.writeInt(4); // Length of an integer
                                 dos.writeInt(id.intValue()); // objectid
-                                dos.writeInt(field.length()); // Length of fieldname
-                                dos.writeBytes(field); // Field name
-                                String sourceName = sourceToString(source);
-                                dos.writeInt(sourceName.length()); // Length of source name
-                                dos.writeBytes(sourceName); // Source name
+                                byte[] fieldBytes = field.getBytes(StandardCharsets.UTF_8);
+                                dos.writeInt(fieldBytes.length);
+                                dos.write(fieldBytes);
+                                byte[] sourceBytes = sourceToString(source)
+                                    .getBytes(StandardCharsets.UTF_8);
+                                dos.writeInt(sourceBytes.length);
+                                dos.write(sourceBytes);
                                 dos.writeInt(4); // Length of an integer
                                 dos.writeInt(version); // version
                             } else {
-                                s.addBatch("INSERT INTO tracker (objectid, fieldname, sourcename,"
-                                        + " version) VALUES (" + id + ", '" + field + "', '"
-                                        + sourceToString(source) + "', " + version + ")");
+                                s.setInt(1, id.intValue());
+                                s.setString(2, field);
+                                s.setString(3, sourceToString(source));
+                                s.setInt(4, version);
+                                s.addBatch();
                             }
                         }
                     }
@@ -551,7 +555,11 @@ public class DataTracker
                 copyManager.copyIn("COPY tracker FROM STDIN BINARY",
                         new ByteArrayInputStream(baos.toByteArray()));
             } else {
-                s.executeBatch();
+                try {
+                    s.executeBatch();
+                } finally {
+                    s.close();
+                }
             }
             version++;
             storeConn.commit();
@@ -638,6 +646,7 @@ public class DataTracker
                 try {
                     wait(100000L);
                 } catch (InterruptedException e) {
+                    LOG.warn("Interrupted while awaiting tracker writes; continuing", e);
                 }
             }
         }
@@ -653,6 +662,7 @@ public class DataTracker
                         try {
                             wait(100000L);
                         } catch (InterruptedException e) {
+                            LOG.warn("Interrupted while waiting for tracker work; continuing", e);
                         }
                     }
                 }
