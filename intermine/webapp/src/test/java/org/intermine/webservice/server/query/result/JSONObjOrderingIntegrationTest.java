@@ -10,6 +10,7 @@ import org.intermine.api.bag.BagManager;
 import org.intermine.api.query.PathQueryExecutor;
 import org.intermine.metadata.Model;
 import org.intermine.model.InterMineObject;
+import org.intermine.model.testmodel.Company;
 import org.intermine.model.testmodel.Department;
 import org.intermine.model.testmodel.Employee;
 import org.intermine.objectstore.ObjectStoreWriter;
@@ -18,6 +19,7 @@ import org.intermine.pathquery.OrderDirection;
 import org.intermine.pathquery.OuterJoinStatus;
 import org.intermine.pathquery.PathQuery;
 import org.intermine.webservice.server.output.JSONResultsIterator;
+import org.intermine.util.DynamicUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -105,6 +107,41 @@ public class JSONObjOrderingIntegrationTest extends TestCase {
         assertEquals(2, objects.size());
         assertEquals(2, objects.get(0).getJSONArray("employees").length());
         assertEquals(stored.get(1).getId().intValue(), objects.get(0).getInt("objectId"));
+    }
+
+    public void testInterleavedGrandchildrenKeepTheirParent() throws Exception {
+        Company company = DynamicUtil.simpleCreateObject(Company.class);
+        company.setName("Ordering company");
+        writer.store(company);
+        stored.add(company);
+        for (int i = 0; i < 2; i++) {
+            Department department = (Department) stored.get(i);
+            department.setName(i == 0 ? "A" : "B");
+            department.setCompany(company);
+            writer.store(department);
+        }
+        Employee employee = (Employee) stored.get(2);
+        employee.setName("Omega");
+        writer.store(employee);
+        PathQuery query = new PathQuery(Model.getInstanceByName("testmodel"));
+        query.addViews("Company.name", "Company.departments.name",
+            "Company.departments.employees.name", "Company.departments.employees.department.name");
+        query.addOrderBy("Company.departments.employees.name", OrderDirection.ASC);
+        List<JSONObject> objects = objects(query, 0, 10);
+        assertEquals(1, objects.size());
+        JSONArray departments = objects.get(0).getJSONArray("departments");
+        assertEquals(2, departments.length());
+        assertEquals(Arrays.asList("Alpha", "Omega"), childNames(departments.getJSONObject(0)));
+        assertEquals(Arrays.asList("Gamma", "Zulu"), childNames(departments.getJSONObject(1)));
+        for (int i = 0; i < departments.length(); i++) {
+            JSONObject department = departments.getJSONObject(i);
+            assertEquals(stored.get(i).getId().intValue(), department.getInt("objectId"));
+            JSONArray employees = department.getJSONArray("employees");
+            for (int j = 0; j < employees.length(); j++) {
+                assertEquals(department.getInt("objectId"), employees.getJSONObject(j)
+                    .getJSONObject("department").getInt("objectId"));
+            }
+        }
     }
 
     private List<String> names(PathQuery query, int start, int limit) throws Exception {

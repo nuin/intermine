@@ -12,7 +12,7 @@ The Node test runs the production browser script, replacing only DOM, timers and
 node --test bio/webapp/src/test/js/*.test.cjs
 ```
 
-The quality scan prompted mechanical cleanup of accidental global assignments, an unused assignment and identical navigation rendering. The remaining scan findings are:
+The quality scan prompted cleanup of accidental global assignments, an unused assignment and shared navigation rendering. The renderer preserves the disabled Last action until the search finishes. The remaining scan findings are:
 
 - 79 `no-undef` reports for jQuery and six variables supplied by `genomicRegionSearchResultsBase.jsp`. These are false positives from scanning the script without its hosting page.
 - Six `no-unused-vars` reports for functions called from JSP or generated HTML handlers, also false positives.
@@ -39,3 +39,11 @@ Ten regressions cover descending order, multiple keys, references, explicit IDs,
 The existing `start`/`size` contract limits flattened rows, so a page boundary through an inner-joined collection may return a partial collection. This change does not redesign collection pagination. Collection sort keys apply within a parent; they do not globally order parents by an aggregate of child values.
 
 The changed query builder has no Aislop errors or warnings; its existing simple-class workaround is reported as informational. Combined tracker/query scan score: 99.
+
+## Review follow-up
+
+Fresh review found two regressions before pushing: the navigation consolidation enabled Last prematurely, and sorted grandchildren could be attached to the last parent appended instead of the parent in their current row. Regressions reproduced both. Navigation now passes 15 tests. JSON assembly records the objects selected in the current row and reuses the matching parent when traversing deeper collections. The database regression asserts both memberships and references for interleaved grandchildren.
+
+The full changed-file scan scores 91, with no confirmed errors or fixable warnings. It includes the documented 82 false-positive errors (79 hosting-page globals and three SQL expressions), six false-positive unused-handler warnings, and six retained nonfixable warnings: the experimental JBrowse URL, four tracker size/complexity findings and the existing large JSON iterator class. Two existing workaround comments are informational. No scan configuration changed.
+
+Review also considered object-count pagination, aggregate child ordering and template JSON. The first two retain the documented API behavior; the template service already bypassed this transformation and needs separate coverage. These are not silently included in the three reported fixes.

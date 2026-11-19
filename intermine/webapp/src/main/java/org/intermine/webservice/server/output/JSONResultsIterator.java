@@ -45,6 +45,8 @@ public class JSONResultsIterator implements Iterator<JSONObject>
     private final ExportResultsIterator subIter;
     private List<ResultElement> holdOver;
     private final List<Path> viewPaths = new ArrayList<Path>();
+    private final Map<Path, Map<String, Object>> currentRowObjects =
+        new HashMap<Path, Map<String, Object>>();
     protected transient Map<String, Object> currentMap;
     protected transient List<Map<String, Object>> currentArray;
     private Model model;
@@ -110,6 +112,7 @@ public class JSONResultsIterator implements Iterator<JSONObject>
     }
 
     private void addRowToJsonMap(List<ResultElement> results, Map<String, Object> jsonMap) {
+        currentRowObjects.clear();
         setOrCheckClassAndId(results.get(0), viewPaths.get(0), jsonMap);
 
         for (int i = 0; i < results.size(); i++) {
@@ -325,10 +328,16 @@ public class JSONResultsIterator implements Iterator<JSONObject>
                 continue;
             } else if (section.endIsAttribute()) {
                 addAttributeToCurrentNode(section, cell);
+                currentRowObjects.put(section.getPrefix(), currentMap);
             } else if (section.endIsReference()) {
                 addReferenceToCurrentNode(section);
             } else if (section.endIsCollection()) {
                 addCollectionToCurrentNode(section);
+                // A sorted row can revisit an earlier parent in this collection.
+                if (currentRowObjects.containsKey(section)) {
+                    currentMap = currentRowObjects.get(section);
+                    currentArray = null;
+                }
             } else {
                 throw new JSONFormattingException(
                         "Bad path type: " + section.toString());
