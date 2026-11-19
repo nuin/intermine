@@ -368,7 +368,7 @@ public class ProfileManager
      * @param profile The profile to remove.
      * @throws ObjectStoreException If it cannot be removed.
      */
-    public void deleteProfile(Profile profile) throws ObjectStoreException {
+    public synchronized void deleteProfile(Profile profile) throws ObjectStoreException {
         Integer userId = profile.getUserId();
         removeTokensForProfile(profile);
         evictFromCache(profile);
