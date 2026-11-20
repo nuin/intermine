@@ -69,9 +69,9 @@ test('an empty authorized list returns no search hits', async () => {
     }
 });
 
-test('DWR autocomplete returns indexed attribute suggestions', async () => {
+function browserSession() {
     const cookies = new Map();
-    async function request(path, options = {}) {
+    async function request(path, options = {}, status = 200) {
         let url = new URL(path, mine);
         for (let redirects = 0; redirects < 10; redirects++) {
             const response = await fetch(url, {
@@ -86,13 +86,19 @@ test('DWR autocomplete returns indexed attribute suggestions', async () => {
             }
             if (response.status >= 300 && response.status < 400) {
                 url = new URL(response.headers.get('location'), url);
+                if (response.status === 303 || response.status === 302) options = {};
                 continue;
             }
-            assert.ok(response.ok, `${url.pathname}: ${response.status}`);
+            assert.equal(response.status, status, `${url.pathname}: ${response.status}`);
             return response.text();
         }
         throw new Error('Too many application redirects');
     }
+    return { request, cookies };
+}
+
+test('DWR autocomplete returns indexed attribute suggestions', async () => {
+    const { request, cookies } = browserSession();
     await request('begin.do');
     const engine = await request('dwr/engine.js');
     const match = engine.match(/_origScriptSessionId\s*=\s*"([^"]+)"/);
@@ -118,4 +124,78 @@ test('DWR autocomplete returns indexed attribute suggestions', async () => {
         assert.equal(result[0], 'true');
         assert.deepEqual(result.slice(1).sort(), expected);
     }
+});
+
+async function withSearchUser(check) {
+    const name = `search-list-${randomUUID()}`;
+    const password = randomUUID();
+    const registration = await json('users', {}, {
+        method: 'POST', body: new URLSearchParams({ name, password }),
+    });
+    const token = registration.user.temporaryToken;
+    const browser = browserSession();
+    try {
+        await browser.request('begin.do');
+        const loggedIn = await browser.request('loginAction.do', {
+            method: 'POST', body: new URLSearchParams({ username: name, password }),
+        });
+        assert.ok(loggedIn.includes(name), "Browser login must select the test account");
+        await check(token, browser);
+    } finally {
+        await browser.request('logout.do');
+        const deletion = await json('user/deregistration', { token }, { method: 'POST' });
+        const url = new URL('user', service);
+        url.search = new URLSearchParams({ token, deregistrationToken: deletion.token.uuid,
+            format: 'xml' });
+        const response = await fetch(url, { method: 'DELETE', signal: AbortSignal.timeout(15000) });
+        assert.ok(response.ok, await response.text());
+    }
+}
+
+function selectAllForm(source, destination) {
+    return new URLSearchParams({ type: 'Employee', allChecked: 'true', totalHits: '1',
+        searchTerm: 'Human Resources', searchBag: source, newBagName: destination,
+        source: 'keywordSearchResults',
+        jsonFacets: JSON.stringify({ facets: [{ facetName: 'Category', facetValue: 'Employee' }] }),
+    });
+}
+
+test('browser Select All saves only members of the source list', async () => {
+    await withSearchUser(async (token, browser) => {
+        const source = `source-${randomUUID()}`;
+        const destination = `selected-${randomUUID()}`;
+        const matches = await json('search', { q: 'Human Resources', facet_Category: 'Employee' });
+        const member = matches.results[5];
+        assert.notEqual(member.id, matches.results[0].id);
+        await json('lists', { token, name: source, type: 'Employee' }, {
+            method: 'POST', headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(member.fields.name),
+        });
+        const page = await browser.request('keywordSearchResults.do?' + new URLSearchParams({
+            searchTerm: 'Human Resources', searchBag: source, facet_Category: 'Employee',
+        }));
+        await browser.request('saveFromIdsToBag.do', {
+            method: 'POST', body: selectAllForm(source, destination),
+        });
+        const savedName = (await json('lists', { token })).lists
+            .find(list => list.name.startsWith(destination)).name;
+        const saved = await json('search', { token, list: savedName });
+        assert.deepEqual(saved.results.map(item => item.id), [member.id]);
+        assert.match(page, new RegExp(`name="searchBag"[^>]*value="${source}"`));
+    });
+});
+
+test('browser Select All rejects a source list that is no longer accessible', async () => {
+    await withSearchUser(async (token, browser) => {
+        const source = `revoked-${randomUUID()}`;
+        const destination = `must-not-exist-${randomUUID()}`;
+        await json('lists', { token, name: source, type: 'Employee' }, {
+            method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: '"Dan Gore"',
+        });
+        await json('lists', { token, name: source }, { method: 'DELETE' });
+        await browser.request('saveFromIdsToBag.do', {
+            method: 'POST', body: selectAllForm(source, destination),
+        }, 400);
+        assert.ok(!(await json('lists', { token })).lists.some(list => list.name.startsWith(destination)));
+    });
 });

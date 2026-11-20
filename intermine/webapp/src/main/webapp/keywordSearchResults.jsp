@@ -362,6 +362,7 @@ input.submit {
             <input type="hidden" name="source" value="keywordSearchResults" />
             <input type="hidden" id="totalHits" name="totalHits" value="${searchTotalHits}" />
             <input type="hidden" id="searchTerm" name="searchTerm" value="${fn:escapeXml(searchTerm)}" />
+            <input type="hidden" name="searchBag" value="${searchBag}" />
             <input type="hidden" id="jsonFacets" name="jsonFacets" value="<c:out value="${jsonFacets}"/>" />
 
             <input type="hidden" name="newBagName" value="new_${searchFacetValues['Category']}_list" />

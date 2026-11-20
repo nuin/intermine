@@ -197,6 +197,54 @@ public class SearchResultsTest extends InterMineAPITestCase {
     }
 
     @Test
+    public void testRenameAfterSearchPreservesResultMetadata() throws Exception {
+        ApiTemplate template = bobProfile.getSavedTemplates().get("template");
+        for (String query : new String[] {"ttitle", ""}) {
+            im.getTagManager().addTag("retained", template, bobProfile);
+            SearchResults results = SearchResults.runLuceneSearch(query,
+                    SearchTarget.USER_TEMPLATES, bobProfile.getSearchRepository());
+            List<Object> before = results.iterator().next().asList();
+            template.setName(template.getName() + "renamed");
+            SearchResult result = results.iterator().next();
+            assertSame(template, result.getItem());
+            assertEquals(before.subList(1, 4), result.asList().subList(1, 4));
+            assertTrue(((List<?>) result.asList().get(3)).contains("retained"));
+        }
+    }
+
+    @Test
+    public void testBlankSearchPrefersUserItemOnlyInAllScope() throws Exception {
+        SearchRepository.clearGlobalRepositories();
+        SearchRepository global = new GlobalRepository(pm.getSuperuserProfile());
+        SearchRepository user = bobProfile.getSearchRepository();
+        ApiTemplate publicItem = new ApiTemplate("collision", "public", "public description",
+                new PathQuery(Model.getInstanceByName("testmodel"))) {
+            @Override
+            public int hashCode() {
+                return 15;
+            }
+        };
+        ApiTemplate privateItem = new ApiTemplate("collision", "private", "private description",
+                new PathQuery(Model.getInstanceByName("testmodel"))) {
+            @Override
+            public int hashCode() {
+                return 0;
+            }
+        };
+        global.searchItems.clear();
+        global.searchItems.add(publicItem);
+        user.searchItems.clear();
+        user.searchItems.add(privateItem);
+        SearchResults all = SearchResults.runLuceneSearch("", SearchTarget.ALL_TEMPLATES, user);
+        assertEquals(1, all.size());
+        assertSame(privateItem, all.iterator().next().getItem());
+        SearchResults published = SearchResults.runLuceneSearch("",
+                SearchTarget.GLOBAL_TEMPLATES, user);
+        assertEquals(1, published.size());
+        assertSame(publicItem, published.iterator().next().getItem());
+    }
+
+    @Test
     public void testUnfilteredBagSearches() throws Exception {
         SearchTarget target = new SearchTarget(Scope.ALL, TagTypes.BAG);
         SearchResults results = SearchResults.runLuceneSearch("", target,

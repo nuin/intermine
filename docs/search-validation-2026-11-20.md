@@ -13,7 +13,7 @@ matches overran the hit array, same-name public/private objects resolved to the
 wrong repository, and an empty global scope failed while rewriting a query.
 Additional tests reproduced an in-flight rename losing its object mapping, public
 items from other publishers disappearing from the UI map, and a repository/tag
-lock inversion. All 14 saved-item search tests pass after the port.
+lock inversion. All 14 saved-item search tests pass after the initial port; final review adds two more cases below.
 
 Each search captures an immutable directory/object mapping. Index construction
 runs outside the repository monitor, and publication checks a revision counter.
@@ -88,8 +88,9 @@ restarting the same service and volume, both document counts were unchanged.
 
 ## Validation status
 
-The full core build, Checkstyle and local Maven publication pass, with 2,174 tests
-and no failures, errors or skips. That includes 509 API and 244 webapp tests.
+The full core build, Checkstyle and local Maven publication pass after final review
+fixes (2m37s), with 2,176 tests and no failures, errors or skips. That includes
+511 API and 244 webapp tests.
 All 21 Python bootstrap/database-verifier tests and 15 browser JavaScript
 regressions pass; shell and Node syntax checks also pass.
 
@@ -107,7 +108,7 @@ and publication (5m40s). Postprocessor setup exposed an undeclared Commons IO
 dependency previously supplied by SolrJ 8; the postprocessor root now declares
 it explicitly, as the importer and postprocessor-test roots already do.
 Postprocessor build, Checkstyle and publication then pass (1m59s); all 12
-postprocessor tests and publication pass (1m04s). In total, 2,337 JVM tests plus
+postprocessor tests and publication pass (1m04s). In total, 2,339 JVM tests plus
 two plugin tests pass with no failures, errors or skips.
 
 All four persisted live search regressions pass (4.2s), including the actual DWR
@@ -125,8 +126,8 @@ upstream registry case is a no-op and does not establish registry coverage.
 All four registration/OAuth regressions pass. After both clients, eight
 authenticated and two public lists have exactly the same IDs, sizes and members
 as the preserved PostgreSQL baseline; all 11 saved-list database records remain.
-The running Tomcat JVM reports OpenJDK 21.0.13. Hosted CI and final branch review
-are pending.
+The running Tomcat JVM reports OpenJDK 21.0.13. The initial hosted InterMine CI run 44769503594 passes all six jobs, including both
+clients, and Checkstyle run 44769503541 passes. Final-source CI remains pending.
 
 The whole-branch Aislop scan reports 99 with zero errors. Its one fixable warning
 is a false positive on the existing Constants class Javadoc, “Container for
@@ -138,3 +139,24 @@ AjaxServices template-update catch. These require separate refactoring or an
 error-contract change. No rule configuration was changed. Gradle/Groovy is
 outside Aislop's supported lint coverage; builds and the plugin regression cover
 the modified postprocessing path.
+
+## Final review regressions
+
+A fresh independent review found three important issues. The new browser test
+reproduced Select All saving an outside result (ID 2000028) instead of the one
+source-list member (ID 2000191); a second test showed a deleted source list still
+allowed saving. The form now carries the source name, and the action resolves
+membership against the current profile, returning HTTP 400 if access is gone.
+
+Two Java regressions reproduced a NullPointerException when a template was renamed
+after search returned, and blank ALL searches selecting a public same-name object
+over the user's item. Metadata maps now use object identity, and blank searches
+collect public items before user items. All 16 saved-item search cases and the
+full core suite pass. All ten live search/registration/OAuth cases pass on the
+rebuilt WAR (5.9s), including both new browser regressions. The WAR again passes
+22 required-provider checks and 40,880 unique-class checks.
+
+Review boundaries remain explicit: rebuilds are not atomic replacements of active
+cores, exact scores/tie ordering are not compatibility invariants, and autocomplete
+still builds its document batch in memory. Operators must use fresh separate cores
+for migration; very large autocomplete sources can still require substantial heap.

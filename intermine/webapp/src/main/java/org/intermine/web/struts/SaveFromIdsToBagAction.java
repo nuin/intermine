@@ -12,6 +12,7 @@ package org.intermine.web.struts;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -73,10 +75,21 @@ public class SaveFromIdsToBagAction extends InterMineAction
                 int offset = 0;
 
                 KeywordSearchHandler keywordSearchHandler = new SolrKeywordSearchHandler();
+                List<Integer> sourceIds = null;
+                String searchBag = request.getParameter("searchBag");
+                if (StringUtils.isNotBlank(searchBag)) {
+                    InterMineBag sourceBag = im.getBagManager().getBag(profile, searchBag);
+                    if (sourceBag == null) {
+                        response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                                "The source list is no longer accessible.");
+                        return null;
+                    }
+                    sourceIds = sourceBag.getContentsAsIds();
+                }
 
                 idSet = keywordSearchHandler.
                         getObjectIdsFromSearch(im, searchTerm, offset, facetMap,
-                                null, listSize);
+                                sourceIds, listSize);
 
             } else {
                 // ids are comma delimited

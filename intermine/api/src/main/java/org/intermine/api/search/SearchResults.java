@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -92,10 +93,11 @@ public final class SearchResults implements Iterable<SearchResult>
 
     ///// INSTANCE API /////
 
-    private final Map<WebSearchable, Float> hits = new HashMap<WebSearchable, Float>();
+    private final Map<WebSearchable, Float> hits = new IdentityHashMap<WebSearchable, Float>();
     private final Map<String, WebSearchable> items = new HashMap<String, WebSearchable>();
-    private final Map<WebSearchable, String> descs = new HashMap<WebSearchable, String>();
-    private final Map<WebSearchable, Set<String>> tags = new HashMap<WebSearchable, Set<String>>();
+    private final Map<WebSearchable, String> descs = new IdentityHashMap<WebSearchable, String>();
+    private final Map<WebSearchable, Set<String>> tags =
+            new IdentityHashMap<WebSearchable, Set<String>>();
 
     private SearchResults() { }
 
@@ -312,21 +314,18 @@ public final class SearchResults implements Iterable<SearchResult>
         SearchRepository userRepo) {
         LOG.info("unfiltered search");
         Map<String, WebSearchable> wsMap = new HashMap<String, WebSearchable>();
-        Map<WebSearchable, Float> hitMap = new HashMap<WebSearchable, Float>();
-        Map<WebSearchable, String> descs = new HashMap<WebSearchable, String>();
-        Map<WebSearchable, Set<String>> tags = new HashMap<WebSearchable, Set<String>>();
+        Map<WebSearchable, Float> hitMap = new IdentityHashMap<WebSearchable, Float>();
+        Map<WebSearchable, String> descs = new IdentityHashMap<WebSearchable, String>();
+        Map<WebSearchable, Set<String>> tags = new IdentityHashMap<WebSearchable, Set<String>>();
 
-        Set<WebSearchable> items;
-        if (target.isUserOnly()) {
-            items = userRepo.getSearchItems();
-        } else {
-            items = new HashSet<WebSearchable>();
+        List<WebSearchable> items = new ArrayList<WebSearchable>();
+        if (!target.isUserOnly()) {
             for (SearchRepository sr : SearchRepository.getGlobalSearchRepositories()) {
                 items.addAll(sr.getSearchItems());
             }
-            if (target.isAll()) {
-                items.addAll(userRepo.getSearchItems());
-            }
+        }
+        if (!target.isGlobalOnly()) {
+            items.addAll(userRepo.getSearchItems());
         }
 
         TagManager tm = new TagManagerFactory(userRepo.getProfile().getProfileManager())
