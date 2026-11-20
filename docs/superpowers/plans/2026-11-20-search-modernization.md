@@ -51,12 +51,12 @@
 - [x] Create separate task-owned Solr10 storage, initialize both cores, rebuild keyword and autocomplete indexes against the same restored PostgreSQL fixture, then repeat rebuild to exercise existing schema. Test a failing rebuild and restore the fixture service afterward.
 - [x] Compare Solr8/10 baseline identities and counts, category facets, paginated queries and list constraints. Run `AutoCompleter.getFastList` through the actual application endpoint or Java integration harness with expected Employee.name suggestions; direct Solr queries alone do not prove the adapter. Fix the baseline malformed list-filter clauses and test exact authorized memberships (public7/private4), inaccessible list rejection, and zero results for an empty list. Add a persisted service regression to CI for stable externally visible behavior.
 - [x] Run all Java21 core/bio/importer/postprocessor test and Checkstyle/install tasks sequentially against PG18. Rebuild WAR, run provider/duplicate checks, inspect resolved/runtime archives for legacy Solr/Lucene. Start Tomcat, run JavaScript/Python live clients and registration/OAuth tests sequentially. Run Python bootstrap/browser checks and Aislop; fix blocking findings without changing rule settings.
-- [ ] Write operator migration/rebuild/rollback instructions and final measured validation report, commit/push maintenance branch, and wait for hosted CI.
+- [x] Write operator migration/rebuild/rollback instructions and measured local validation report, then commit/push the maintenance branch.
 
 ## Branch integration
 
-After both implementation tasks, dispatch the one required fresh whole-branch review,
-fix blocking findings with reproduced tests, and integrate to fork beta only after
-hosted CI and review gates pass.
+After both implementation tasks, run hosted CI and the one required fresh whole-branch
+review. Fix blocking findings with reproduced tests, update the validation report with
+their results, and integrate to fork beta only after both gates pass.
 
 Self-review: the two tasks cover the spec. Task 1 keeps legacy Solr temporarily while changing embedded search; Task 2 completes the new-major runtime. The shared build-root versions must be changed together so generated mine tests can resolve coherent artifacts. No separate setup-only tasks or implementation agents are needed.
