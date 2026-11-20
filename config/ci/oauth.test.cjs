@@ -16,3 +16,18 @@ test('OAuth authorization builds a provider link from the deployed runtime', asy
     assert.equal(link.hostname, 'github.com');
     assert.equal(link.searchParams.get('response_type'), 'code');
 });
+
+test('OAuth callback reports an invalid exchange as a JSON error', async () => {
+    const url = new URL('oauth2callback', root);
+    url.search = new URLSearchParams({
+        provider: 'UNCONFIGURED_TEST_PROVIDER',
+        code: 'invalid-code-sentinel',
+        redirect_uri: 'https://client.example.test/callback',
+        format: 'json',
+    });
+    const response = await fetch(url, { signal: AbortSignal.timeout(15000) });
+    const text = await response.text();
+    assert.equal(response.status, 400, `Invalid exchange: ${response.status} ${text}`);
+    assert.ok(JSON.parse(text).error);
+    assert.ok(!text.includes('invalid-code-sentinel'));
+});

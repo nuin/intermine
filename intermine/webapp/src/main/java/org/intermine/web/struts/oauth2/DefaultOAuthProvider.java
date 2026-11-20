@@ -13,14 +13,10 @@ package org.intermine.web.struts.oauth2;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.oltu.oauth2.common.OAuthProviderType;
 
 /**
  * A representation of an OAuth provider which is one of the default
  * providers provided for end-users.
- *
- * This list of currently supplied providers currently includes those
- * supplied with the OLTU library.
  *
  * @author Alex Kalderimis
  *
@@ -29,16 +25,18 @@ public final class DefaultOAuthProvider implements OAuthProvider
 {
 
     private final String clientId, clientSecret;
-    private final OAuthProviderType provider;
+    private final BuiltinOAuthProvider provider;
+    private final Properties properties;
 
     /**
      * Construct a new provider.
      *
      * @param properties The properties where the client-id and client-secret can be looked up.
-     * @param provider The OLTU provider configuration.
+     * @param providerName The built-in provider name.
      */
-    public DefaultOAuthProvider(Properties properties, OAuthProviderType provider) {
-        this.provider = provider;
+    public DefaultOAuthProvider(Properties properties, String providerName) {
+        this.provider = BuiltinOAuthProvider.valueOf(providerName);
+        this.properties = properties;
         String prefix = "oauth2." + provider.name();
         clientId = properties.getProperty(prefix + ".client-id");
         clientSecret = properties.getProperty(prefix + ".client-secret");
@@ -49,29 +47,25 @@ public final class DefaultOAuthProvider implements OAuthProvider
 
     @Override
     public String getTokenUrl() {
-        if (OAuthProviderType.GOOGLE == provider) {
-            // Use the newer token endpoint.
-            return "https://www.googleapis.com/oauth2/v3/token";
-        }
-        return provider.getTokenEndpoint();
+        return properties.getProperty("oauth2." + provider.name() + ".url.token",
+                provider.getTokenEndpoint());
     }
 
     @Override
     public MessageFormat getMessageFormat() {
-        if (OAuthProviderType.MICROSOFT == provider
-                || OAuthProviderType.GOOGLE == provider) {
-            return MessageFormat.BODY;
-        }
-        return MessageFormat.QUERY;
+        String defaultFormat = provider == BuiltinOAuthProvider.MICROSOFT
+                || provider == BuiltinOAuthProvider.GOOGLE
+                || provider == BuiltinOAuthProvider.GITHUB ? "BODY" : "QUERY";
+        return MessageFormat.valueOf(properties.getProperty(
+                "oauth2." + provider.name() + ".messageformat", defaultFormat));
     }
 
     @Override
     public ResponseType getResponseType() {
-        if (OAuthProviderType.GITHUB == provider
-                || OAuthProviderType.FACEBOOK == provider) {
-            return ResponseType.FORM;
-        }
-        return ResponseType.JSON;
+        String defaultType = provider == BuiltinOAuthProvider.GITHUB
+                || provider == BuiltinOAuthProvider.FACEBOOK ? "FORM" : "JSON";
+        return ResponseType.valueOf(properties.getProperty(
+                "oauth2." + provider.name() + ".responsetype", defaultType));
     }
 
     @Override

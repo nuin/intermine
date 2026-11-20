@@ -20,8 +20,12 @@ REQUIRED_CLASSES = (
     "javax/activation/DataHandler.class",
     "javax/inject/Inject.class",
     "org/apache/commons/logging/LogFactory.class",
-    "org/apache/oltu/oauth2/client/OAuthClient.class",
-    "org/apache/oltu/oauth2/common/OAuth.class",
+    "com/nimbusds/oauth2/sdk/AuthorizationRequest.class",
+    "com/nimbusds/oauth2/sdk/TokenRequest.class",
+    "com/nimbusds/oauth2/sdk/http/HTTPRequest.class",
+    "com/nimbusds/common/contenttype/ContentType.class",
+    "net/minidev/json/JSONObject.class",
+    "com/nimbusds/jwt/SignedJWT.class",
     "com/sun/xml/bind/v2/ContextFactory.class",
     "org/stringtree/json/JSONWriter.class",
     "org/apache/solr/client/solrj/impl/HttpJdkSolrClient.class",
@@ -59,6 +63,13 @@ def verify(war_path):
     ]
     if container_providers:
         errors.append(f"Servlet/JSP APIs must come from Tomcat: {container_providers}")
+    retired_classes = [
+        name for name in providers if name.startswith("org/apache/oltu/")
+    ]
+    if retired_classes:
+        errors.append(
+            f"Retired Oltu runtime classes are still packaged: {len(retired_classes)}"
+        )
     if errors:
         raise SystemExit("\n".join(errors))
     print(

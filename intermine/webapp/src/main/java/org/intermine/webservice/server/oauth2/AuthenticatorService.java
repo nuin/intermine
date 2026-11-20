@@ -10,55 +10,34 @@ package org.intermine.webservice.server.oauth2;
  *
  */
 
-import org.apache.log4j.Logger;
-import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
-import org.apache.oltu.oauth2.common.OAuthProviderType;
 import org.intermine.api.InterMineAPI;
+import org.intermine.web.logic.oauth2.OAuthClientSupport;
+import org.intermine.web.logic.oauth2.OAuthExchangeException;
 import org.intermine.webservice.server.core.JSONService;
-import org.intermine.webservice.server.exceptions.BadRequestException;
+import org.intermine.webservice.server.exceptions.ServiceException;
 
 /**
- * This service just generates the appropriate link to the oauth2 provider
- * Similar to the Authenticator class used by struts.
- * See org.intermine.web.struts.oauth2.Authenticator
- *
- * @author Daniela Butano
- *
+ * Builds an authorization link for a client-managed OAuth flow.
+ * @author InterMine Team
  */
 public class AuthenticatorService extends JSONService
 {
-    private static final Logger LOG = Logger.getLogger(AuthenticatorService.class);
-
-    /**
-     * Constructor
-     * @param im The InterMine state object.
-     **/
+    /** @param im the mine */
     public AuthenticatorService(InterMineAPI im) {
         super(im);
     }
 
     @Override
-    protected void execute() throws Exception {
-        String providerName = getRequiredParameter("provider");
-        String realm = webProperties.getProperty("webapp.baseurl");
-
-        String authorisationUrl = webProperties.getProperty("oauth2." + providerName + ".url.auth");
-        if (authorisationUrl == null) {
-            try {
-                OAuthProviderType providerType = OAuthProviderType.valueOf(providerName);
-                authorisationUrl = providerType.getAuthzEndpoint();
-            } catch (IllegalArgumentException ex) {
-                throw new BadRequestException("Provider name " + providerName + " unknown");
-            }
+    protected void execute() {
+        String provider = getRequiredParameter("provider");
+        try {
+            String link = new OAuthClientSupport(webProperties)
+                    .authorizationUri(provider, null, null).toString();
+            addResultEntry("link", link, false);
+        } catch (OAuthExchangeException e) {
+            throw new ServiceException(e.getMessage(), e.getHttpStatus());
+        } catch (RuntimeException e) {
+            throw new ServiceException("OAuth authorization could not complete", 502);
         }
-        OAuthClientRequest authRequest = OAuthClientRequest
-                .authorizationLocation(authorisationUrl)
-                .setClientId(webProperties.getProperty("oauth2." + providerName + ".client-id"))
-                .setScope(webProperties.getProperty("oauth2." + providerName + ".scopes"))
-                .setParameter("response_type", "code")
-                .setParameter("openid.realm", realm) // link open-id 2.0 accounts [1]
-                .buildQueryMessage();
-        String link = authRequest.getLocationUri();
-        addResultEntry("link", link, false);
     }
 }

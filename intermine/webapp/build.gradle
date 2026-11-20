@@ -44,9 +44,7 @@ dependencies {
     api group: 'commons-httpclient', name: 'commons-httpclient', version: '3.0'
     api group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
     api group: 'org.everit.json', name: 'org.everit.json.schema', version: '1.5.1'
-    api('org.apache.oltu.oauth2:org.apache.oltu.oauth2.client:1.0.1') {
-        exclude group: 'org.apache.oltu.oauth2', module: 'org.apache.oltu.oauth2.common'
-    }
+    api 'com.nimbusds:oauth2-oidc-sdk:11.39'
     api 'com.fasterxml.jackson.core:jackson-databind'
     api group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: '2.25'
     api group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.0.1'
