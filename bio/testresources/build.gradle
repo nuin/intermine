@@ -20,21 +20,21 @@ void createDbInternal(dbName) {
     }
 }
 
-void grantPrivileges(dbName) {
-    println 'Grant privileges on database ' + dbName
+void setDatabaseOwner(dbName) {
+    println 'Set application owner on database ' + dbName
     def resultStream = new ByteArrayOutputStream()
     exec {
         ignoreExitValue true
         environment PGPASSWORD: "postgres"
-        commandLine 'psql', '--no-password', '-U', 'postgres', '-h', 'localhost', '-c', "grant all privileges on database \"" + dbName + "\" to test;"
+        commandLine 'psql', '--no-password', '-U', 'postgres', '-h', 'localhost', '-c', "alter database \"" + dbName + "\" owner to test;"
         standardOutput = resultStream
         errorOutput = resultStream
     }
 
     def result = resultStream.toString().trim()
 
-    if (result.contains("GRANT")) {
-        println 'Granted.'
+    if (result.contains("ALTER DATABASE")) {
+        println 'Owner set.'
     } else {
         throw new GradleException("FAILED:\n${result}")
     }
@@ -47,8 +47,8 @@ task createUnitTestDatabases {
         // fail if DB is already there. Instead we could read in the list of DBs and only
         // create ones that aren't there
         createDbInternal('bio-test')
-        grantPrivileges('bio-test')
+        setDatabaseOwner('bio-test')
         createDbInternal('bio-fulldata-test')
-        grantPrivileges('bio-fulldata-test')
+        setDatabaseOwner('bio-fulldata-test')
     }
 }

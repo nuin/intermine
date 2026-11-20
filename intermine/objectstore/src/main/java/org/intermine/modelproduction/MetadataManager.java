@@ -22,10 +22,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.intermine.metadata.Model;
 import org.intermine.sql.Database;
 import org.intermine.util.PropertiesUtil;
@@ -38,6 +38,8 @@ import org.postgresql.largeobject.LargeObjectManager;
  */
 public final class MetadataManager
 {
+    private static final Logger LOG = Logger.getLogger(MetadataManager.class);
+
     private MetadataManager() {
     }
 
@@ -45,6 +47,13 @@ public final class MetadataManager
      * Name of the metadata table (created by TorqueModelOutput)
      */
     public static final String METADATA_TABLE = "intermine_metadata";
+
+    private static final String SELECT_METADATA = "SELECT value FROM " + METADATA_TABLE
+        + " WHERE key = ?";
+    private static final String DELETE_METADATA = "DELETE FROM " + METADATA_TABLE
+        + " WHERE key = ?";
+    private static final String INSERT_METADATA = "INSERT INTO " + METADATA_TABLE
+        + " (key, value) VALUES (?, ?)";
 
     /**
      * Name of the key under which to store the serialized version of the model
@@ -158,6 +167,7 @@ public final class MetadataManager
             if (connection != null) {
                 connection.rollback();
             }
+            throw e;
         } finally {
 
             if (insert != null) {
@@ -214,6 +224,7 @@ public final class MetadataManager
             if (connection != null) {
                 connection.rollback();
             }
+            throw e;
         } finally {
             if (columnResult != null) {
                 columnResult.close();
@@ -313,34 +324,41 @@ public final class MetadataManager
         Connection con = database.getConnection();
         try {
             con.setAutoCommit(false);
-            Statement s = con.createStatement();
-            ResultSet r = s.executeQuery("SELECT value FROM " + METADATA_TABLE + " WHERE key = '"
-                    + key + "'");
             long blob = 0;
             boolean needNewBlob = true;
-            if (r.next()) {
-                String blobValue = r.getString(1);
-                if ((blobValue != null) && isLargeObject(blobValue)) {
-                    blob = getBlobId(blobValue);
-                    needNewBlob = false;
+            try (PreparedStatement statement = con.prepareStatement(SELECT_METADATA)) {
+                statement.setString(1, key);
+                try (ResultSet result = statement.executeQuery()) {
+                    if (result.next()) {
+                        String blobValue = result.getString(1);
+                        if ((blobValue != null) && isLargeObject(blobValue)) {
+                            blob = getBlobId(blobValue);
+                            needNewBlob = false;
+                        }
+                    }
                 }
             }
             LargeObjectManager lom = getLargeObjectManager(con);
             if (needNewBlob) {
                 blob = lom.createLO(LargeObjectManager.READ | LargeObjectManager.WRITE);
-                s.execute("DELETE FROM " + METADATA_TABLE + " WHERE key = '" + key + "'");
-                s.execute("INSERT INTO " + METADATA_TABLE + " (key, value) VALUES('" + key
-                        + "', 'BLOB: " + blob + "')");
+                try (PreparedStatement delete = con.prepareStatement(DELETE_METADATA);
+                        PreparedStatement insert = con.prepareStatement(INSERT_METADATA)) {
+                    delete.setString(1, key);
+                    delete.executeUpdate();
+                    insert.setString(1, key);
+                    insert.setString(2, "BLOB: " + blob);
+                    insert.executeUpdate();
+                }
             }
             LargeObject obj = lom.open(blob, LargeObjectManager.WRITE);
             obj.truncate(0);
             return new LargeObjectOutputStream(con, obj);
         } catch (SQLException e) {
-            try {
-                con.setAutoCommit(true);
-                con.close();
+            try (Connection failedConnection = con) {
+                failedConnection.rollback();
+                failedConnection.setAutoCommit(true);
             } catch (SQLException e2) {
-                // Ignore - we already have a problem
+                e.addSuppressed(e2);
             }
             throw e;
         }
@@ -359,19 +377,21 @@ public final class MetadataManager
         boolean foundBlob = false;
         try {
             con.setAutoCommit(false);
-            Statement s = con.createStatement();
-            ResultSet r = s.executeQuery("SELECT value FROM " + METADATA_TABLE + " WHERE key = '"
-                    + key + "'");
-            long blob = 0;
-            if (r.next()) {
-                String blobValue = r.getString(1);
-                if ((blobValue != null) && isLargeObject(blobValue)) {
-                    blob = getBlobId(blobValue);
-                    foundBlob = true;
-                    LargeObjectManager lom = getLargeObjectManager(con);
-                    lom.delete(blob);
+            try (PreparedStatement select = con.prepareStatement(SELECT_METADATA);
+                    PreparedStatement delete = con.prepareStatement(DELETE_METADATA)) {
+                select.setString(1, key);
+                try (ResultSet result = select.executeQuery()) {
+                    if (result.next()) {
+                        String blobValue = result.getString(1);
+                        if ((blobValue != null) && isLargeObject(blobValue)) {
+                            foundBlob = true;
+                            LargeObjectManager lom = getLargeObjectManager(con);
+                            lom.delete(getBlobId(blobValue));
+                        }
+                        delete.setString(1, key);
+                        delete.executeUpdate();
+                    }
                 }
-                s.execute("DELETE FROM " + METADATA_TABLE + " WHERE key = '" + key + "'");
             }
         } finally {
             con.setAutoCommit(true);
@@ -488,7 +508,7 @@ public final class MetadataManager
         boolean commitMode = con.getAutoCommit();
         try {
             con.setAutoCommit(false); // Large Objects may not be used in auto-commit mode.
-            s = con.prepareStatement("SELECT value FROM " + METADATA_TABLE + " WHERE key = ?");
+            s = con.prepareStatement(SELECT_METADATA);
             s.setString(1, key);
             ResultSet r = s.executeQuery();
             long blob = 0;
@@ -518,7 +538,7 @@ public final class MetadataManager
                     con.close();
                 }
             } catch (SQLException e2) {
-                // Ignore - we already have a problem
+                e.addSuppressed(e2);
             }
             throw e;
         } // Note the lack of finally - we DO NOT WANT to finally close; that needs
@@ -731,8 +751,8 @@ public final class MetadataManager
     private static void write(String string, File file) throws IOException {
         if (file.exists()
             && IOUtils.contentEquals(new FileReader(file), new StringReader(string))) {
-            System.err .println("Not writing \"" + file.getName()
-                                + "\" as version in database is identical to local copy");
+            LOG.info("Not writing \"" + file.getName()
+                    + "\" as version in database is identical to local copy");
             return;
         }
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));

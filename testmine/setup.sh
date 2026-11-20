@@ -69,7 +69,7 @@ fi
 echo "------> Creating databases..."
 for db in $USERPROFILEDB $PRODDB; do
     dropdb --no-password -U postgres -h "$PSQL_HOST" --if-exists ${db}
-    createdb --no-password -U postgres -h "$PSQL_HOST" ${db}
+    createdb --no-password -U postgres -h "$PSQL_HOST" --owner="$PSQL_USER" "$db"
 done
 
 ##########

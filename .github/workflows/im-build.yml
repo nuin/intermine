@@ -25,13 +25,85 @@ jobs:
         package-manager-cache: false
     - run: node --test bio/webapp/src/test/js/*.test.cjs
 
+  database-migration:
+    runs-on: ubuntu-latest
+    services:
+      source:
+        image: postgres:14.25-bookworm
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5433:5432
+      target:
+        image: postgres:18.7-bookworm
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions/setup-python@v7
+      with:
+        python-version: '3.10'
+    - name: Install query client
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y postgresql-client
+    - name: Verify snapshot collection against PostgreSQL 18
+      run: |
+        set -euo pipefail
+        createdb --no-password intermine-verify-fixture
+        INTERMINE_VERIFY_TEST_DB=intermine-verify-fixture python3 config/lib/verify_database_integration.py
+    - name: Restore PostgreSQL 14 fixture with PostgreSQL 18 tools
+      env:
+        PG18_CONTAINER: ${{ job.services.target.id }}
+      run: |
+        set -euo pipefail
+        for port in 5433 5432; do
+          psql --no-password -p "$port" -v ON_ERROR_STOP=1 -c "CREATE ROLE test LOGIN PASSWORD 'test';"
+        done
+        createdb --no-password -p 5433 --owner=test migration_source
+        createdb --no-password -p 5432 --owner=test migration_target
+        PGPASSWORD=test psql --no-password -p 5433 -U test -d migration_source -v ON_ERROR_STOP=1 -f config/ci/migration-fixture.sql
+        PGPORT=5433 python3 config/lib/verify_database.py snapshot --database migration_source --output "$RUNNER_TEMP/before.json"
+        docker exec -e PGPASSWORD "$PG18_CONTAINER" pg_dump -h source -U postgres -Fc migration_source > "$RUNNER_TEMP/migration.dump"
+        docker exec -i -e PGPASSWORD "$PG18_CONTAINER" pg_restore -U postgres --exit-on-error --dbname migration_target < "$RUNNER_TEMP/migration.dump"
+        psql --no-password -d migration_target -v ON_ERROR_STOP=1 -c ANALYZE
+        python3 config/lib/verify_database.py snapshot --database migration_target --output "$RUNNER_TEMP/after.json"
+        python3 config/lib/verify_database.py compare "$RUNNER_TEMP/before.json" "$RUNNER_TEMP/after.json"
+    - name: Verify that equal row counts cannot hide changed data
+      run: |
+        set -euo pipefail
+        psql --no-password -d migration_target -v ON_ERROR_STOP=1 <<'SQL'
+        UPDATE migration_probe."quoted""records" SET label = 'changed' WHERE id = 3;
+        SQL
+        python3 config/lib/verify_database.py snapshot --database migration_target --output "$RUNNER_TEMP/changed.json"
+        if python3 config/lib/verify_database.py compare "$RUNNER_TEMP/before.json" "$RUNNER_TEMP/changed.json"; then
+          echo 'Migration verification failed to detect changed data' >&2
+          exit 1
+        fi
+
   unit-tests:
     runs-on: ubuntu-latest
 
     services:
       # Label used to access the service container
       postgres:
-        image: postgres:14
+        image: postgres:18.7-bookworm
         # Provide the password for postgres
         env:
           POSTGRES_USER: postgres
@@ -80,7 +152,7 @@ jobs:
     services:
       # Label used to access the service container
       postgres:
-        image: postgres:14
+        image: postgres:18.7-bookworm
         # Provide the password for postgres
         env:
           POSTGRES_USER: postgres
