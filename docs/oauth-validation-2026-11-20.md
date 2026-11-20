@@ -131,3 +131,37 @@ The reviewer did not establish remote-provider compatibility, cross-process logi
 completion, PKCE/ID-token migration, wider rich-HTML safety or hosted CI results.
 Those retain the documented operator/client responsibilities and scope limits; the
 executor independently requires all corrected-source local and hosted gates.
+
+The corrected source is `1799750bce99fb568704c36407e579788608f773`. Its full core build
+passes 2,252 tests (zero failures, errors or skips), including 320 webapp tests and
+511 API tests, with Checkstyle and local publication in 1m45s. The two Important
+findings are covered by `testRestPreservesPrivateUseRedirectSchemes` and
+`testMalformedUserInfoWithValidIdentityCannotAuthenticate`, both observed failing
+before correction. Relative/fragment redirects also have a rejection regression.
+
+The complete decisions and deferred findings across PostgreSQL, search, browser
+authentication and OAuth are collected in
+[the modernization decision record](modernization-decisions-2026-11-20.md).
+
+After the review fixes, all 23 deployed checks pass (5.96s), JavaScript passes
+405 tests with its one upstream pending case (7s), and Python passes 74 (13.50s).
+The original eight authenticated and two public lists retain their exact members;
+eleven saved-list rows remain. The rebuilt WAR retains 26 required providers and
+42,088 unique runtime classes, with tested class/resource bytes matching the archive.
+Aislop remains 100 with no errors, warnings or fixable findings. The unchanged DOM
+and bio JavaScript sources retain their passing 8/8 and 15/15 results.
+
+## Final-source hosted gates and integration
+
+Source `1799750bce99fb568704c36407e579788608f773` passed
+[all six InterMine CI jobs](https://github.com/nuin/intermine/actions/runs/44820710211):
+PostgreSQL migration, browser/DOM, core Java 21, bio Java 21, JavaScript client and
+Python client. Its separate
+[Checkstyle run](https://github.com/nuin/intermine/actions/runs/44820710276) also passed.
+The two Important review findings are fixed and independently regression-tested;
+the deferred Minor and every review scope ruling are retained in the decision record.
+
+The final integration record changes documentation only and uses `[skip ci]`.
+Executable files match the exact source validated locally and by the hosted runs
+above. Both the OAuth maintenance branch and fork `beta` receive this record after
+fast-forward integration; no upstream release or production database is modified.
