@@ -100,3 +100,68 @@ test('failed sharing invitations keep service errors as text', t => {
     assert.equal(rendered.find('em').length, 0);
     assert.equal(rendered.text(), error);
 });
+
+async function preferencesPage(t) {
+    const dom = new JSDOM('<table class="user-preferences"><tbody><tr><td></td><td>'
+        + '<form class="editable-user-preference"><input type="text"><button class="update">Update</button></form>'
+        + '</td></tr></tbody></table><button class="add-user-preference">Add</button>'
+        + '<form class="add-user-preference"><input class="prefname"><input class="prefvalue"></form>'
+        + '<div id="notifications"></div>', { runScripts: 'outside-only', url: 'http://localhost/' });
+    t.after(() => dom.window.close());
+    const window = dom.window;
+    window.eval(fs.readFileSync(path.join(scripts, 'jquery-1.7.js'), 'utf8'));
+    window.jQuery.fx.off = true;
+    window._ = { contains: (values, value) => values.includes(value) };
+    window.FailureNotification = window.Notification = function(options) {
+        this.render = () => window.jQuery('<div>').append(options.message).appendTo('#notifications');
+    };
+    window.eval(fs.readFileSync(path.join(scripts, 'mymine.js'), 'utf8'));
+    await new Promise(resolve => window.jQuery(resolve));
+    return window;
+}
+
+test('duplicate preference names stay text in notifications', async t => {
+    const window = await preferencesPage(t);
+    const name = '<em data-pref="duplicate">key</em>';
+    window.jQuery('.editable-user-preference input').attr('name', name);
+    window.jQuery('.prefname').val(name);
+    window.jQuery('.prefvalue').val('value');
+    window.jQuery('form.add-user-preference').trigger('submit');
+    const notice = window.document.getElementById('notifications');
+    assert.equal(notice.querySelector('em'), null);
+    assert.equal(notice.textContent, name + ' is already set. Please update or delete the current value');
+});
+
+test('preference service failures stay text in notifications', async t => {
+    const window = await preferencesPage(t);
+    const error = '<em data-pref="error">preference failed</em>';
+    window.$SERVICE = { manageUserPreferences() {
+        return { then(success, failure) {
+            failure({ responseText: JSON.stringify({ error }) }, 'error', 'Bad Request');
+        } };
+    } };
+    window.jQuery('.editable-user-preference input').attr('name', 'aka').val('value');
+    window.jQuery('button.update').trigger('click');
+    const notice = window.document.getElementById('notifications');
+    assert.equal(notice.querySelector('em'), null);
+    assert.equal(notice.textContent, 'Could not change preference - ' + error);
+});
+
+test('preference updates send original values without leaking handler variables', async t => {
+    const window = await preferencesPage(t);
+    const name = 'key "<&>';
+    const value = 'value "<&>';
+    const windowName = window.name;
+    const calls = [];
+    window.$SERVICE = { manageUserPreferences(method, values) {
+        calls.push([method, ...Array.from(values, pair => Array.from(pair))]);
+        return { then(success) { success(); } };
+    } };
+    window.jQuery('.editable-user-preference input').attr('name', name).val(value);
+    window.jQuery('button.update').trigger('click');
+    assert.deepEqual(calls, [['POST', [name, value]]]);
+    assert.equal(Object.hasOwn(window, '$btn'), false);
+    assert.equal(Object.hasOwn(window, '$row'), false);
+    assert.equal(Object.hasOwn(window, '$input'), false);
+    assert.equal(window.name, windowName);
+});

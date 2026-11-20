@@ -18,6 +18,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
+import org.intermine.web.logic.profile.BrowserOAuthState;
 
 /**
  * Action that invalidates the user session effectively logging the user out of
@@ -34,17 +35,17 @@ public class LogoutAction extends InterMineAction
      * @param request The HTTP request we are processing
      * @param response The HTTP response we are creating
      * @return an ActionForward object defining where control goes next
-     * @exception Exception if the application business logic throws
-     *  an exception
      */
     @Override
     public ActionForward execute(ActionMapping mapping,
                                  ActionForm form,
                                  HttpServletRequest request,
-                                 HttpServletResponse response)
-        throws Exception {
+                                 HttpServletResponse response) {
         HttpSession session = request.getSession();
-        session.invalidate();
+        synchronized (session) {
+            BrowserOAuthState.invalidate(session);
+            session.invalidate();
+        }
         recordMessage(new ActionMessage("login.loggedout"), request);
         return mapping.findForward("begin");
     }

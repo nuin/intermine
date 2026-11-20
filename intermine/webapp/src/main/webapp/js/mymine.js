@@ -1,6 +1,6 @@
 
 
-   function selectColumnCheckbox(form, type) {
+   window.selectColumnCheckbox = function(form, type) {
            var deleteButton = document.getElementById('delete_button');
            var removeButton = document.getElementById('remove_button');
            var exportButton = document.getElementById('export_button');
@@ -17,18 +17,16 @@
        if (exportButton != null) {
            exportButton.disabled = !checked;
        }
-       with(form) {
-           for(var i=0;i < elements.length;i++) {
-               var thiselm = elements[i];
-               var testString = columnCheckBox + '_';
-               if(thiselm.id.indexOf(testString) != -1)
-                   thiselm.checked = checked;
-           }
+       for(var i=0;i < form.elements.length;i++) {
+           var thiselm = form.elements[i];
+           var testString = columnCheckBox + '_';
+           if(thiselm.id.indexOf(testString) != -1)
+               thiselm.checked = checked;
        }
-   }
+   };
 
 
-   function setDeleteDisabledness(form, type) {
+   window.setDeleteDisabledness = function(form, type) {
 
            var deleteButton = document.getElementById('delete_button');
            var removeButton = document.getElementById('remove_button');
@@ -37,17 +35,15 @@
        var checkBoxPrefix = 'selected_' + type + '_';
        var deleteDisable = true;
        var columnCheckBoxChecked = true;
-       with(form) {
 
-           for(var i=0;i < elements.length;i++) {
-               var thiselm = elements[i];
+       for(var i=0;i < form.elements.length;i++) {
+           var thiselm = form.elements[i];
 
-               if (thiselm.id.indexOf(checkBoxPrefix) != -1) {
-                   if (thiselm.checked) {
-                       deleteDisable = false;
-                   } else {
-                       columnCheckBoxChecked = false;
-                   }
+           if (thiselm.id.indexOf(checkBoxPrefix) != -1) {
+               if (thiselm.checked) {
+                   deleteDisable = false;
+               } else {
+                   columnCheckBoxChecked = false;
                }
            }
        }
@@ -62,45 +58,46 @@
        }
        document.getElementById('selected_' + type).checked = columnCheckBoxChecked;
        return true;
-   }
+   };
 
 
-  function noenter() {
+  window.noenter = function() {
     return !(window.event && window.event.keyCode == 13);
-  }
+  };
 
-  jQuery(function() {
-      jQuery('#newApiKeyButton').unbind("click").click(function() {
-        AjaxServices.generateApiKey($CURRENT_USER, function(response) {
-            jQuery('span.apikey').text(response).removeClass("nokey");
-            jQuery('#deleteApiKeyButton').show();
+  window.jQuery(function() {
+      window.jQuery('#newApiKeyButton').unbind("click").click(function() {
+        window.AjaxServices.generateApiKey(window.$CURRENT_USER, function(response) {
+            window.jQuery('span.apikey').text(response).removeClass("nokey");
+            window.jQuery('#deleteApiKeyButton').show();
         })
     })
-    jQuery('#deleteApiKeyButton').unbind("click").click(function() {
-        AjaxServices.deleteApiKey($CURRENT_USER, function(response) {
+    window.jQuery('#deleteApiKeyButton').unbind("click").click(function() {
+        window.AjaxServices.deleteApiKey(window.$CURRENT_USER, function(response) {
             if (response === "deleted") {
-                jQuery('span.apikey').text("Key Deleted").addClass("nokey");
-                jQuery('#deleteApiKeyButton').hide();
+                window.jQuery('span.apikey').text("Key Deleted").addClass("nokey");
+                window.jQuery('#deleteApiKeyButton').hide();
             }
         })
     })
   });
 
-  jQuery(function() {
-      var $ = jQuery, fail = function(xhr, err, desc) {
+  window.jQuery(function() {
+      var $ = window.jQuery, fail = function(xhr, err, desc) {
           var explanation = desc;
           if (desc == "Bad Request") {
               try {
                   explanation = JSON.parse(xhr.responseText).error;
-              } catch (e) {
+              } catch {
+                  explanation = desc;
               }
           }
-          new FailureNotification({message: "Could not change preference - " + explanation}).render();
+          new window.FailureNotification({message: $('<span>').text("Could not change preference - " + explanation)}).render();
       };
       $('table.user-preferences').delegate('button', 'click', function(evt) {
           evt.preventDefault();
           evt.stopImmediatePropagation();
-          var remove, notify, clear
+          var remove, notify, clear,
               $btn = $(this),
               $row = $btn.closest('tr'),
               $input = $btn.siblings('input'),
@@ -109,17 +106,17 @@
               $row.slideUp('fast', function() {$row.remove()});
           };
           notify = function() {
-              new Notification({message: "Saved change successfully", autoRemove: true}).render();
+              new window.Notification({message: "Saved change successfully", autoRemove: true}).render();
           };
           clear = function() {
               $input.val('');
           };
           if ($btn.hasClass('delete')) {
-              $SERVICE.manageUserPreferences('DELETE', {key: name}).then(remove, fail);
+              window.$SERVICE.manageUserPreferences('DELETE', {key: name}).then(remove, fail);
           } else if ($btn.hasClass('update')) {
-              $SERVICE.manageUserPreferences('POST', [[name, value]]).then(notify, fail);
+              window.$SERVICE.manageUserPreferences('POST', [[name, value]]).then(notify, fail);
           } else if ($btn.hasClass('unset')) {
-              $SERVICE.manageUserPreferences('DELETE', {key: name}).then(clear, fail);
+              window.$SERVICE.manageUserPreferences('DELETE', {key: name}).then(clear, fail);
           }
       });
       $('form.editable-user-preference input[type="checkbox"]').change(function(evt) {
@@ -128,12 +125,12 @@
           var $box = $(this), newState = !$box.prop('checked'), name = $box.attr('name'),
               method = (newState ? 'POST' : 'DELETE'),
               data = (newState ? [[name, 'true']] : {key: name});
-          $SERVICE.manageUserPreferences(method, data).fail(fail);
+          window.$SERVICE.manageUserPreferences(method, data).fail(fail);
       });
   });
   
-  jQuery(function() {
-      var $ = jQuery, toName = function(i, e) {return $(e).attr('name')};
+  window.jQuery(function() {
+      var $ = window.jQuery, toName = function(i, e) {return $(e).attr('name')};
       $('button.add-user-preference').click(function(evt) {
           evt.preventDefault();
           evt.stopImmediatePropagation();
@@ -149,7 +146,6 @@
 
           reset = function() {
               $frm.find('input').val('');
-              // Reasonably high up there on the ugly scale...
               var $tr = $('<tr>'), $form = $('<form class="editable-user-preference">'), $right = $('<td>');
               $('<td>').text(name).appendTo($tr);
               $('<input type="text">').attr({name: name, value: val}).appendTo($form);
@@ -162,16 +158,16 @@
               $('table.user-preferences tbody').append($tr); 
           };
           fail = function(msg) { return function() {
-              new FailureNotification({message: msg}).render();
+              new window.FailureNotification({message: $('<span>').text(msg)}).render();
           }};
           $frm.slideUp();
           $btn.attr({disabled: false});
-          if (_.contains(currentNames, name)) {
+          if (window._.contains(currentNames, name)) {
               fail(name + " is already set. Please update or delete the current value")();
           } else if (!name || !val) {
               fail("Both a name and a value are required")();
           } else {
-              $SERVICE.manageUserPreferences('POST', [[name, val]])
+              window.$SERVICE.manageUserPreferences('POST', [[name, val]])
                       .then(reset, fail("Could not add preference"));
           }
       });
@@ -185,15 +181,15 @@
       });
   });
 
-  jQuery(function() {
-      var selector = jQuery('#classNameSelector');
+  window.jQuery(function() {
+      var selector = window.jQuery('#classNameSelector');
       selector.unbind("change").change(function() {
           var classname = selector.val();
-          jQuery('div.classLabels').each(function() {
+          window.jQuery('div.classLabels').each(function() {
               if (this.id === 'labelsFor' + classname) {
-                  jQuery(this).show();
+                  window.jQuery(this).show();
               } else {
-                  jQuery(this).hide();
+                  window.jQuery(this).hide();
               }
           });
       });

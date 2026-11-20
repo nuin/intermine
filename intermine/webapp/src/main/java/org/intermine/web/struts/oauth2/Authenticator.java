@@ -13,7 +13,6 @@ package org.intermine.web.struts.oauth2;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Properties;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +25,7 @@ import org.apache.struts.action.ActionMessage;
 import org.intermine.web.context.InterMineContext;
 import org.intermine.web.logic.oauth2.OAuthClientSupport;
 import org.intermine.web.logic.oauth2.OAuthExchangeException;
+import org.intermine.web.logic.profile.BrowserOAuthState;
 import org.intermine.web.struts.InterMineAction;
 
 /**
@@ -42,10 +42,9 @@ public class Authenticator extends InterMineAction
         String provider = request.getParameter("provider");
         try {
             URI redirect = OAuthClientSupport.browserRedirectUri(properties, provider);
-            String state = UUID.randomUUID().toString();
+            String state = new BrowserOAuthState().begin(request.getSession(), provider, redirect);
             URI authorization = new OAuthClientSupport(properties)
                     .authorizationUri(provider, redirect, state);
-            request.getSession().setAttribute("oauth2.state", state);
             response.sendRedirect(authorization.toString());
             return null;
         } catch (OAuthExchangeException e) {

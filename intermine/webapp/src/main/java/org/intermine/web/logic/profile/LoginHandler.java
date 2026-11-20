@@ -116,15 +116,19 @@ public abstract class LoginHandler extends InterMineAction
             throw new IllegalArgumentException("An authenticated profile is required");
         }
         HttpSession session = request.getSession();
-        ProfileMergeIssues issues = mergeProfiles(SessionMethods.getProfile(session), profile);
-        request.changeSessionId();
-        session.removeAttribute(AdminAccess.TOKEN_ATTRIBUTE);
-        if (!profile.isSuperuser()
-                && "users".equals(SessionMethods.getWebState(session).getSubtab("subtabmymine"))) {
-            SessionMethods.getWebState(session).addSubtab("subtabmymine", "lists");
+        synchronized (session) {
+            ProfileMergeIssues issues = mergeProfiles(SessionMethods.getProfile(session), profile);
+            request.changeSessionId();
+            BrowserOAuthState.invalidate(session);
+            session.removeAttribute(AdminAccess.TOKEN_ATTRIBUTE);
+            if (!profile.isSuperuser()
+                    && "users".equals(SessionMethods.getWebState(session)
+                            .getSubtab("subtabmymine"))) {
+                SessionMethods.getWebState(session).addSubtab("subtabmymine", "lists");
+            }
+            setUpProfile(session, profile);
+            return issues;
         }
-        setUpProfile(session, profile);
-        return issues;
     }
 
     /**

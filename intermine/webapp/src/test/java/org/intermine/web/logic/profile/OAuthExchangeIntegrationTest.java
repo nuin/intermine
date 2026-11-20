@@ -91,10 +91,12 @@ public class OAuthExchangeIntegrationTest extends InterMineAPITestCase {
         return http;
     }
 
-    private ActionForward callback(OAuthHttpFixture.Browser http) {
+    private ActionForward callback(OAuthHttpFixture.Browser http) throws Exception {
         ActionMapping mapping = new ActionMapping();
         mapping.addForwardConfig(new ActionForward("login", "/login", false));
         mapping.addForwardConfig(new ActionForward("mymine", "/mymine", false));
+        assertNull(new Authenticator().execute(mapping, null, http.request, http.response));
+        http.parameters.put("state", parameters(URI.create(http.redirect).getRawQuery()).get("state"));
         return new Callback().execute(mapping, null, http.request, http.response);
     }
 

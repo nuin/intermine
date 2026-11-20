@@ -61,11 +61,14 @@ invalid identities cannot authenticate. Browser failures return to login with a
 sanitized message. JSON REST failures carry an error HTTP status; the existing
 JSONP convention retains HTTP 200 with a structured error payload.
 
-The next task on this branch will bind browser initiation to a single-use state,
-provider, redirect URI and session for ten minutes. It will reject an older in-flight
-callback after a newer login, OAuth initiation or logout. Network requests will
-remain outside the session lock. That browser-flow hardening is not part of the
-first shared-client commit.
+Browser initiation binds a single-use state to the provider, exact redirect URI
+and session for ten minutes. The callback claims it before contacting the provider,
+so a failed exchange also requires starting a new login. A newer successful login,
+OAuth initiation or logout cancels earlier pending and in-flight authorizations.
+Network requests remain outside the session lock; profile creation and installation
+check that the claim is still current under that lock. Opening another OAuth login
+in the same browser replaces the earlier flow. In-flight requests cannot complete
+across session passivation or migration to another process; restart login in that case.
 
 REST clients retain their existing contract: request an authorization link, supply
 their own redirect URI and correlation state, then exchange provider/code/redirect
@@ -73,9 +76,12 @@ through the REST callback. The callback returns a temporary API token without
 installing browser authentication. Clients remain responsible for validating state
 and redirect correlation; no mandatory browser cookie is added.
 
-The next browser-flow task also covers escaping provider/display names and account
-preference input attributes when rendered. General rich-HTML flash-message contracts elsewhere in the webapp
-remain outside this increment. This is not a complete security assessment.
+Provider/display names in OAuth messages, account preference input attributes and
+preference error notifications are escaped when rendered. Stored values and API
+responses retain the original text. Testmine enables the existing custom-preference
+UI option to exercise custom keys; production mines retain their configured setting.
+General rich-HTML flash-message contracts elsewhere in the webapp remain outside
+this increment. This is not a complete security assessment.
 
 Validation uses a local fake provider and disposable accounts. No real provider
 credentials or remote interactive logins are used. See the accompanying validation

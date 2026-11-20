@@ -35,10 +35,10 @@
                         <form class="editable-user-preference">
                             <c:choose>
                               <c:when test="${imf:contains(BOOLEAN_PREFERENCES, key)}">
-                                <input type="checkbox" name="${key}" ${imf:containsKey(preferences, key) ? "" : "checked"}>
+                                <input type="checkbox" name="<c:out value='${key}'/>" ${imf:containsKey(preferences, key) ? "" : "checked"}>
                               </c:when>
                               <c:otherwise>
-                                <input type="text" name="${key}" value="${preferences[key]}"/>
+                                <input type="text" name="<c:out value='${key}'/>" value="<c:out value='${preferences[key]}'/>"/>
                                 <button class="update">Update</button>
                                 <button class="unset">Unset</button>
                               </c:otherwise>
@@ -54,7 +54,7 @@
                       <td><c:out value="${entry.key}"/></td>
                       <td>
                           <form class="editable-user-preference">
-                              <input type="text" name="${entry.key}" value="${entry.value}"/>
+                              <input type="text" name="<c:out value='${entry.key}'/>" value="<c:out value='${entry.value}'/>"/>
                               <button class="update">Update</button>
                               <button class="delete">Delete</button>
                           </form>

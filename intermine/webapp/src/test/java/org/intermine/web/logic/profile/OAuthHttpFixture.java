@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -127,30 +128,70 @@ final class OAuthHttpFixture implements AutoCloseable {
         }
     }
 
+    private static final class SessionState {
+        final Map<String, Object> values = new ConcurrentHashMap<>();
+        final Map<String, Object> contextValues;
+        final HttpSession session = createNiceMock(HttpSession.class);
+        final ServletContext context = createNiceMock(ServletContext.class);
+        volatile boolean invalidated;
+
+        SessionState(Map<String, Object> contextValues) {
+            this.contextValues = contextValues;
+            expect(session.getServletContext()).andStubReturn(context);
+            expect(session.getAttribute(anyString())).andAnswer(() -> {
+                checkValid();
+                return values.get(getCurrentArgument(0));
+            }).anyTimes();
+            session.setAttribute(anyString(), anyObject());
+            expectLastCall().andAnswer(() -> {
+                checkValid();
+                String key = getCurrentArgument(0);
+                Object value = getCurrentArgument(1);
+                if (value == null) { values.remove(key); } else { values.put(key, value); }
+                return null;
+            }).anyTimes();
+            session.removeAttribute(anyString());
+            expectLastCall().andAnswer(() -> { checkValid(); values.remove(getCurrentArgument(0)); return null; }).anyTimes();
+            session.invalidate();
+            expectLastCall().andAnswer(() -> { checkValid(); invalidated = true; values.clear(); return null; }).anyTimes();
+            expect(context.getAttribute(anyString())).andAnswer(() -> contextValues.get(getCurrentArgument(0))).anyTimes();
+            replay(session, context);
+        }
+
+        private void checkValid() {
+            if (invalidated) { throw new IllegalStateException("Session invalidated"); }
+        }
+    }
+
     static final class Browser {
-        final Map<String, Object> sessionValues = new HashMap<>();
-        final Map<String, Object> contextValues = new HashMap<>();
+        final Map<String, Object> sessionValues;
+        final Map<String, Object> contextValues;
         final Map<String, Object> requestValues = new HashMap<>();
         final Map<String, String> parameters = new HashMap<>();
         final ByteArrayOutputStream body = new ByteArrayOutputStream();
-        final HttpSession session = createNiceMock(HttpSession.class);
-        final ServletContext context = createNiceMock(ServletContext.class);
+        final HttpSession session;
         final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
         final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+        private SessionState active;
         int status = 200;
         int rotations;
         String redirect;
 
         Browser() throws IOException {
-            expect(session.getServletContext()).andStubReturn(context);
-            expect(session.getAttribute(anyString())).andAnswer(() -> sessionValues.get(getCurrentArgument(0))).anyTimes();
-            session.setAttribute(anyString(), anyObject());
-            expectLastCall().andAnswer(() -> { sessionValues.put(getCurrentArgument(0), getCurrentArgument(1)); return null; }).anyTimes();
-            session.removeAttribute(anyString());
-            expectLastCall().andAnswer(() -> { sessionValues.remove(getCurrentArgument(0)); return null; }).anyTimes();
-            expect(context.getAttribute(anyString())).andAnswer(() -> contextValues.get(getCurrentArgument(0))).anyTimes();
-            expect(request.getSession()).andStubReturn(session);
-            expect(request.getSession(false)).andStubReturn(session);
+            this(new SessionState(new ConcurrentHashMap<>()));
+        }
+
+        Browser(Browser previous) throws IOException {
+            this(previous.active);
+        }
+
+        private Browser(SessionState initial) throws IOException {
+            active = initial;
+            session = initial.session;
+            sessionValues = initial.values;
+            contextValues = initial.contextValues;
+            expect(request.getSession()).andAnswer(this::currentSession).anyTimes();
+            expect(request.getSession(false)).andAnswer(() -> active.invalidated ? null : active.session).anyTimes();
             expect(request.getMethod()).andStubReturn("GET");
             expect(request.getParameter(anyString())).andAnswer(() -> parameters.get(getCurrentArgument(0))).anyTimes();
             expect(request.getParameterMap()).andAnswer(() -> {
@@ -161,6 +202,8 @@ final class OAuthHttpFixture implements AutoCloseable {
             expect(request.getAttribute(anyString())).andAnswer(() -> requestValues.get(getCurrentArgument(0))).anyTimes();
             request.setAttribute(anyString(), anyObject());
             expectLastCall().andAnswer(() -> { requestValues.put(getCurrentArgument(0), getCurrentArgument(1)); return null; }).anyTimes();
+            request.removeAttribute(anyString());
+            expectLastCall().andAnswer(() -> { requestValues.remove(getCurrentArgument(0)); return null; }).anyTimes();
             expect(request.changeSessionId()).andAnswer(() -> "session-" + ++rotations).anyTimes();
             expect(response.getOutputStream()).andStubReturn(new ServletOutputStream() {
                 @Override public void write(int b) { body.write(b); }
@@ -171,13 +214,18 @@ final class OAuthHttpFixture implements AutoCloseable {
             expectLastCall().andAnswer(() -> { status = getCurrentArgument(0); return null; }).anyTimes();
             response.sendRedirect(anyString());
             expectLastCall().andAnswer(() -> { redirect = getCurrentArgument(0); return null; }).anyTimes();
-            replay(session, context, request, response);
+            replay(request, response);
             parameters.put("format", "json");
             parameters.put("provider", "TEST");
             parameters.put("redirect_uri", "http://client.example.test/callback?x=1&y=雪");
             parameters.put("code", CODE);
-            parameters.put("state", "initial-state");
-            sessionValues.put("oauth2.state", "initial-state");
+        }
+
+        private HttpSession currentSession() {
+            if (active.invalidated) {
+                active = new SessionState(active.contextValues);
+            }
+            return active.session;
         }
 
         String text() {

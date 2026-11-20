@@ -287,3 +287,30 @@ test('role checkbox values preserve account identity after HTML decoding', async
         }
     }, [name]);
 });
+
+test('preference inputs preserve quoted keys and values as inert attributes', async () => {
+    const marker = randomUUID();
+    const key = `custom-'"<em data-pref-key=${marker}>key</em>`;
+    const value = `value-'"<em data-pref-value=${marker}>value</em>`;
+    await withAccounts(1, async ([account]) => {
+        await api('user/preferences', account.token, { method: 'POST',
+            body: new URLSearchParams({ aka: value, [key]: value }),
+        });
+        const preferences = await api('user/preferences', account.token);
+        assert.equal(preferences.preferences.aka, value);
+        assert.equal(preferences.preferences[key], value);
+        const browser = browserSession(mine);
+        await browser.request('begin.do');
+        try {
+            await browserLogin(browser, account);
+            const page = await browser.request('mymine.do?subtab=account');
+            assert.equal(page.includes(`<em data-pref-`), false, 'Preferences must not become HTML');
+            const inputs = [...page.matchAll(/<input\b[^>]*name="([^"]*)"[^>]*value="([^"]*)"[^>]*>/g)]
+                .map(match => ({ name: decodeAttribute(match[1]), value: decodeAttribute(match[2]) }));
+            assert.equal(inputs.find(input => input.name === 'aka')?.value, value);
+            assert.equal(inputs.find(input => input.name === key)?.value, value);
+        } finally {
+            await browser.request('logout.do');
+        }
+    });
+});

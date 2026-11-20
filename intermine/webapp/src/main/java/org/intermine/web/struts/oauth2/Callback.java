@@ -16,7 +16,9 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -31,6 +33,7 @@ import org.intermine.web.logic.oauth2.OAuthClientSupport;
 import org.intermine.web.logic.oauth2.OAuthExchangeException;
 import org.intermine.web.logic.oauth2.OAuthIdentityProfiles;
 import org.intermine.web.logic.profile.LoginHandler;
+import org.intermine.web.logic.profile.BrowserOAuthState;
 import org.intermine.web.logic.profile.ProfileMergeIssues;
 import org.intermine.web.logic.session.SessionMethods;
 
@@ -49,15 +52,23 @@ public class Callback extends LoginHandler
         Properties properties = InterMineContext.getWebProperties();
         String provider = request.getParameter("provider");
         try {
-            String state = (String) request.getSession().getAttribute("oauth2.state");
-            if (state == null || !state.equals(request.getParameter("state"))
-                    || request.getParameter("error") != null) {
+            HttpSession session = request.getSession(false);
+            if (session == null) {
                 throw new OAuthExchangeException("Invalid OAuth callback request", 400, null);
             }
             URI redirect = OAuthClientSupport.browserRedirectUri(properties, provider);
+            BrowserOAuthState states = new BrowserOAuthState();
+            BrowserOAuthState.Ticket ticket = states.claim(session, provider, redirect,
+                    request.getParameter("state"));
+            if (request.getParameter("error") != null) {
+                throw new OAuthExchangeException("OAuth authorization was denied", 400, null);
+            }
             DelegatedIdentity identity = new OAuthClientSupport(properties)
                     .exchange(provider, request.getParameter("code"), redirect);
-            saveMessages(request, loginUser(request, identity));
+            synchronized (session) {
+                states.requireCurrent(session, ticket);
+                saveMessages(request, loginUser(request, identity));
+            }
             return mapping.findForward("mymine");
         } catch (OAuthExchangeException e) {
             LOG.warn(e.getMessage());
@@ -84,14 +95,19 @@ public class Callback extends LoginHandler
         api.getTrackerDelegate().trackLogin(profile.getUsername());
         ActionMessages messages = new ActionMessages();
         messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(
-                "login.oauth2.successful", identity.getProvider(), profile.getName()));
+                "login.oauth2.successful", StringEscapeUtils.escapeHtml(identity.getProvider()),
+                StringEscapeUtils.escapeHtml(profile.getName())));
         for (Map.Entry<String, String> pair : issues.getRenamedBags().entrySet()) {
             messages.add(ActionMessages.GLOBAL_MESSAGE,
-                    new ActionMessage("login.renamed.bag", pair.getKey(), pair.getValue()));
+                    new ActionMessage("login.renamed.bag",
+                            StringEscapeUtils.escapeHtml(pair.getKey()),
+                            StringEscapeUtils.escapeHtml(pair.getValue())));
         }
         for (Map.Entry<String, String> pair : issues.getRenamedTemplates().entrySet()) {
             messages.add(ActionMessages.GLOBAL_MESSAGE,
-                    new ActionMessage("login.failedtemplate", pair.getKey(), pair.getValue()));
+                    new ActionMessage("login.failedtemplate",
+                            StringEscapeUtils.escapeHtml(pair.getKey()),
+                            StringEscapeUtils.escapeHtml(pair.getValue())));
         }
         return messages;
     }
