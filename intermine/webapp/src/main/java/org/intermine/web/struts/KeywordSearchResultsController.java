@@ -11,7 +11,6 @@ package org.intermine.web.struts;
  */
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -194,17 +193,12 @@ public class KeywordSearchResultsController extends TilesAction
 
     private  List<Integer> getBagIds(InterMineAPI im, HttpServletRequest request,
             String searchBag) {
-        List<Integer> ids = new ArrayList<Integer>();
-        if (!StringUtils.isEmpty(searchBag)) {
-            LOG.debug("SEARCH BAG: '" + searchBag + "'");
-            InterMineBag bag = im.getBagManager().getBag(
-                    SessionMethods.getProfile(request.getSession()), searchBag);
-            if (bag != null) {
-                ids = bag.getContentsAsIds();
-                LOG.debug("SEARCH LIST: " + Arrays.toString(ids.toArray()) + "");
-            }
+        if (StringUtils.isBlank(searchBag)) {
+            return null;
         }
-        return ids;
+        InterMineBag bag = im.getBagManager().getBag(
+                SessionMethods.getProfile(request.getSession()), searchBag);
+        return bag == null ? new ArrayList<Integer>() : bag.getContentsAsIds();
     }
 
     @SuppressWarnings("unchecked")

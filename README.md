@@ -34,7 +34,7 @@ For a guide on getting started with InterMine, please visit:
 [tutorial][tutorial]
 
 InterMine 6 requires Java 21 or newer to build and run. Source builds use Gradle 8.14.7.
-See the [Java migration guide](docs/java21-migration-2026-11-19.md) and
+See the [Java 21 and Solr 10 migration guide](docs/search-modernization.md) and
 [build instructions](docs/build-modernization-2026-11-18.md).
 
 Before building testmine directly, run `./gradlew install` in `intermine` so local
@@ -48,7 +48,7 @@ As long as you have the prerequisites installed ([Java][java], [PostgreSQL][psql
 
 ```bash
   # For the testmodel
-./testmine/setup.sh
+./testmine/setup.sh "$PWD"
 ```
 For a genomic application, with test data from Malaria, see [BioTestMine](https://github.com/intermine/biotestmine)
 

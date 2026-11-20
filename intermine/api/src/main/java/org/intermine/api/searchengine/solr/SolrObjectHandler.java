@@ -10,6 +10,7 @@ package org.intermine.api.searchengine.solr;
  *
  */
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,12 +21,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.Map.Entry;
+import java.util.concurrent.BlockingQueue;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.request.schema.SchemaRequest;
-import org.apache.solr.client.solrj.response.schema.SchemaResponse;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputField;
 import org.apache.solr.common.SolrInputDocument;
 import org.intermine.api.config.ClassKeyHelper;
@@ -56,7 +57,6 @@ import org.intermine.objectstore.query.QueryObjectReference;
 import org.intermine.objectstore.query.Results;
 import org.intermine.objectstore.query.ResultsRow;
 import org.intermine.pathquery.PathException;
-import org.intermine.util.ObjectPipe;
 
 /**
  * Thread to fetch all intermineobjects (with exceptions) from database, create
@@ -78,7 +78,7 @@ public class SolrObjectHandler extends Thread
 
     final ObjectStore os;
     final Map<String, List<FieldDescriptor>> classKeys;
-    final ObjectPipe<SolrInputDocument> indexingQueue;
+    final BlockingQueue<SolrInputDocument> indexingQueue;
     final Set<Class<? extends InterMineObject>> ignoredClasses;
     final Map<Class<? extends InterMineObject>, Set<String>> ignoredFields;
     final Map<Class<? extends InterMineObject>, String[]> specialReferences;
@@ -96,7 +96,8 @@ public class SolrObjectHandler extends Thread
     private List<String> indexedFields;
     private List<String> existingFields;
 
-    private volatile Exception error;
+    private volatile Throwable error;
+    private volatile boolean finished;
 
     /**
      * initialize the documentfetcher thread
@@ -126,7 +127,7 @@ public class SolrObjectHandler extends Thread
      * @param existingFields List of fieldnames that are already exisiting
      */
     SolrObjectHandler(ObjectStore os, Map<String, List<FieldDescriptor>> classKeys,
-                      ObjectPipe<SolrInputDocument> indexingQueue,
+                      BlockingQueue<SolrInputDocument> indexingQueue,
                       Set<Class<? extends InterMineObject>> ignoredClasses,
                       Map<Class<? extends InterMineObject>, Set<String>> ignoredFields,
                       Map<Class<? extends InterMineObject>, String[]> specialReferences,
@@ -136,7 +137,7 @@ public class SolrObjectHandler extends Thread
                       List<String> indexedFields,
                       List<String> existingFields
     ) {
-        super();
+        super("InterMine Solr document fetcher");
 
         this.os = os;
         this.classKeys = classKeys;
@@ -217,24 +218,31 @@ public class SolrObjectHandler extends Thread
                 }
             }
 
-        } catch (Exception e) {
-            LOG.warn("Error occurred during processing", e);
+        } catch (Throwable e) {
             setException(e);
+            LOG.warn("Error occurred during processing", e);
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+        } finally {
+            finished = true;
         }
-
-        //notify main thread that we're done
-        indexingQueue.finish();
     }
 
-    private void setException(Exception e) {
+    private void setException(Throwable e) {
         this.error = e;
+    }
+
+    /** @return whether document fetching and cleanup have finished */
+    public boolean isFinished() {
+        return finished;
     }
 
     /**
      * Get the error that occurred during processing, if any.
      * @return The error.
      */
-    public Exception getException() {
+    public Throwable getException() {
         return error;
     }
 
@@ -422,13 +430,17 @@ public class SolrObjectHandler extends Thread
                                    HashSet<Class<? extends InterMineObject>> seenClasses,
                                    HashMap<String, InterMineResultsContainer> referenceResults,
                                    Results results, ListIterator<ResultsRow<InterMineObject>> it)
-            throws PathException, ObjectStoreException, IllegalAccessException {
+            throws PathException, ObjectStoreException, IllegalAccessException,
+            InterruptedException {
         int i = 0;
         int size = results.size();
         LOG.info("Query returned " + size + " results");
 
         //iterate over objects
         while (it.hasNext()) {
+            if (isInterrupted()) {
+                throw new InterruptedException("Keyword document fetching was cancelled");
+            }
             ResultsRow<InterMineObject> row = it.next();
 
             if (i % 10000 == 1) {
@@ -685,37 +697,15 @@ public class SolrObjectHandler extends Thread
 
     private void addFieldNameToSchema(String fieldName, String fieldType,
                                      boolean stored, boolean indexed) {
-
-        if (!fieldNames.contains(fieldName)) {
-            fieldNames.add(fieldName);
-
-            if (!indexedFields.contains(fieldName)) {
-                if (existingFields != null) {
-                    if (!existingFields.contains(fieldName)) {
-                        Map<String, Object> fieldAttributes = new HashMap();
-                        fieldAttributes.put("name", fieldName);
-                        fieldAttributes.put("type", fieldType);
-                        fieldAttributes.put("stored", stored);
-                        fieldAttributes.put("indexed", indexed);
-                        fieldAttributes.put("multiValued", true);
-                        fieldAttributes.put("required", false);
-
-                        try {
-                            SchemaRequest.AddField schemaRequest
-                                    = new SchemaRequest.AddField(fieldAttributes);
-                            SchemaResponse.UpdateResponse response
-                                    = schemaRequest.process(solrClient);
-
-                            indexedFields.add(fieldName);
-
-                        } catch (Exception e) {
-                            LOG.error("Error while adding fields to the solrclient.", e);
-
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
+        if (!fieldNames.add(fieldName) || indexedFields.contains(fieldName)
+                || existingFields.contains(fieldName)) {
+            return;
+        }
+        try {
+            SolrIndexSupport.addField(solrClient, fieldName, fieldType, stored, indexed);
+            indexedFields.add(fieldName);
+        } catch (IOException | SolrServerException error) {
+            throw new IllegalStateException("Cannot add keyword field " + fieldName, error);
         }
     }
 

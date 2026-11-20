@@ -29,7 +29,7 @@ dependencies {
     api group: 'commons-beanutils', name: 'commons-beanutils', version: runtimeVersions.beanutils
     api group: 'com.zaxxer', name: 'HikariCP', version: '3.2.0', transitive: false // conflict with log4j library this JAR needs
     api group: 'ch.qos.reload4j', name: 'reload4j', version: '1.2.22'
-    api group: 'org.slf4j', name: 'slf4j-reload4j', version: '1.7.36'
+    api group: 'org.slf4j', name: 'slf4j-reload4j', version: runtimeVersions.slf4j
 
     api group: 'net.iharder', name: 'base64', version: '2.3.8' //not clear wich version is currently used
     api group: 'au.com.bytecode', name: 'opencsv', version: '2.4' //version 2.3 not available in maven

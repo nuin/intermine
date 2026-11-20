@@ -29,7 +29,7 @@ final class PropertiesManager
 {
     private static final Logger LOG = Logger.getLogger(PropertiesManager.class);
 
-    private static PropertiesManager propertiesManager;
+    private static volatile PropertiesManager propertiesManager;
 
     private static final String CONFIG_FILE_NAME = "objectstoresummary.config.properties";
 

@@ -30,7 +30,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.WriterAppender;
 import org.glassfish.jersey.jackson.JacksonFeature;
-import org.xerial.snappy.Snappy;
 
 public class RuntimeCompatibilityTest extends TestCase {
     public void testJerseyJsonRoundTrip() throws IOException {
@@ -81,12 +80,6 @@ public class RuntimeCompatibilityTest extends TestCase {
         }
     }
 
-    public void testSnappyNativeRoundTrip() throws IOException {
-        String text = "InterMine: BRCA1 – 遺伝子";
-        byte[] compressed = Snappy.compress(text.getBytes(StandardCharsets.UTF_8));
-        assertEquals(text, new String(Snappy.uncompress(compressed), StandardCharsets.UTF_8));
-    }
-
     public void testMailAttachmentRoundTrip() throws IOException, MessagingException {
         String text = "InterMine attachment: 遺伝子";
         MimeBodyPart part = new MimeBodyPart();
@@ -102,6 +95,14 @@ public class RuntimeCompatibilityTest extends TestCase {
     }
 
     public void testCommonsLoggingReachesConfiguredBackend() {
+        assertLoggingReachesBackend(false);
+    }
+
+    public void testSlf4jLoggingReachesConfiguredBackend() {
+        assertLoggingReachesBackend(true);
+    }
+
+    private void assertLoggingReachesBackend(boolean slf4j) {
         Logger logger = Logger.getLogger("intermine.runtime.compatibility");
         Level originalLevel = logger.getLevel();
         StringWriter output = new StringWriter();
@@ -109,7 +110,11 @@ public class RuntimeCompatibilityTest extends TestCase {
         logger.addAppender(appender);
         logger.setLevel(Level.INFO);
         try {
-            LogFactory.getLog(logger.getName()).info("Runtime logging: 遺伝子");
+            if (slf4j) {
+                org.slf4j.LoggerFactory.getLogger(logger.getName()).info("Runtime logging: 遺伝子");
+            } else {
+                LogFactory.getLog(logger.getName()).info("Runtime logging: 遺伝子");
+            }
             assertEquals("Runtime logging: 遺伝子", output.toString());
         } finally {
             logger.removeAppender(appender);

@@ -10,9 +10,8 @@ package org.intermine.web.autocompletion;
  *
  */
 
-import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.intermine.api.searchengine.solr.SolrClientFactory;
 
 /**
  * Singleton class to create one instance of Solr Client
@@ -22,9 +21,7 @@ import org.apache.solr.client.solrj.impl.HttpSolrClient;
 
 final class SolrClientHandler
 {
-    private static final Logger LOG = Logger.getLogger(SolrClientHandler.class);
-
-    private static SolrClient solrClient;
+    private static volatile SolrClient solrClient;
 
     private SolrClientHandler() { }
 
@@ -39,7 +36,7 @@ final class SolrClientHandler
         if (solrClient == null) {
             synchronized (SolrClientHandler.class) {
                 if (solrClient == null) {
-                    solrClient = new HttpSolrClient.Builder(solrUrlString).build();
+                    solrClient = SolrClientFactory.create(solrUrlString);
                 }
 
             }

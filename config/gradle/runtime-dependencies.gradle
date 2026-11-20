@@ -8,6 +8,8 @@ ext.runtimeVersions = [
     tomcat: '9.0.124',
     jacksonBom: '2.21.8',
     lucene: '10.6.0',
+    solr: '10.1.0',
+    slf4j: '2.0.20',
     ant: '1.10.18',
     guava: '33.7.2-jre',
     compress: '1.28.0',
@@ -19,6 +21,7 @@ ext.runtimeVersions = [
 dependencies {
     api platform("com.fasterxml.jackson:jackson-bom:${runtimeVersions.jacksonBom}")
     constraints {
+        api "org.slf4j:slf4j-api:${runtimeVersions.slf4j}"
         api "org.postgresql:postgresql:${runtimeVersions.postgresql}"
         api "commons-beanutils:commons-beanutils:${runtimeVersions.beanutils}"
         api "commons-collections:commons-collections:${runtimeVersions.collections}"

@@ -12,7 +12,7 @@ package org.intermine.api.searchengine.solr;
 
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.request.SolrQuery;
 import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.request.schema.SchemaRequest;
@@ -183,7 +183,7 @@ public final class SolrKeywordSearchHandler implements KeywordSearchHandler
                             new KeywordSearchResultContainer<SolrDocument>(document, obj, score));
                 }
             } catch (NumberFormatException e) {
-                // ignore
+                LOG.warn("Invalid numeric search result: " + document, e);
             }
         }
         LOG.debug("Creating list of search hits took " + (System.currentTimeMillis() - time)
@@ -305,10 +305,10 @@ public final class SolrKeywordSearchHandler implements KeywordSearchHandler
             }
 
             //limiting the query based on search bag
-            if (ids != null && !ids.isEmpty()) {
-                for (int id : ids) {
-                    newQuery.addFilterQuery("id", Integer.toString(id));
-                }
+            if (ids != null) {
+                String terms = ids.stream().map(String::valueOf)
+                        .collect(java.util.stream.Collectors.joining(","));
+                newQuery.addFilterQuery(ids.isEmpty() ? "-*:*" : "{!terms f=id}" + terms);
             }
 
             String boostQuery = "";

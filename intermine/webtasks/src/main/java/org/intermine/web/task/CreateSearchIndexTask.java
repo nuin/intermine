@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.intermine.api.config.ClassKeyHelper;
@@ -54,16 +55,18 @@ public class CreateSearchIndexTask extends Task
         this.os = os;
     }
 
-    private ObjectStore getObjectStore() throws Exception {
+    private ObjectStore getObjectStore() {
         if (os != null) {
             return os;
         }
         if (osAlias == null) {
             throw new BuildException("objectStoreWriter attribute is not set");
         }
-        if (os == null) {
-            System .out.println("Connecting to db: " + osAlias);
+        log("Connecting to db: " + osAlias);
+        try {
             os = ObjectStoreFactory.getObjectStore(osAlias);
+        } catch (Exception error) {
+            throw new BuildException("Could not open object store " + osAlias, error);
         }
         return os;
     }
@@ -85,14 +88,9 @@ public class CreateSearchIndexTask extends Task
 
     @Override
     public void execute() {
-        System .out.println("Creating index for keyword search...");
+        log("Creating index for keyword search...");
 
-        ObjectStore objectStore;
-        try {
-            objectStore = getObjectStore();
-        } catch (Exception e) {
-            throw new BuildException(e);
-        }
+        ObjectStore objectStore = getObjectStore();
         if (!(objectStore instanceof ObjectStoreInterMineImpl)) {
             // Yes, yes, this is horrific...
             throw new RuntimeException("Got invalid ObjectStore - must be an "
@@ -100,12 +98,12 @@ public class CreateSearchIndexTask extends Task
         }
 
         //read class keys to figure out what are keyFields during indexing
-        InputStream is = getClassLoader().getResourceAsStream("class_keys.properties");
         Properties classKeyProperties = new Properties();
-        try {
+        try (InputStream is = getClassLoader().getResourceAsStream("class_keys.properties")) {
+            if (is == null) {
+                throw new BuildException("Could not find the class keys");
+            }
             classKeyProperties.load(is);
-        } catch (NullPointerException e) {
-            throw new BuildException("Could not find the class keys");
         } catch (IOException e) {
             throw new BuildException("Could not read the class keys", e);
         }
@@ -117,9 +115,8 @@ public class CreateSearchIndexTask extends Task
             IndexHandler indexHandler = new SolrIndexHandler();
             indexHandler.createIndex(objectStore, classKeys);
 
-        } catch (Exception e) {
-            System.out .println("Creating keyword index failed");
-            e.printStackTrace();
+        } catch (IOException | SolrServerException e) {
+            throw new BuildException("Creating keyword index failed", e);
         }
     }
 

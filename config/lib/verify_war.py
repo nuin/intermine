@@ -24,6 +24,9 @@ REQUIRED_CLASSES = (
     "org/apache/oltu/oauth2/common/OAuth.class",
     "com/sun/xml/bind/v2/ContextFactory.class",
     "org/stringtree/json/JSONWriter.class",
+    "org/apache/solr/client/solrj/impl/HttpJdkSolrClient.class",
+    "org/apache/lucene/store/ByteBuffersDirectory.class",
+    "org/slf4j/reload4j/Reload4jServiceProvider.class",
 )
 CONTAINER_CLASSES = {"javax/servlet/Servlet.class", "javax/servlet/jsp/JspPage.class"}
 

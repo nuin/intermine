@@ -106,7 +106,7 @@ subprojects {
         api group : "org.intermine", name: "intermine-objectstore", version: System.getProperty("imVersion")
         api group: "org.intermine", name: "intermine-model", version: System.getProperty("imVersion")
         api group: 'ch.qos.reload4j', name: 'reload4j', version: '1.2.22'
-        api group: 'org.slf4j', name: 'slf4j-reload4j', version: '1.7.36'
+        api group: 'org.slf4j', name: 'slf4j-reload4j', version: runtimeVersions.slf4j
         api group: 'org.postgresql', name: 'postgresql', version: runtimeVersions.postgresql
         testImplementation group: 'junit', name: 'junit', version: '4.8.2'
         testImplementation group: "org.intermine", name: "intermine-integrate", version: System.getProperty("imVersion")

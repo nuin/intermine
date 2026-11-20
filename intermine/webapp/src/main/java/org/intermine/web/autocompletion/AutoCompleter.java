@@ -13,30 +13,27 @@ package org.intermine.web.autocompletion;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.request.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.request.schema.SchemaRequest;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.client.solrj.response.schema.SchemaResponse;
-import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.intermine.metadata.ClassDescriptor;
+import org.intermine.api.searchengine.solr.SolrIndexSupport;
 import org.intermine.objectstore.ObjectStore;
 import org.intermine.objectstore.ObjectStoreException;
 import org.intermine.objectstore.query.Query;
 import org.intermine.objectstore.query.QueryClass;
 import org.intermine.objectstore.query.QueryField;
-import org.intermine.objectstore.query.Results;
 import org.intermine.objectstore.query.ResultsRow;
 
 /**
@@ -87,79 +84,31 @@ public class AutoCompleter
      */
     public String[] getFastList(String query, String field, String className,  int n) {
 
-        String status = "true";
-        String[] stringResults = null;
-
-        SolrClient solrClient
-                = SolrClientHandler.getClientInstance(this.propertiesManager.getSolrUrl());
-
-        QueryResponse resp = null;
-
-        if (!"".equals(query) && !query.trim().startsWith("*")) {
-
-            if (query.endsWith(" ")) {
-                query = query.substring(0, query.length() - 1);
-            }
-
-            String[] tmp;
-            if (query.contains(" ")) {
-                tmp = query.replaceAll(" +", " ").trim().split(" ");
-                query = new String();
-
-                for (int i = 0; i < tmp.length; i++) {
-                    query += tmp[i];
-                    if (i < tmp.length - 1) {
-                        query += "* AND " + field + ":";
-                    }
-                }
-            }
-
-            try {
-
-                SolrQuery newQuery = new SolrQuery();
-                newQuery.setQuery(field + ":" + query + "*"); //adding a wildcard in the end
-                newQuery.setRequestHandler("select");
-                newQuery.setRows(n); // FIXME: hardcoded maximum
-                newQuery.setFilterQueries(CLASSNAME_FIELD + ":" + className);
-
-                resp = solrClient.query(newQuery);
-
-                SolrDocumentList results = resp.getResults();
-
-                stringResults = new String[results.size() + 1];
-
-                for (int i = 1; i < results.size() + 1; i++) {
-
-                    try {
-                        SolrDocument document = results.get(i - 1);
-
-                        stringResults[i] = ((ArrayList<String>) document
-                                .getFieldValue(field)).get(0);
-
-                    } catch (Exception e) {
-                        status = "No results! Please try again.";
-                    }
-                }
-
-                stringResults[0] = status;
-
-
-                return stringResults;
-
-            } catch (SolrServerException e) {
-                e.printStackTrace();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                status = "Please type in more characters to get results.";
-                stringResults = new String[1];
-                stringResults[0] = status;
-            }
-
-            return stringResults;
+        if (StringUtils.isBlank(query) || query.trim().startsWith("*")) {
+            return null;
         }
-
-        return null;
+        String terms = String.join("* AND " + field + ":", query.trim().split("\\s+"));
+        SolrQuery solrQuery = new SolrQuery(field + ":" + terms + "*");
+        solrQuery.setRequestHandler("select");
+        solrQuery.setRows(n);
+        solrQuery.setFilterQueries(CLASSNAME_FIELD + ":" + className);
+        SolrClient client = SolrClientHandler.getClientInstance(propertiesManager.getSolrUrl());
+        try {
+            SolrDocumentList documents = client.query(solrQuery).getResults();
+            String[] values = new String[documents.size() + 1];
+            values[0] = "true";
+            for (int i = 0; i < documents.size(); i++) {
+                Object value = documents.get(i).getFirstValue(field);
+                if (value == null) {
+                    throw new IllegalStateException("Autocomplete result has no field " + field);
+                }
+                values[i + 1] = value.toString();
+            }
+            return values;
+        } catch (SolrServerException | IOException error) {
+            LOG.error("Autocomplete query failed", error);
+            return new String[] {"Autocomplete is temporarily unavailable."};
+        }
     }
 
     /**
@@ -172,116 +121,72 @@ public class AutoCompleter
      */
     public void buildIndex(ObjectStore os)
         throws IOException, ObjectStoreException, ClassNotFoundException, SolrServerException {
-
-        List<SolrInputDocument> solrDocumentList = new ArrayList<SolrInputDocument>();
-        List<String> fieldList = new ArrayList<String>();
-
-        fieldList.add(CLASSNAME_FIELD);
-
-        for (Map.Entry<String, String> entry: classFieldMap.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-
-            String className = key;
-            ClassDescriptor cld = os.getModel().getClassDescriptorByName(className);
-            if (cld == null) {
-                throw new RuntimeException("a class mentioned in ObjectStore summary properties "
-                                           + "file (" + className + ") is not in the model");
-            }
-            List<String> fieldNames = Arrays.asList(value.split(" "));
-            for (Iterator<String> i = fieldNames.iterator(); i.hasNext();) {
-
-                String fieldName = i.next();
-                String classAndField = cld.getUnqualifiedName() + "." + fieldName;
-                System.out .println("Indexing " + classAndField);
-
-                if (!fieldList.contains(fieldName)) {
-                    fieldList.add(fieldName);
-                }
-
-                Query q = new Query();
-                q.setDistinct(true);
-                QueryClass qc = new QueryClass(Class.forName(cld.getName()));
-                q.addToSelect(new QueryField(qc, fieldName));
-                q.addFrom(qc);
-                Results results = os.execute(q);
-
-                for (Object resRow: results) {
-                    @SuppressWarnings("rawtypes")
-                    Object fieldValue = ((ResultsRow) resRow).get(0);
-                    if (fieldValue != null) {
-                        SolrInputDocument solrInputDocument = new SolrInputDocument();
-                        solrInputDocument.addField(fieldName, fieldValue.toString());
-                        solrInputDocument.addField(CLASSNAME_FIELD, cld.getUnqualifiedName());
-                        solrDocumentList.add(solrInputDocument);
-                    }
-                }
-            }
-        }
-
-        SolrClient solrClient = SolrClientHandler
-                .getClientInstance(this.propertiesManager.getSolrUrl());
-
-        try {
-            solrClient.deleteByQuery("*:*");
-            solrClient.commit();
-        } catch (SolrServerException e) {
-            LOG.error("Deleting old index failed", e);
-            throw e;
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw e;
-        }
-
-        List<String> existingFields = null;
-
-        try {
-            existingFields = getAllExistingFieldsFromSolr(solrClient);
-
-        } catch (SolrServerException e) {
-            LOG.error("Retrieving existing Fieldnames in Solr failed");
-        }
-
-
-        for (String fieldName: fieldList) {
-            if (existingFields != null) {
-                if (!existingFields.contains(fieldName)) {
-                    Map<String, Object> fieldAttributes = new HashMap();
-                    fieldAttributes.put("name", fieldName);
-                    fieldAttributes.put("type", "text_general");
-                    fieldAttributes.put("stored", true);
-                    fieldAttributes.put("indexed", true);
-                    fieldAttributes.put("multiValued", true);
-                    fieldAttributes.put("required", false);
-
-                    try {
-                        SchemaRequest.AddField schemaRequest
-                                = new SchemaRequest.AddField(fieldAttributes);
-                        SchemaResponse.UpdateResponse response =  schemaRequest.process(solrClient);
-
-                    } catch (SolrServerException e) {
-                        LOG.error("Error while adding autocomplete fields to the solrclient.", e);
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-        try {
-            if (!solrDocumentList.isEmpty()) {
-                UpdateResponse response = solrClient.add(solrDocumentList);
-                solrClient.commit();
-            }
-        } catch (SolrServerException e) {
-
-            LOG.error("Error while commiting the AutoComplete "
-                    + "SolrInputdocuments to the Solrclient. "
-                    + "Make sure the Solr instance is up", e);
-
-            e.printStackTrace();
-        }
+        buildIndex(os, SolrClientHandler.getClientInstance(propertiesManager.getSolrUrl()));
     }
 
+    /**
+     * Rebuild autocomplete using a caller-owned client.
+     * @param os source object store
+     * @param solrClient destination core client
+     * @throws IOException if communicating with Solr fails
+     * @throws ObjectStoreException if fetching source values fails
+     * @throws ClassNotFoundException if a configured model class is missing
+     * @throws SolrServerException if Solr rejects an indexing operation
+     */
+    void buildIndex(ObjectStore os, SolrClient solrClient)
+        throws IOException, ObjectStoreException, ClassNotFoundException, SolrServerException {
+
+        List<String> fields = new ArrayList<String>();
+        fields.add(CLASSNAME_FIELD);
+        List<SolrInputDocument> documents = readDocuments(os, fields);
+        SolrIndexSupport.check(solrClient.deleteByQuery("*:*"),
+                "delete the old autocomplete index");
+        SolrIndexSupport.check(solrClient.commit(),
+                "commit the old autocomplete index deletion");
+        List<String> existingFields = getAllExistingFieldsFromSolr(solrClient);
+        for (String field : fields) {
+            if (!existingFields.contains(field)) {
+                SolrIndexSupport.addField(solrClient, field, "text_general", true, true);
+            }
+        }
+        if (!documents.isEmpty()) {
+            SolrIndexSupport.check(solrClient.add(documents), "write autocomplete documents");
+        }
+        SolrIndexSupport.check(solrClient.commit(), "commit the autocomplete index");
+    }
+
+    private List<SolrInputDocument> readDocuments(ObjectStore store, List<String> fields)
+        throws ObjectStoreException, ClassNotFoundException {
+        List<SolrInputDocument> documents = new ArrayList<SolrInputDocument>();
+        for (Map.Entry<String, String> entry : classFieldMap.entrySet()) {
+            ClassDescriptor descriptor = store.getModel().getClassDescriptorByName(entry.getKey());
+            if (descriptor == null) {
+                throw new IllegalStateException("Unknown autocomplete model class "
+                        + entry.getKey());
+            }
+            for (String field : entry.getValue().split(" ")) {
+                LOG.info("Indexing " + descriptor.getUnqualifiedName() + "." + field);
+                if (!fields.contains(field)) {
+                    fields.add(field);
+                }
+                Query query = new Query();
+                query.setDistinct(true);
+                QueryClass queryClass = new QueryClass(Class.forName(descriptor.getName()));
+                query.addToSelect(new QueryField(queryClass, field));
+                query.addFrom(queryClass);
+                for (Object row : store.execute(query)) {
+                    Object value = ((ResultsRow<?>) row).get(0);
+                    if (value != null) {
+                        SolrInputDocument document = new SolrInputDocument();
+                        document.addField(field, value.toString());
+                        document.addField(CLASSNAME_FIELD, descriptor.getUnqualifiedName());
+                        documents.add(document);
+                    }
+                }
+            }
+        }
+        return documents;
+    }
 
     /**
      * checks if an autocompletion exists

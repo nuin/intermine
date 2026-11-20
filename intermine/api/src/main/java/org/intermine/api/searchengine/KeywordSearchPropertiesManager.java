@@ -43,7 +43,7 @@ public final class KeywordSearchPropertiesManager
 
     private static final Logger LOG = Logger.getLogger(KeywordSearchPropertiesManager.class);
 
-    private static KeywordSearchPropertiesManager keywordSearchPropertiesManager;
+    private static volatile KeywordSearchPropertiesManager keywordSearchPropertiesManager;
 
     private static final String CONFIG_FILE_NAME = "keyword_search.properties";
 

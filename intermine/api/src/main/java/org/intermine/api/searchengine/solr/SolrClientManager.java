@@ -10,9 +10,7 @@ package org.intermine.api.searchengine.solr;
  *
  */
 
-import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.intermine.api.searchengine.KeywordSearchPropertiesManager;
 import org.intermine.objectstore.ObjectStore;
 
@@ -24,11 +22,7 @@ import org.intermine.objectstore.ObjectStore;
 
 public final class SolrClientManager
 {
-    private static final Logger LOG = Logger.getLogger(SolrClientManager.class);
-
-    private static SolrClient solrClient;
-
-    private static String solrUrlString;
+    private static volatile SolrClient solrClient;
 
     private SolrClientManager() { }
 
@@ -44,9 +38,9 @@ public final class SolrClientManager
         if (solrClient == null) {
             synchronized (SolrClientManager.class) {
                 if (solrClient == null) {
-                    solrUrlString = KeywordSearchPropertiesManager
+                    String solrUrlString = KeywordSearchPropertiesManager
                             .getInstance(objectStore).getSolrUrl();
-                    solrClient = new HttpSolrClient.Builder(solrUrlString).build();
+                    solrClient = SolrClientFactory.create(solrUrlString);
                 }
 
             }

@@ -30,7 +30,7 @@ public interface KeywordSearchHandler
      * @param im IntermineAPI instance
      * @param queryString the search term to be searched
      * @param facetValues the facet value Map that needs to be returned in the result
-     * @param ids ids to research the search
+     * @param ids permitted IDs; null leaves results unrestricted, empty matches nothing
      * @param offSet offSet of results
      *
      * @return results containing both facet and result rows in the KeywordSearchResuls container
@@ -43,7 +43,7 @@ public interface KeywordSearchHandler
      * @param im IntermineAPI instance
      * @param searchString the search term to be searched
      * @param facetValues the facet value Map that needs to be returned in the result
-     * @param ids ids to research the search
+     * @param ids permitted IDs; null leaves results unrestricted, empty matches nothing
      * @param offSet offSet of results
      * @param listSize the listSize that needs to be returned. (ie rowSize in solr)
      *

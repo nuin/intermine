@@ -1,9 +1,9 @@
 package org.intermine.plugin.postprocess
 
 import org.gradle.api.InvalidUserDataException
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.tooling.BuildException
 import org.intermine.plugin.BioSourceProperties
 import org.intermine.plugin.TaskConstants
 import org.intermine.plugin.project.PostProcess
@@ -133,16 +133,14 @@ class PostProcessPlugin implements Plugin<Project> {
                                 }
                             }
                             ant.corePostProcess(clsName: postprocessorClassName, osName: "osw.production")
-                        } catch(Exception | BuildException e) {
-                            println "POSTPROCESS " + processName + " FAILED."
-                            println e.message
+                        } catch(Exception e) {
                             if(CREATE_SEARCH_INDEX.equals(processName)
                                     || CREATE_AUTO_INDEX.equals(processName)) {
                                 println "Please correct the error and run again ONLY THE POSTPROCESS"
-                                println "./gradlew postprocess -Pprocess=" + processName
+                                println "./gradlew postProcess -Pprocess=" + processName
                                 println "NO NEED TO RE-RUN THE ENTIRE BUILD"
                             }
-                            return
+                            throw new GradleException("Postprocess " + processName + " failed", e)
                         }
                     }
                     println "Postprocess " + processName + " completed."

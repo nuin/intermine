@@ -225,19 +225,17 @@ public class QuickSearch extends JSONService
         }
 
         public List<Integer> getListIds() {
-            List<Integer> ids = new ArrayList<Integer>();
-            if (!StringUtils.isBlank(searchBag)) {
-                LOG.debug("SEARCH BAG: '" + searchBag + "'");
-                final BagManager bm = im.getBagManager();
-                final Profile p = getPermission().getProfile();
-                final InterMineBag bag = bm.getBag(p, searchBag);
-                if (bag == null) {
-                    throw new BadRequestException(
-                            "You do not have access to a bag named '" + searchBag + "'");
-                }
-                ids.addAll(bag.getContentsAsIds());
+            if (StringUtils.isBlank(searchBag)) {
+                return null;
             }
-            return ids;
+            final BagManager manager = im.getBagManager();
+            final Profile profile = getPermission().getProfile();
+            final InterMineBag bag = manager.getBag(profile, searchBag);
+            if (bag == null) {
+                throw new BadRequestException(
+                        "You do not have access to a bag named '" + searchBag + "'");
+            }
+            return new ArrayList<Integer>(bag.getContentsAsIds());
         }
     }
 

@@ -10,7 +10,6 @@ package org.intermine.web.struts;
  *
  */
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -77,7 +76,7 @@ public class SaveFromIdsToBagAction extends InterMineAction
 
                 idSet = keywordSearchHandler.
                         getObjectIdsFromSearch(im, searchTerm, offset, facetMap,
-                                new ArrayList<Integer>(), listSize);
+                                null, listSize);
 
             } else {
                 // ids are comma delimited
