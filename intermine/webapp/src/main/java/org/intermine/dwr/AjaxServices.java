@@ -40,7 +40,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.struts.Globals;
 import org.apache.struts.util.MessageResources;
 import org.directwebremoting.WebContext;
@@ -1081,10 +1081,6 @@ public class AjaxServices
             return "";
         }
     }
-
-    //*****************************************************************************
-    // Tags AJAX Interface
-    //*****************************************************************************
 
     /**
      * Adds tag and assures that there is only one tag for this combination of tag name, tagged

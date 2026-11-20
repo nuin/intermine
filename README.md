@@ -33,7 +33,7 @@ Getting Started With InterMine
 For a guide on getting started with InterMine, please visit:
 [tutorial][tutorial]
 
-For source builds, use Java 21 and Gradle 8.14.7. Java 8 compatibility is retained.
+InterMine 6 requires Java 21 or newer to build and run. Source builds use Gradle 8.14.7.
 See the [Java migration guide](docs/java21-migration-2026-11-19.md) and
 [build instructions](docs/build-modernization-2026-11-18.md).
 

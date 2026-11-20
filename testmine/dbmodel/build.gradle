@@ -32,8 +32,7 @@ dependencies {
     api group: 'net.iharder', name: 'base64', version: '2.3.8'
     api group: 'ch.qos.reload4j', name: 'reload4j', version: '1.2.22'
     api group: 'org.slf4j', name: 'slf4j-reload4j', version: '1.7.36'
-    api group: 'org.apache.lucene', name: 'lucene-analyzers', version: '3.0.2'
-    api group: 'org.apache.lucene', name: 'lucene-snowball', version: '3.0.2'
+    api group: 'org.apache.lucene', name: 'lucene-analysis-common', version: runtimeVersions.lucene
     api group: 'org.postgresql', name: 'postgresql', version: runtimeVersions.postgresql
     testModelProps group: "org.intermine", name: "intermine-testresources", version: imVersion, transitive: false
     api group: 'org.javassist', name: 'javassist', version: '3.33.0-GA'

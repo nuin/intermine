@@ -71,7 +71,7 @@ public class UserRepository extends SearchRepository
     @Override
     protected void handleMassTagging() {
         // Nothing much we can do. May have been gloal indices, may not.
-        indexes.clear();
+        clearIndexes();
     }
 
     /**
@@ -79,6 +79,7 @@ public class UserRepository extends SearchRepository
      */
     public void updateUserRepositoryWithSharedBags() {
         searchItems.addAll(getProfile().getSharedBags().values());
+        clearIndexes();
     }
 
 }

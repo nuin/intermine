@@ -25,7 +25,7 @@ dependencies {
     providedCompile project(':intermine-api')
 
     api group: 'org.directwebremoting', name: 'dwr', version: '2.0.1'
-    api group: 'org.apache.lucene', name: 'lucene-core', version: '3.0.2'
+    api group: 'org.apache.lucene', name: 'lucene-core', version: runtimeVersions.lucene
     api group: 'org.apache.solr', name: 'solr-solrj', version: '8.11.4'
     api group: 'javax.mail', name: 'mail', version: '1.4'
     api group: 'org.apache.struts', name: 'struts-core', version: '1.3.10'

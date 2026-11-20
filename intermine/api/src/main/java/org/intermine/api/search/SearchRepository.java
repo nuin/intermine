@@ -18,16 +18,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.StopAnalyzer;
-import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.util.Version;
 import org.intermine.api.profile.Profile;
 import org.intermine.api.profile.TagManager;
 import org.intermine.api.profile.TagManagerFactory;
@@ -46,15 +49,34 @@ public abstract class SearchRepository implements WebSearchWatcher
 {
 
     protected static final Set<SearchRepository> GLOBALS =
-            new HashSet<SearchRepository>();
+            new CopyOnWriteArraySet<SearchRepository>();
 
     private static final Logger LOG = Logger.getLogger(SearchRepository.class);
 
-    protected Set<WebSearchable> searchItems = new HashSet<WebSearchable>();
-    protected Map<String, Directory> indexes = new HashMap<String, Directory>();
+    protected Set<WebSearchable> searchItems = new CopyOnWriteArraySet<WebSearchable>();
+    private final Map<String, CachedIndex> indexes = new HashMap<String, CachedIndex>();
+    private long indexVersion;
+
+    /** An index and the object identities captured in its documents. */
+    static final class CachedIndex
+    {
+        final Directory directory;
+        final Map<Integer, WebSearchable> items;
+
+        private CachedIndex(Directory directory, Map<Integer, WebSearchable> items) {
+            this.directory = directory;
+            this.items = Collections.unmodifiableMap(items);
+        }
+    }
 
     protected final Profile profile;
     protected final TagManager tagManager;
+    private final String indexId = UUID.randomUUID().toString();
+
+    /** @return the identifier that associates index documents with this repository */
+    String getIndexId() {
+        return indexId;
+    }
 
     /**
      * Constructor. Create a new search repository for the given profile.
@@ -125,7 +147,7 @@ public abstract class SearchRepository implements WebSearchWatcher
      * @return An unmodifiable Set.
      */
     public Set<WebSearchable> getSearchItems() {
-        return Collections.unmodifiableSet(searchItems);
+        return Collections.unmodifiableSet(new HashSet<WebSearchable>(searchItems));
     }
 
     /**
@@ -202,32 +224,70 @@ public abstract class SearchRepository implements WebSearchWatcher
      * Drop the index that contains information about the websearchable object passed in.
      * @param ws The item whose cached information we wish to dispose of.
      */
-    protected void dropIndex(WebSearchable ws) {
+    protected synchronized void dropIndex(WebSearchable ws) {
+        indexVersion++;
         indexes.remove(ws.getTagType());
+    }
+
+    /** Invalidate every cached index after a bulk change to the searchable items. */
+    protected synchronized void clearIndexes() {
+        indexVersion++;
+        indexes.clear();
     }
 
     /**
      * Retrieve a search index for a given type of web searchable objects. If there is already
      * an index around, that will be returned. If not, one will be created and returned.
      * @param type The type of the web searchables to index. Should be a valid TagType.
-     * @return a RAMDirectory containing the index.
+     * @return an in-memory directory containing the index.
      */
     public Directory getSearchIndex(String type) {
-        if (!(indexes.containsKey(type) && indexes.get(type) != null)) {
-            indexes.put(type, index(type, searchItems, profile));
-        }
-        return indexes.get(type);
+        return getIndex(type).directory;
     }
 
     /**
-     * Index some WebSearchables and return the RAMDirectory containing the index.
+     * Return an index together with the object identities captured when it was built.
+     * @param type the indexed object type
+     * @return a consistent index snapshot
+     */
+    CachedIndex getIndex(String type) {
+        while (true) {
+            long version;
+            Set<WebSearchable> items;
+            synchronized (this) {
+                CachedIndex cached = indexes.get(type);
+                if (cached != null) {
+                    return cached;
+                }
+                version = indexVersion;
+                items = new HashSet<WebSearchable>(searchItems);
+            }
+            CachedIndex candidate = index(type, items, profile, indexId);
+            synchronized (this) {
+                if (version == indexVersion && !indexes.containsKey(type)) {
+                    indexes.put(type, candidate);
+                    return candidate;
+                }
+            }
+            try {
+                candidate.directory.close();
+            } catch (IOException error) {
+                throw new IllegalStateException("Failed to close unused search index", error);
+            }
+        }
+    }
+
+    /**
+     * Index some WebSearchables and return the in-memory directory containing the index.
      *
      * @param type The type of the websearchables to index. Should be a valid TagType.
      * @param items The collection of websearchables watched by this repository.
      * @param profile The profile of the owner of the websearchables.
-     * @return a RAMDirectory containing the index
+     * @param indexId The repository identifier stored with each document.
+     * @return an in-memory directory containing the index
      */
-    private static Directory index(String type, Collection<WebSearchable> items, Profile profile) {
+    private static CachedIndex index(String type, Collection<WebSearchable> items, Profile profile,
+                                     String indexId) {
         if (type == null) {
             throw new IllegalArgumentException("'type' may not be null");
         }
@@ -235,73 +295,51 @@ public abstract class SearchRepository implements WebSearchWatcher
         LOG.info("Indexing webSearchable queries");
 
         TagManager tagManager = new TagManagerFactory(profile.getProfileManager()).getTagManager();
-        RAMDirectory ram = new RAMDirectory();
-        IndexWriter writer;
-        try {
-            SnowballAnalyzer snowballAnalyzer = new SnowballAnalyzer(Version.LUCENE_30, "English",
-                    StopAnalyzer.ENGLISH_STOP_WORDS_SET);
-            writer = new IndexWriter(ram, snowballAnalyzer, true,
-                    IndexWriter.MaxFieldLength.UNLIMITED);
-        } catch (IOException err) {
-            throw new RuntimeException("Failed to create lucene IndexWriter", err);
-        }
-
-        // step global webSearchables, indexing a Document for each webSearchable
+        Directory directory = new ByteBuffersDirectory();
+        Map<Integer, WebSearchable> indexedItems = new HashMap<Integer, WebSearchable>();
         int indexed = 0;
-
-        for (WebSearchable webSearchable : items) {
-            if (!type.equals(webSearchable.getTagType())) {
-                continue;
-            }
-            Document doc = new Document();
-            // Store names and tags for retrieval, but all searched information goes into the
-            // content buffer.
-            doc.add(new Field("name", webSearchable.getName(), Field.Store.YES,
-                              Field.Index.ANALYZED));
-            StringBuffer contentBuffer = new StringBuffer(webSearchable.getTitle() + " : "
-                                               + webSearchable.getDescription());
-            List<Tag> tags = tagManager.getTags(null, webSearchable.getName(), type,
-                    profile.getUsername());
-            StringBuilder tagSB = new StringBuilder();
-
-            for (Tag tag: tags) {
-                String tagName = tag.getTagName();
-                tagSB.append(" " + tagName);
-                if (AspectTagUtil.isAspectTag(tagName)) {
-                    contentBuffer.append(' ').append(AspectTagUtil.getAspect(tagName));
-                } else {
-                    contentBuffer.append(' ').append(tagName);
+        try (Analyzer analyzer = new WebSearchAnalyzer();
+                IndexWriter writer = new IndexWriter(directory, new IndexWriterConfig(analyzer))) {
+            for (WebSearchable item : items) {
+                if (type.equals(item.getTagType())) {
+                    writer.addDocument(createDocument(item, profile, tagManager, indexId, indexed));
+                    indexedItems.put(indexed, item);
+                    indexed++;
                 }
             }
-            doc.add(new Field("tags", tagSB.toString(), Field.Store.YES, Field.Index.ANALYZED));
-
-            // normalise the text
-            String content = contentBuffer.toString().replaceAll("[^a-zA-Z0-9]", " ");
-            doc.add(new Field("content", content, Field.Store.NO,
-                              Field.Index.ANALYZED));
-            //doc.add(new Field("scope", scope, Field.Store.YES, Field.Index.NO));
-
+        } catch (IOException | RuntimeException error) {
             try {
-                writer.addDocument(doc);
-                indexed++;
-            } catch (IOException e) {
-                LOG.error("Failed to add webSearchable " + webSearchable.getName()
-                        + " to the index", e);
-                throw new RuntimeException("Failed to write to index", e);
+                directory.close();
+            } catch (IOException closeError) {
+                error.addSuppressed(closeError);
             }
+            throw new IllegalStateException("Failed to create search index", error);
         }
+        LOG.debug("Indexed " + indexed + " webSearchables in "
+                + (System.currentTimeMillis() - time) + " milliseconds");
+        return new CachedIndex(directory, indexedItems);
+    }
 
-        try {
-            writer.close();
-        } catch (IOException e) {
-            LOG.error("IOException while closing IndexWriter", e);
-            throw new RuntimeException("Failed to close IndexWriter", e);
+    private static Document createDocument(WebSearchable item, Profile profile,
+                                            TagManager tagManager, String indexId, int itemId) {
+        Document document = new Document();
+        document.add(new StoredField("repository", indexId));
+        document.add(new StoredField("item", itemId));
+        document.add(new TextField("name", item.getName(), Field.Store.YES));
+        StringBuilder content = new StringBuilder(item.getTitle() + " : " + item.getDescription());
+        List<Tag> tags = tagManager.getTags(null, item.getName(), item.getTagType(),
+                profile.getUsername());
+        StringBuilder tagText = new StringBuilder();
+        for (Tag tag : tags) {
+            String tagName = tag.getTagName();
+            tagText.append(' ').append(tagName);
+            content.append(' ').append(AspectTagUtil.isAspectTag(tagName)
+                    ? AspectTagUtil.getAspect(tagName) : tagName);
         }
-
-        time = System.currentTimeMillis() - time;
-        LOG.debug("Indexed " + indexed + " webSearchables in " + time + " milliseconds");
-
-        return ram;
+        document.add(new TextField("tags", tagText.toString(), Field.Store.YES));
+        document.add(new TextField("content", content.toString().replaceAll("[^a-zA-Z0-9]", " "),
+                Field.Store.NO));
+        return document;
     }
 
     /**

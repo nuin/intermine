@@ -7,6 +7,7 @@ ext.runtimeVersions = [
     json: '20260814',
     tomcat: '9.0.124',
     jacksonBom: '2.21.8',
+    lucene: '10.6.0',
     ant: '1.10.18',
     guava: '33.7.2-jre',
     compress: '1.28.0',

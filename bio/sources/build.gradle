@@ -30,15 +30,15 @@ ext {
 
 subprojects {
     group = 'org.intermine'
-    version '5.1.1'
+    version '6.0.0-SNAPSHOT'
 
     apply plugin: 'java-library'
     apply plugin: 'dbmodel'
     apply plugin: 'biosource-dbmodel'
     apply plugin: "checkstyle"
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
     apply from: "${rootDir}/../../config/gradle/java-compatibility.gradle"
     apply from: "${rootDir}/../../config/gradle/runtime-dependencies.gradle"
 

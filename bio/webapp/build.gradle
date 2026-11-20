@@ -44,7 +44,7 @@ dependencies {
     api group: "org.biojava", name: "biojava-ontology", version: "4.2.0"
     api group: 'org.json', name: 'json', version: runtimeVersions.json
 
-    runtimeOnly group: 'org.apache.lucene', name: 'lucene-snowball', version: '3.0.2'
+    runtimeOnly group: 'org.apache.lucene', name: 'lucene-analysis-common', version: runtimeVersions.lucene
 
     imWebApp group: "org.intermine", name: "intermine-webapp", version: System.getProperty("imVersion"), transitive: false, ext: "war"
 }

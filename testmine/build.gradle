@@ -1,5 +1,5 @@
 ext {
-    imVersion = "5.1.1"
+    imVersion = "6.0.0-SNAPSHOT"
     taskGroup = "InterMine"
     minePropertyFileName = "testmodel.properties"
     minePropertyFile = "${System.env.HOME}/.intermine/$minePropertyFileName"
@@ -9,8 +9,8 @@ ext {
 subprojects {
     apply plugin: 'java-library'
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
     apply from: "${rootDir}/../config/gradle/java-compatibility.gradle"
     apply from: "${rootDir}/../config/gradle/runtime-dependencies.gradle"
 

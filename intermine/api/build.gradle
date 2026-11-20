@@ -30,10 +30,11 @@ dependencies {
     api group: 'xalan', name: 'xalan', version: runtimeVersions.xalan
     api group: 'xalan', name: 'serializer', version: runtimeVersions.xalan
     api group: 'org.apache.solr', name: 'solr-solrj', version: '8.11.4'
-    api group: 'org.apache.lucene', name: 'lucene-core', version: '3.0.2'
-    api group: 'org.apache.lucene', name: 'lucene-snowball', version: '3.0.2'
-    api group: 'org.apache.lucene', name: 'lucene-highlighter', version: '3.0.2'
-    api group: 'org.apache.lucene', name: 'lucene-queries', version: '3.0.2'
+    api group: 'org.apache.lucene', name: 'lucene-core', version: runtimeVersions.lucene
+    api group: 'org.apache.lucene', name: 'lucene-analysis-common', version: runtimeVersions.lucene
+    api group: 'org.apache.lucene', name: 'lucene-queryparser', version: runtimeVersions.lucene
+    api group: 'org.apache.lucene', name: 'lucene-highlighter', version: runtimeVersions.lucene
+    api group: 'org.apache.lucene', name: 'lucene-queries', version: runtimeVersions.lucene
     api group: 'org.json', name: 'json', version: runtimeVersions.json
     api group: "org.apache.jena", name: "apache-jena-libs", version: "3.16.0"
     testImplementation project(path: ':intermine-testresources', configuration: 'testArtifacts')

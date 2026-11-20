@@ -121,7 +121,7 @@ jobs:
       fail-fast: true
       matrix:
         testSuite: [intermine, bio]
-        java: ['21', '8']
+        java: ['21']
     steps:
     - uses: actions/checkout@v7
     - name: Set up JDK ${{ matrix.java }}

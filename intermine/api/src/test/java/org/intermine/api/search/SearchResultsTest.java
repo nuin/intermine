@@ -8,8 +8,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.intermine.api.InterMineAPITestCase;
 import org.intermine.api.bag.BagManager;
 import org.intermine.api.bag.ClassKeysNotFoundException;
@@ -224,6 +230,161 @@ public class SearchResultsTest extends InterMineAPITestCase {
         results = SearchResults.runLuceneSearch("", target,
                 sallyProfile.getSearchRepository());
         assertEquals(results.size(), 1);
+    }
+
+    @Test
+    public void testGlobalMapIncludesAllPublishers() throws Exception {
+        bobProfile.setSuperuser(true);
+        ApiTemplate template = bobProfile.getSavedTemplates().get("template");
+        im.getTagManager().addTag(TagNames.IM_PUBLIC, template, bobProfile);
+        new GlobalRepository(bobProfile);
+        SearchRepository repository = SearchRepository.getGlobalSearchRepository(
+                pm.getSuperuserProfile());
+        assertSame(template, repository.getWebSearchableMap(TagTypes.TEMPLATE).get("template"));
+        assertTrue(repository.getWebSearchableMap(TagTypes.TEMPLATE).containsKey("gtemplate"));
+    }
+
+    @Test
+    public void testRenameDuringSearchKeepsIndexMappingConsistent() throws Exception {
+        CountDownLatch indexed = new CountDownLatch(1);
+        CountDownLatch changed = new CountDownLatch(1);
+        CountDownLatch release = new CountDownLatch(1);
+        AtomicBoolean pause = new AtomicBoolean(true);
+        SearchRepository repository = new UserRepository(bobProfile) {
+            @Override
+            CachedIndex getIndex(String type) {
+                CachedIndex index = super.getIndex(type);
+                if (pause.compareAndSet(true, false)) {
+                    indexed.countDown();
+                    try {
+                        assertTrue(release.await(10, TimeUnit.SECONDS));
+                    } catch (InterruptedException error) {
+                        Thread.currentThread().interrupt();
+                        throw new IllegalStateException(error);
+                    }
+                }
+                return index;
+            }
+
+            @Override
+            public void receiveEvent(ChangeEvent event) {
+                changed.countDown();
+                super.receiveEvent(event);
+            }
+        };
+        ApiTemplate template = bobProfile.getSavedTemplates().get("template");
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        try {
+            Future<SearchResults> search = executor.submit(() -> SearchResults.runLuceneSearch(
+                    "ttitle", SearchTarget.USER_TEMPLATES, repository));
+            assertTrue(indexed.await(10, TimeUnit.SECONDS));
+            Future<?> rename = executor.submit(() -> template.setName("renamed"));
+            assertTrue(changed.await(10, TimeUnit.SECONDS));
+            release.countDown();
+            assertSame(template, search.get(10, TimeUnit.SECONDS).iterator().next().getItem());
+            rename.get(10, TimeUnit.SECONDS);
+            SearchResults current = SearchResults.runLuceneSearch("ttitle",
+                    SearchTarget.USER_TEMPLATES, repository);
+            assertEquals(1, current.size());
+            assertEquals("renamed", current.iterator().next().getItem().getName());
+        } finally {
+            release.countDown();
+            executor.shutdownNow();
+            assertTrue(executor.awaitTermination(10, TimeUnit.SECONDS));
+        }
+    }
+
+    @Test
+    public void testChangeEventDoesNotWaitForTagLookup() throws Exception {
+        CountDownLatch tagLockHeld = new CountDownLatch(1);
+        CountDownLatch indexing = new CountDownLatch(1);
+        CountDownLatch releaseTags = new CountDownLatch(1);
+        AtomicBoolean watching = new AtomicBoolean(false);
+        SearchRepository repository = bobProfile.getSearchRepository();
+        ApiTemplate template = new ApiTemplate("concurrent", "needle", "description",
+                new PathQuery(Model.getInstanceByName("testmodel"))) {
+            @Override
+            public String getTitle() {
+                if (watching.get()) {
+                    indexing.countDown();
+                }
+                return super.getTitle();
+            }
+        };
+        repository.searchItems.clear();
+        repository.searchItems.add(template);
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+        try {
+            Future<?> tags = executor.submit(() -> {
+                synchronized (im.getTagManager()) {
+                    tagLockHeld.countDown();
+                    assertTrue(releaseTags.await(10, TimeUnit.SECONDS));
+                }
+                return null;
+            });
+            assertTrue(tagLockHeld.await(10, TimeUnit.SECONDS));
+            watching.set(true);
+            Future<SearchResults> search = executor.submit(() -> SearchResults.runLuceneSearch(
+                    "needle", SearchTarget.USER_TEMPLATES, repository));
+            assertTrue(indexing.await(10, TimeUnit.SECONDS));
+            Future<?> event = executor.submit(() -> repository.receiveEvent(
+                    new PropertyChangeEvent(template)));
+            event.get(2, TimeUnit.SECONDS);
+            releaseTags.countDown();
+            tags.get(10, TimeUnit.SECONDS);
+            assertSame(template, search.get(10, TimeUnit.SECONDS).iterator().next().getItem());
+        } finally {
+            releaseTags.countDown();
+            executor.shutdownNow();
+            assertTrue(executor.awaitTermination(10, TimeUnit.SECONDS));
+        }
+    }
+
+    @Test
+    public void testMoreThanOneThousandMatches() throws Exception {
+        SearchRepository repository = bobProfile.getSearchRepository();
+        for (int i = 0; i < 1001; i++) {
+            repository.searchItems.add(new ApiTemplate("bulk" + i, "migrationneedle", "entry",
+                    new PathQuery(Model.getInstanceByName("testmodel"))));
+        }
+        SearchResults results = SearchResults.runLuceneSearch("migrationneedle",
+                SearchTarget.USER_TEMPLATES, repository);
+        assertEquals(1000, results.size());
+        for (SearchResult result : results) {
+            assertTrue(result.getItem().getName().startsWith("bulk"));
+        }
+    }
+
+    @Test
+    public void testGlobalSearchDoesNotResolvePrivateNameCollision() throws Exception {
+        InterMineBag publicBag = pm.getSuperuserProfile().getSavedBags().get("bag4");
+        InterMineBag privateBag = new InterMineBag("bag4", "Employee", "private content",
+                new Date(), BagState.CURRENT, os, bobId, uosw, Collections.singletonList("name"));
+        bobProfile.saveBag(privateBag);
+        SearchResults results = SearchResults.runLuceneSearch("funky", SearchTarget.GLOBAL_BAGS,
+                bobProfile.getSearchRepository());
+        assertEquals(1, results.size());
+        assertSame(publicBag, results.iterator().next().getItem());
+    }
+
+    @Test
+    public void testGlobalSearchWithoutRepositories() throws Exception {
+        SearchRepository.clearGlobalRepositories();
+        SearchResults results = SearchResults.runLuceneSearch("description",
+                SearchTarget.GLOBAL_BAGS, bobProfile.getSearchRepository());
+        assertEquals(0, results.size());
+    }
+
+    @Test
+    public void testFilteredSearchHighlightsDescriptionsAndRetainsTags() throws Exception {
+        SearchResults results = SearchResults.runLuceneSearch("ortholog", SearchTarget.USER_BAGS,
+                sallyProfile.getSearchRepository());
+        assertEquals(1, results.size());
+        List<Object> result = results.iterator().next().asList();
+        assertTrue(result.get(1).toString().contains(
+                "<span class=\"im-highlighted-search-term\">orthologue</span>"));
+        assertTrue(((List<?>) result.get(3)).contains("foo"));
+        assertTrue(((List<?>) result.get(3)).contains("bar"));
     }
 
     @Test

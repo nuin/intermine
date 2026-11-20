@@ -1,7 +1,9 @@
+if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_21)) {
+    throw new GradleException('InterMine 6 requires JDK 21 or newer. Set JAVA_HOME to a JDK 21 installation.')
+}
+
 tasks.withType(JavaCompile).configureEach {
-    options.release.set(javaCompiler.map { compiler ->
-        compiler.metadata.languageVersion.asInt() >= 9 ? 8 : null
-    })
+    options.release.set(21)
 }
 
 ext.intermineTestSystemProperties = System.properties.findAll { key, value ->

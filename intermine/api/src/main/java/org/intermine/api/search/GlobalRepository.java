@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.intermine.api.profile.Profile;
 import org.intermine.api.tag.TagNames;
@@ -94,34 +93,32 @@ public class GlobalRepository extends UserRepository
     @Override
     protected void handleMassTagging() {
         stopListening();
-        indexes.clear();
         // And additionally, repopulate the set of items.
         searchItems.clear();
         populateSearchItems();
         startListening();
+        clearIndexes();
     }
 
     /**
-     * Get a map from name -&gt; object for all the websearchables of the given type.
-     * @param type A valid TagType.
-     * @return A new unmodifiable map containing the requested information.
+     * Return all public searchable objects of the requested type.
+     * @param type the searchable object type
+     * @return a map of names to public objects across all global repositories
      */
     @Override
     public Map<String, WebSearchable> getWebSearchableMap(String type) {
         if (type == null) {
             throw new IllegalArgumentException("'type' may not be null");
         }
-        Map<String, WebSearchable> retval = new HashMap<String, WebSearchable>();
-        Set<SearchRepository> globalSearchRepositoryList = getGlobalSearchRepositories();
-        for (SearchRepository sr : globalSearchRepositoryList) {
-            for (WebSearchable webSearchable : sr.searchItems) {
-                if (!type.equals(webSearchable.getTagType())) {
-                    continue;
+        Map<String, WebSearchable> items = new HashMap<String, WebSearchable>();
+        for (SearchRepository repository : getGlobalSearchRepositories()) {
+            for (WebSearchable item : repository.getSearchItems()) {
+                if (type.equals(item.getTagType())) {
+                    items.put(item.getName(), item);
                 }
-                retval.put(webSearchable.getName(), webSearchable);
             }
         }
-        return Collections.unmodifiableMap(retval);
+        return Collections.unmodifiableMap(items);
     }
 
     /**

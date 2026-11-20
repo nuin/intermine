@@ -1,6 +1,6 @@
 # Java 21 migration
 
-This branch makes Java 21 the development and CI target while retaining Java 8 source, API, and bytecode compatibility. Gradle remains at 8.14.7 and the web application remains on Tomcat 9.
+This report records the initial Java 21 migration of InterMine 5.1.1, which retained Java 8 source, API, and bytecode compatibility. InterMine 6 now requires Java 21 to build and run and compiles Java sources with `--release 21`; the Java 8 comparison instructions below apply only to the earlier revision. Gradle remains at 8.14.7 and the web application remains on Tomcat 9.
 
 ## Compatibility changes
 
