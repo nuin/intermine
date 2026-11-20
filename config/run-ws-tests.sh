@@ -25,7 +25,8 @@ if [ "$CLIENT" = "JS" ]; then
     npm ci
     npm test
     node --test "${WORKSPACE_DIR}/config/ci/registration.test.cjs" \
-        "${WORKSPACE_DIR}/config/ci/oauth.test.cjs" "${WORKSPACE_DIR}/config/ci/search.test.cjs"
+        "${WORKSPACE_DIR}/config/ci/oauth.test.cjs" "${WORKSPACE_DIR}/config/ci/search.test.cjs" \
+        "${WORKSPACE_DIR}/config/ci/browser-auth.test.cjs"
 
 elif [ "$CLIENT" = "PY" ]; then
 

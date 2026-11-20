@@ -13,22 +13,17 @@ package org.intermine.webservice.server.user;
 import static org.apache.commons.lang.StringUtils.isBlank;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import org.directwebremoting.util.Logger;
 import org.intermine.api.InterMineAPI;
-import org.intermine.api.bag.UnknownBagTypeException;
-import org.intermine.api.profile.BagState;
 import org.intermine.api.profile.Profile;
 import org.intermine.api.profile.ProfileManager;
-import org.intermine.api.profile.InterMineBag;
-import org.intermine.api.util.NameUtil;
-import org.intermine.objectstore.ObjectStoreException;
 import org.intermine.util.Emailer;
 import org.intermine.web.context.InterMineContext;
 import org.intermine.web.context.MailAction;
+import org.intermine.web.logic.profile.AnonymousProfileMerger;
 import org.intermine.web.logic.profile.ProfileMergeIssues;
 import org.intermine.webservice.server.core.JSONService;
 import org.intermine.webservice.server.core.RateLimitHistory;
@@ -100,7 +95,7 @@ public class NewUserService extends JSONService
         ProfileMergeIssues issues = new ProfileMergeIssues();
         if (currentProfile != null && !currentProfile.isLoggedIn()) {
             //attach the anonymously created lists to the new profile
-            issues = attachAnonSavedBags(currentProfile, newProfile);
+            issues = AnonymousProfileMerger.transferBags(currentProfile, newProfile);
         }
 
         JSONObject user = new JSONObject();
@@ -200,39 +195,6 @@ public class NewUserService extends JSONService
                 throw new BadRequestException(USER_EXISTS_MSG);
             }
         }
-    }
-
-    /**
-     * Attach the  anonymously created list to the new user
-     *
-     * @param fromProfile The profile to take information from.
-     * @param newProfile The new profile to attach into.
-     * @return A map of bags, from old name to new name.
-     * @throws ObjectStoreException if a list cannot be copied or removed
-     * @throws UnknownBagTypeException if a list type is absent from the model
-     */
-    private ProfileMergeIssues attachAnonSavedBags(Profile fromProfile, Profile newProfile)
-        throws ObjectStoreException, UnknownBagTypeException {
-        ProfileMergeIssues issues = new ProfileMergeIssues();
-        synchronized (fromProfile) {
-            Map<String, InterMineBag> mergeBags = new LinkedHashMap<String, InterMineBag>(
-                    fromProfile.getSavedBags());
-            for (Map.Entry<String, InterMineBag> entry : mergeBags.entrySet()) {
-                InterMineBag bag = entry.getValue();
-                String name = NameUtil.validateName(newProfile.getSavedBags().keySet(),
-                        entry.getKey());
-                if (!entry.getKey().equals(name)) {
-                    issues.addRenamedBag(entry.getKey(), name);
-                }
-                InterMineBag copy = new InterMineBag(name, bag.getType(), bag.getDescription(),
-                        bag.getDateCreated(), BagState.valueOf(bag.getState()), im.getObjectStore(),
-                        newProfile.getUserId(), bag.getUserProfileWriter(), bag.getKeyFieldNames());
-                copy.addIdsToBag(bag.getContentsAsIds(), bag.getType());
-                newProfile.saveBag(name, copy);
-                fromProfile.deleteBag(entry.getKey());
-            }
-        }
-        return issues;
     }
 
 }

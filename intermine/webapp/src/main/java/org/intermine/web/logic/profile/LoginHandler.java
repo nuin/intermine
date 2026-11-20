@@ -12,8 +12,6 @@ package org.intermine.web.logic.profile;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -22,14 +20,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionMessage;
 import org.intermine.api.InterMineAPI;
+import org.intermine.api.bag.UnknownBagTypeException;
 import org.intermine.api.profile.BagState;
-import org.intermine.api.profile.InterMineBag;
 import org.intermine.api.profile.Profile;
 import org.intermine.api.profile.ProfileManager;
 import org.intermine.api.profile.ProfileManager.ApiPermission;
 import org.intermine.api.profile.SavedQuery;
-import org.intermine.api.template.ApiTemplate;
-import org.intermine.api.util.NameUtil;
 import org.intermine.objectstore.ObjectStoreException;
 import org.intermine.objectstore.intermine.ObjectStoreWriterInterMineImpl;
 import org.intermine.sql.DatabaseUtil;
@@ -83,40 +79,19 @@ public abstract class LoginHandler extends InterMineAction
      * @return A map of bags, from old name to new name.
      */
     public static ProfileMergeIssues mergeProfiles(Profile fromProfile, Profile toProfile) {
-        Map<String, SavedQuery> mergeQueries = Collections.emptyMap();
-        Map<String, InterMineBag> mergeBags = Collections.emptyMap();
-        Map<String, ApiTemplate> mergeTemplates = Collections.emptyMap();
-        ProfileMergeIssues issues = new ProfileMergeIssues();
-        if (!fromProfile.getPreferences().isEmpty()) {
+        if (fromProfile == null || fromProfile.isLoggedIn()) {
+            return new ProfileMergeIssues();
+        }
+        try {
+            ProfileMergeIssues issues = AnonymousProfileMerger.transferBags(fromProfile, toProfile);
             toProfile.getPreferences().putAll(fromProfile.getPreferences());
-        }
-        if (fromProfile != null) {
-            mergeQueries = fromProfile.getHistory();
-            mergeBags = fromProfile.getSavedBags();
-        }
-
-        // Merge in anonymous query history
-        for (SavedQuery savedQuery : mergeQueries.values()) {
-            toProfile.saveHistory(savedQuery);
-        }
-        // Merge anonymous bags
-        for (Map.Entry<String, InterMineBag> entry : mergeBags.entrySet()) {
-            InterMineBag bag = entry.getValue();
-            // Make sure the userId gets set to be the profile one
-            try {
-                bag.setProfileId(toProfile.getUserId());
-                String name = NameUtil.validateName(toProfile.getSavedBags().keySet(),
-                        entry.getKey());
-                if (!entry.getKey().equals(name)) {
-                    issues.addRenamedBag(entry.getKey(), name);
-                }
-                bag.setName(name);
-                toProfile.saveBag(name, bag);
-            } catch (ObjectStoreException iex) {
-                throw new RuntimeException(iex.getMessage());
+            for (SavedQuery query : fromProfile.getHistory().values()) {
+                toProfile.saveHistory(query);
             }
+            return issues;
+        } catch (ObjectStoreException | UnknownBagTypeException error) {
+            throw new IllegalStateException("Could not transfer anonymous lists", error);
         }
-        return issues;
     }
 
     /**
@@ -217,6 +192,7 @@ public abstract class LoginHandler extends InterMineAction
                     con.close();
                 }
             } catch (SQLException sqle) {
+                LOG.warn("Could not close the list-upgrade database connection", sqle);
             }
         }
     }
