@@ -55,7 +55,7 @@ public final class AnonymousProfileMerger
             for (Map.Entry<String, InterMineBag> entry : bags.entrySet()) {
                 String name;
                 synchronized (to) {
-                    name = NameUtil.validateName(to.getSavedBags().keySet(), entry.getKey());
+                    name = NameUtil.validateName(to.getAllBags().keySet(), entry.getKey());
                     InterMineBag copy = copyBag(entry.getValue(), name, to);
                     to.saveBag(name, copy);
                 }

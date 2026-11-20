@@ -97,6 +97,38 @@ UsersController callback now declares IOException. Dead commented migration code
 was removed from the OAuth callback; OAuth protocol and library replacement remains
 the subsequent maintenance phase.
 
+## Whole-branch review and final fixes
+
+The fresh review identified three important defects. Regression tests reproduced
+each before its fix: double encoding of administrator checkbox values, collisions
+with recoverable invalid lists, and concurrent requests sharing the property-edit
+form. The checkbox now lets Struts encode its raw value once; transfers reserve
+all destination list names; property forms have request scope. Two additional
+tests exercise the real Struts checkbox tag, and the form regression loads the
+production action mapping.
+
+The corrected core passes 2,214 tests with zero failures, errors or skips, including
+282 webapp and 511 API cases; Checkstyle and publication pass. All 21 deployed
+regressions pass (7.04s), including the actual administrator checkbox value and
+checked state. JavaScript passes 405 with one upstream pending case; Python passes
+74 (15.18s). The WAR still passes 22 provider and 40,883 unique-class checks, and
+its five changed rendering resources match source. The original eight private
+and two public lists retain their members; the database retains eleven saved lists.
+Aislop reports 100, zero errors or fixable warnings, and the six warnings above.
+
+Hosted CI on the earlier implementation exposed a separate test-helper race:
+four precompute workers appended to an unsynchronized ArrayList, recording nine
+of eleven queries. The test recorder now uses a synchronized list. Production
+precomputation is unchanged. Final-source hosted checks remain required before
+integration.
+
+The review's minor finding is deferred: opening a second administrative form
+invalidates the first form's unused token. Refreshing the earlier form restores
+normal use. OAuth exchange/logging, identity message arguments and preference
+attribute encoding are assigned to the next increment. Generic rich-HTML flash
+messages remain a separate audit. Cross-JVM and crash-atomic list transfer remain
+outside this increment's in-memory coordination guarantee.
+
 ## Implementation decisions
 
 - Continued on a separate authentication branch while the preceding search checks
@@ -112,3 +144,11 @@ the subsequent maintenance phase.
 - Extend escaping to related account-name render paths and add test-only jsdom.
   DOM interaction tests use the repository's legacy jQuery; the runtime dependency
   remains unchanged, and a broader frontend-library upgrade remains separate.
+- Preserve the in-memory transfer boundary: independent copies and propagated
+  cleanup failures are verified; crashes or multiple JVMs can require reconciliation.
+- Complete OAuth exchange and adjacent identity/preference encoding in the next
+  authorized increment. Other rich-HTML message paths may still carry markup risks.
+- Treat hosted CI and live fixture preservation as measured integration gates;
+  a read-only review cannot establish either.
+- Repair the test-only parallel recorder after its observed CI failure. Final-source
+  CI must confirm that the change resolves the race without masking missing jobs.

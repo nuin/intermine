@@ -25,9 +25,7 @@
             <tr>
               <td class="sorting"><c:out value="${user}"/></td>
               <td align="center">
-                <html:multibox property="superUsers">
-                  <c:out value="${user}"/>
-                </html:multibox>
+                <html:multibox property="superUsers" value="${user}"/>
               </td>
             </tr>
             </c:forEach>

@@ -21,6 +21,12 @@ sourceSets {
 
 tasks.test.dependsOn(':intermine-testresources:buildDB')
 
+tasks.named('processTestResources') {
+    from('src/main/webapp/WEB-INF/struts-config.xml') {
+        into 'web-config'
+    }
+}
+
 dependencies {
     providedCompile project(':intermine-api')
 
@@ -72,6 +78,7 @@ dependencies {
     testImplementation group: 'org.easymock', name: 'easymock', version: '5.7.0'
     testImplementation group: 'xmlunit', name: 'xmlunit', version: '1.0'
     testImplementation group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+    testRuntimeOnly group: 'javax.el', name: 'javax.el-api', version: '3.0.0'
 }
 
 task classesJar(type: Jar) {

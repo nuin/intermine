@@ -12,6 +12,7 @@ package org.intermine.objectstore.intermine;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.intermine.objectstore.query.Query;
@@ -28,7 +29,7 @@ public class TestParallelPrecomputer extends ParallelPrecomputer
         super(os, threadCount);
     }
 
-    public List<Query> testQueries = new ArrayList<Query>();
+    public List<Query> testQueries = Collections.synchronizedList(new ArrayList<Query>());
 
     @Override
     protected void precomputeQuery(String key, Query query, Collection indexes, boolean allFields,

@@ -259,3 +259,31 @@ test('server-rendered list sharing escapes the recipient account name', async ()
         }
     }, [undefined, recipientName]);
 });
+
+function decodeAttribute(value) {
+    const entities = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" };
+    return value.replace(/&(#x[\da-f]+|#\d+|amp|lt|gt|quot|apos);/gi, (entity, key) => {
+        if (key.startsWith('#x')) return String.fromCodePoint(parseInt(key.slice(2), 16));
+        if (key.startsWith('#')) return String.fromCodePoint(parseInt(key.slice(1), 10));
+        return entities[key];
+    });
+}
+
+test('role checkbox values preserve account identity after HTML decoding', async () => {
+    const name = `role-&-"quoted"-<em>-${randomUUID()}`;
+    await withAccounts(1, async () => {
+        const browser = browserSession(mine);
+        await browser.request('begin.do');
+        try {
+            await browserLogin(browser, { name: 'superuser@intermine.org', password: 'intermine' });
+            const page = await browser.request('mymine.do?subtab=users');
+            const boxes = [...page.matchAll(/<input\b[^>]*\bname="superUsers"[^>]*>/g)]
+                .map(([tag]) => ({ value: decodeAttribute(tag.match(/\bvalue="([^"]*)"/)[1]),
+                    checked: /\bchecked(?:=|\s|>)/.test(tag) }));
+            assert.ok(boxes.some(box => box.value === name && !box.checked));
+            assert.ok(boxes.some(box => box.value === 'superuser@intermine.org' && box.checked));
+        } finally {
+            await browser.request('logout.do');
+        }
+    }, [name]);
+});

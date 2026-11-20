@@ -373,7 +373,7 @@
     <action path="/showProperties" type="org.intermine.web.struts.ShowPropertiesController">
       <forward name="success" path="showProperties.page"/>
     </action>
-  <action path="/editProperty" name="editPropertyForm" type="org.intermine.web.struts.EditPropertiesAction" input="showProperties">
+  <action path="/editProperty" name="editPropertyForm" type="org.intermine.web.struts.EditPropertiesAction" scope="request" input="showProperties">
     <forward name="failure" redirect="true" path="/begin.do"/>
     <forward name="success" path="/showProperties.do"/>
   </action>

@@ -115,6 +115,25 @@ public class AnonymousProfileMergerTest extends InterMineAPITestCase {
         assertTrue(source.getSavedBags().isEmpty());
     }
 
+    public void testInvalidDestinationListReservesItsNameThroughRepair() throws Exception {
+        InterMineBag existing = addList(destination, "guest");
+        Profile recovering = new Profile(manager, destination.getUsername(), destination.getUserId(),
+                null, Profile.NO_QUERIES, Collections.<String, InterMineBag>emptyMap(),
+                Collections.singletonMap("guest", existing), Profile.NO_TEMPLATES, null, true, false);
+        assertTrue(recovering.getInvalidBags().containsKey("guest"));
+        addList(source, "guest");
+        ProfileMergeIssues issues = LoginHandler.mergeProfiles(source, recovering);
+        assertEquals("guest_1", issues.getRenamedBags().get("guest"));
+        assertEquals(2, recovering.getAllBags().size());
+        InterMineBag transferred = recovering.getSavedBags().get("guest_1");
+        assertEquals(Collections.singletonList(employeeId), transferred.getContentsAsIds());
+        recovering.fixInvalidBag("guest", "Employee");
+        assertEquals(2, recovering.getSavedBags().size());
+        assertSame(transferred, recovering.getSavedBags().get("guest_1"));
+        assertNotSame(transferred, recovering.getSavedBags().get("guest"));
+        assertTrue(source.getSavedBags().isEmpty());
+    }
+
     public void testConcurrentClaimsHaveOneOwner() throws Exception {
         addList(source, "guest");
         Profile second = manager.createNewProfile("second", "password");
