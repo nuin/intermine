@@ -48,7 +48,7 @@
           <tiles:put name="name" value="${webSearchable.name}"/>
           <tiles:put name="type" value="template"/>
         </tiles:insert>
-        <c:if test="${IS_SUPERUSER}">
+        <c:if test="${PROFILE.superuser}">
           <c:set var="taggable" value="${webSearchable}"/>
           <tiles:insert name="inlineTagEditor.tile">
             <tiles:put name="taggable" beanName="taggable"/>
@@ -81,7 +81,7 @@
    <div id="${wsListId}_${type}_item_description_${webSearchable.name}_highlight" style="display:none" class="description"></div>
 </c:if>
 
-  <c:if test="${IS_SUPERUSER && webSearchable.valid && !empty userWebSearchables[wsName]}">
+  <c:if test="${PROFILE.superuser && webSearchable.valid && !empty userWebSearchables[wsName]}">
 <br><u>Superuser actions</u>:
     <html:link action="/editTemplate?name=${webSearchable.name}&amp;scope=${scope}"
              titleKey="history.action.edit.hover">

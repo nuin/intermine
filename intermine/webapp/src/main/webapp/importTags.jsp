@@ -18,7 +18,7 @@
       <td align="right" valign="top"><fmt:message key="importTags.xml"/></td>
       <td><html:textarea property="xml" cols="60" rows="20"/></td>
     </tr>
-     <c:if test="${IS_SUPERUSER}">
+     <c:if test="${PROFILE.superuser}">
       <tr>
         <td colspan="2" align="right" valign="top"><fmt:message key="importTags.overwriting"/> <html:checkbox property="overwriting"/></td>
       </tr>

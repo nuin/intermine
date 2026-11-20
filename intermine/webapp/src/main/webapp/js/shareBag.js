@@ -4,83 +4,77 @@
 
     this.startSharingBag = function(id) {
       if (editingUser) {
-        stopSharingBag();
+        window.stopSharingBag();
       }
       editingUser = id;
-      hideEl('addLink-' + id);
-      showEl('shareEdit-' + id);
+      window.hideEl('addLink-' + id);
+      window.showEl('shareEdit-' + id);
     };
 
     this.stopSharingBag = function() {
       if (editingUser) {
-        hideEl('shareEdit-' + editingUser);
-        showEl('addLink-' + editingUser);
+        window.hideEl('shareEdit-' + editingUser);
+        window.showEl('addLink-' + editingUser);
       }
       editingUser = false;
     };
 
     this.addUser = function(id, bagName) {
-/*      if (failureNotification != null) {
-        //failureNotification.$el.hide('slow', function() {failureNotification.remove()});
-        failureNotification.$el.html('');
-      }*/
-      var user = jQuery('#userValue-' + id).val();
+      var user = $('#userValue-' + id).val();
       var callBack = function(returnStr) {
-        var sendInvite, notification, failureMessage = returnStr;
+        var notification, failureMessage = $('<span>').text(returnStr);
         if (returnStr == 'ok') {
-          refreshSharingUsers(bagName, id);
-          jQuery('#userValue-' + id).val('');
+          window.refreshSharingUsers(bagName, id);
+          $('#userValue-' + id).val('');
         } else {
             if (returnStr.match(/not found/)) {
-                failureMessage = jQuery("<span>");
-                failureMessage.append(returnStr);
-                failureMessage.append(" Would you like to send an invitation to " + user + "? ");
-                jQuery("<button>OK</button>").appendTo(failureMessage).click(function(evt) {
+                failureMessage.text(returnStr + " Would you like to send an invitation to " + user + "? ");
+                $("<button>OK</button>").appendTo(failureMessage).click(function() {
                     notification.close();
                     if (window.$SERVICE) {
-                      var errHandler = function(err) {new FailureNotification({message: err}).render()};
-                      $SERVICE.fetchList(bagName, function(l) {
+                      var errHandler = function(err) {
+                        new window.FailureNotification({message: $('<span>').text(String(err))}).render();
+                      };
+                      window.$SERVICE.fetchList(bagName, function(l) {
                           l.inviteUserToShare(user).fail(errHandler);
                       }).fail(errHandler);
                     } else {
-                        new FailureNotification({message: "You are not logged in"}).render();
+                        new window.FailureNotification({message: "You are not logged in"}).render();
                     }
                 });
             }
-            notification = new FailureNotification({message: failureMessage});
+            notification = new window.FailureNotification({message: failureMessage});
             notification.render();
         }
       };
       if (user != '') {
-        AjaxServices.addUserToShareBag(user, bagName, callBack);
+        window.AjaxServices.addUserToShareBag(user, bagName, callBack);
       }
     };
 
     this.refreshSharingUsers = function(bagName, id) {
       var callBack = function(users) {
-        displayUsers(id, users, bagName);
+        window.displayUsers(id, users, bagName);
       };
-      AjaxServices.getUsersSharingBag(bagName, callBack);
+      window.AjaxServices.getUsersSharingBag(bagName, callBack);
     };
 
     this.deleteUser = function(user, bagName, id) {
       var callBack = function(returnStr) {
         if (returnStr == 'ok') {
-          refreshSharingUsers(bagName, id);
+          window.refreshSharingUsers(bagName, id);
         } else {
-          new FailureNotification({message: returnStr}).render();
+          new window.FailureNotification({message: $('<span>').text(returnStr)}).render();
         }
       };
 
-      AjaxServices.deleteUserToShareBag(user, bagName, callBack);
+      window.AjaxServices.deleteUserToShareBag(user, bagName, callBack);
     };
 
     this.displayUsers = function(id, users, bagName) {
-      var usersl = users.length,
-      parent = $('#sharingUsers-' + id).empty();
-      for (i = 0; i < usersl; i++) {
-        user = users[i];
-        addUserSpan(id, user, bagName);
+      $('#sharingUsers-' + id).empty();
+      for (var i = 0; i < users.length; i++) {
+        window.addUserSpan(id, users[i], bagName);
       }
     };
 
@@ -89,10 +83,26 @@
       var span = $('<span class="tag">');
       var a = $('<a class="deleteTagLink">[x]</a>');
       a.click(function() {
-          deleteUser(user, bagName, id);
+          window.deleteUser(user, bagName, id);
       });
-      span.append(user).append(a);
+      span.text(user).append(a);
       parent.append(span);
     };
 
-}).call(window, jQuery);
+    $(document).on('click', '.share-bag .deleteTagLink[data-user]', function() {
+      var container = $(this).closest('.share-bag');
+      window.deleteUser($(this).attr('data-user'), container.attr('data-bag-name'),
+          container.attr('data-share-id'));
+    });
+    $(document).on('click', '.share-bag .start-sharing', function() {
+      window.startSharingBag($(this).closest('.share-bag').attr('data-share-id'));
+    });
+    $(document).on('click', '.share-bag .add-sharing-user', function() {
+      var container = $(this).closest('.share-bag');
+      window.addUser(container.attr('data-share-id'), container.attr('data-bag-name'));
+    });
+    $(document).on('click', '.share-bag .stop-sharing', function() {
+      window.stopSharingBag();
+    });
+
+}).call(window, window.jQuery);

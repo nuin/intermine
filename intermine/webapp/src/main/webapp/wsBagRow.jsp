@@ -50,7 +50,7 @@
     </c:otherwise>
   </c:choose>
 
-<c:if test="${IS_SUPERUSER}">
+<c:if test="${PROFILE.superuser}">
   <td>
     <c:set var="taggable" value="${webSearchable}"/>
     <tiles:insert name="inlineTagEditor.tile">

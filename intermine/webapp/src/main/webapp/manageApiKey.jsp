@@ -110,8 +110,9 @@
   <fmt:message key="apikey.deleteKey"/>
 </button>
 
+<span id="current-user" style="display:none"><c:out value="${PROFILE.username}"/></span>
 <script type="text/javascript">
-$CURRENT_USER="${PROFILE.username}";
+$CURRENT_USER = document.getElementById('current-user').textContent;
 </script>
 
 <!-- /managerApiKey.jsp -->

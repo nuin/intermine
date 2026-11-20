@@ -10,6 +10,7 @@ package org.intermine.web.struts;
  *
  */
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import org.apache.struts.tiles.ComponentContext;
 import org.apache.struts.tiles.actions.TilesAction;
 import org.intermine.api.InterMineAPI;
 import org.intermine.api.profile.ProfileManager;
+import org.intermine.web.logic.profile.AdminAccess;
 import org.intermine.web.logic.session.SessionMethods;
 
 /**
@@ -32,13 +34,23 @@ public class UsersController extends TilesAction
 {
 
     @Override
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+            HttpServletRequest request, HttpServletResponse response) throws IOException {
+        return execute(null, mapping, form, request, response);
+    }
+
+    @Override
     public ActionForward execute(ComponentContext context,
                                  ActionMapping mapping,
                                  ActionForm form,
                                  HttpServletRequest request,
                                  HttpServletResponse response)
-        throws Exception {
+        throws IOException {
 
+        if (!AdminAccess.requireAdmin(request, response)) {
+            return null;
+        }
+        request.setAttribute("adminToken", AdminAccess.issueToken(request.getSession()));
         final InterMineAPI im = SessionMethods.getInterMineAPI(request.getSession());
         ProfileManager pm = im.getProfileManager();
         List<String> superUsersList = pm.getSuperUsers();

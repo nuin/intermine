@@ -7,11 +7,12 @@
 <html:xhtml/>
 &nbsp;
 <c:choose>
-<c:when test="${IS_SUPERUSER}">
+<c:when test="${PROFILE.superuser}">
 <link rel="stylesheet" type="text/css" href="css/sorting.css"/>
 <h2><fmt:message key="users.heading"/></h2>
 <p class="apikey"><fmt:message key="users.description"/></p>
 <html:form action="/modifySuperUser">
+                        <input type="hidden" name="adminToken" value="<c:out value="${adminToken}"/>"/>
       <table class="bag-table sortable-onload-2 rowstyle-alt colstyle-alt no-arrow">
         <thead>
             <tr>
@@ -22,7 +23,7 @@
           <tbody>
           <c:forEach items="${users}" var="user" varStatus="status">
             <tr>
-              <td class="sorting">${user}</td>
+              <td class="sorting"><c:out value="${user}"/></td>
               <td align="center">
                 <html:multibox property="superUsers">
                   <c:out value="${user}"/>

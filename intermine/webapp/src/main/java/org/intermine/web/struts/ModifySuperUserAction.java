@@ -25,6 +25,7 @@ import org.intermine.api.InterMineAPI;
 import org.intermine.api.profile.Profile;
 import org.intermine.api.profile.ProfileManager;
 import org.intermine.api.search.GlobalRepository;
+import org.intermine.web.logic.profile.AdminAccess;
 import org.intermine.web.logic.session.SessionMethods;
 
 /**
@@ -48,6 +49,9 @@ public class ModifySuperUserAction extends InterMineAction
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (!AdminAccess.requireAdminMutation(request, response)) {
+            return null;
+        }
         HttpSession session = request.getSession();
         final InterMineAPI im = SessionMethods.getInterMineAPI(session);
         ProfileManager pm = im.getProfileManager();

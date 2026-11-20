@@ -34,4 +34,4 @@ First observe failing tests for ownership replay/concurrency, login ID rotation,
 
 ## Left to builder
 
-Exact helper names and location within web/logic/profile, servlet request completion method names, minimal fixture/mocking structure and which existing administrative JSP expressions are converted to current-profile checks. Keep dependencies unchanged in this phase. Per-account in-memory synchronization and recovery behavior on a copy/delete failure must be explicit in the implementation plan and review focus.
+Exact helper names and location within web/logic/profile, servlet request completion method names, minimal fixture/mocking structure and which existing administrative JSP expressions are converted to current-profile checks. Keep runtime dependencies unchanged in this phase. Test-only jsdom is permitted for the confirmed account-name rendering regressions. Per-account in-memory synchronization and recovery behavior on a copy/delete failure must be explicit in the implementation plan and review focus.

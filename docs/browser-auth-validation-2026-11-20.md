@@ -46,12 +46,69 @@ callbacks. No lint configuration was changed.
 
 ## Session and administrator checks
 
-Baseline probes confirmed that successful browser login retained the anonymous
-session ID, and switching from an administrator to an ordinary account retained
-the administrator marker. Logout already changed the session and removed the
-account name. Source review also found no caller-role check in ModifySuperUserAction
-or UsersController. Negative role-update tests will use mocks before guards exist;
-existing fixture roles will not be changed to reproduce these defects.
+Live baseline tests reproduced unchanged session IDs after password login, access
+with the old cookie, stale administrator UI after switching accounts, and raw HTML
+account names in the administrator table. Wrong-password login already preserved
+anonymous lists, and logout already removed access.
 
-The session and administrative fixes are the next implementation task on this
-branch. OAuth library/protocol replacement is the subsequent maintenance phase.
+Password and browser OAuth success now share `LoginHandler.completeLogin`: transfer
+anonymous work, rotate JSESSIONID, discard the old administrator token, normalize an
+administrator-only users tab, then install the authenticated profile. Failed
+credential lookup and merge failure leave the browser profile unchanged. Public
+session-only Java setup methods remain available for external integrations; browser
+callers use the request-aware method.
+
+The current profile controls authorization. Administrative views and actions reject
+ordinary or missing profiles before accessing account or property data. Role and
+property mutations require POST and a single-use 32-byte random token. Token
+consumption is atomic within the servlet session. The separate Struts query-builder
+token remains intact. Opening a new administrative form replaces the previous admin
+token; after submitting, return to the form to obtain a new token. Direct endpoint
+calls without authorization return 403; authorized GET mutations return 405.
+
+Account names render as escaped text in administrator tables, API-key pages and
+list-sharing controls. Sharing controls carry names in escaped DOM attributes rather
+than inline JavaScript, and client-side updates use text insertion. Five DOM tests
+exercise markup, quotes, removal, refresh and invitation errors against the legacy
+jQuery distributed in the repository. A locked jsdom dependency is used only by
+these tests; the application's default CDN jQuery remains unchanged.
+
+Twenty-four Java regressions cover marker/profile conflicts, invalid credentials,
+failed merges, password/OAuth completion, direct and embedded administrator routes,
+missing or wrong tokens, replay, concurrent consumption, request methods, token
+generation and permitted forms. Negative role changes use mocks; fixture roles
+are never changed. Five DOM regressions and fifteen existing browser unit tests
+pass.
+
+The final core build passes 2,210 tests (278 webapp and 511 API), with zero failures,
+errors or skips; Checkstyle and local publication pass in 1m47s. All twenty deployed
+auth/search/registration/OAuth regressions pass in 6.08s. The JavaScript client passes
+405 tests with one existing upstream pending case; the Python live client passes
+74 tests in 15.20s, retaining its existing registry no-op case. The final WAR passes
+22 required-provider and 40,883 unique-class checks; its five changed account-rendering
+resources exactly match the tested source. Saved-list names, types, sizes and members
+match the prior PostgreSQL baseline: eight authenticated, two public, eleven saved-list
+records. Hosted CI and whole-branch review remain separate integration gates.
+
+The latest Aislop scan reports 100, no errors and no fixable warnings. Six nonfixable
+warnings remain: the large existing SessionMethods class and broad checked-exception
+signatures in existing query, role-update and registration/mail code. The small
+UsersController callback now declares IOException. Dead commented migration code
+was removed from the OAuth callback; OAuth protocol and library replacement remains
+the subsequent maintenance phase.
+
+## Implementation decisions
+
+- Continued on a separate authentication branch while the preceding search checks
+  ran. Search passed its final-source hosted checks and was integrated before this
+  branch's completion; the branches do not share concurrent builds or edits.
+- Bounded this audit to list ownership, login sessions, administrative guards and
+  confirmed account-name rendering. Other webapp security risks remain outside
+  the evidence collected here; this is not a complete security assessment.
+- Retain a valid destination copy if source cleanup fails. Removing it could lose
+  the only surviving copy; the tradeoff is explicit partial-transfer recovery.
+- Use a dedicated administrative token to preserve query-builder forms. A new
+  admin form replaces an earlier token, so stale forms must be refreshed.
+- Extend escaping to related account-name render paths and add test-only jsdom.
+  DOM interaction tests use the repository's legacy jQuery; the runtime dependency
+  remains unchanged, and a broader frontend-library upgrade remains separate.

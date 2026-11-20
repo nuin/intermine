@@ -1,6 +1,7 @@
 const assert = require('node:assert/strict');
 const { randomUUID } = require('node:crypto');
 const { test } = require('node:test');
+const { browserSession } = require('./browser-session.cjs');
 
 assert.ok(process.env.TESTMODEL_URL, 'TESTMODEL_URL must identify the disposable test mine');
 const mine = new URL(process.env.TESTMODEL_URL.replace(/\/$/, '') + '/');
@@ -69,36 +70,8 @@ test('an empty authorized list returns no search hits', async () => {
     }
 });
 
-function browserSession() {
-    const cookies = new Map();
-    async function request(path, options = {}, status = 200) {
-        let url = new URL(path, mine);
-        for (let redirects = 0; redirects < 10; redirects++) {
-            const response = await fetch(url, {
-                ...options, redirect: 'manual', signal: AbortSignal.timeout(15000),
-                headers: { ...options.headers,
-                    Cookie: [...cookies].map(([key, value]) => `${key}=${value}`).join('; ') },
-            });
-            for (const cookie of response.headers.getSetCookie()) {
-                const pair = cookie.split(';', 1)[0];
-                const separator = pair.indexOf('=');
-                cookies.set(pair.slice(0, separator), pair.slice(separator + 1));
-            }
-            if (response.status >= 300 && response.status < 400) {
-                url = new URL(response.headers.get('location'), url);
-                if (response.status === 303 || response.status === 302) options = {};
-                continue;
-            }
-            assert.equal(response.status, status, `${url.pathname}: ${response.status}`);
-            return response.text();
-        }
-        throw new Error('Too many application redirects');
-    }
-    return { request, cookies };
-}
-
 test('DWR autocomplete returns indexed attribute suggestions', async () => {
-    const { request, cookies } = browserSession();
+    const { request, cookies } = browserSession(mine);
     await request('begin.do');
     const engine = await request('dwr/engine.js');
     const match = engine.match(/_origScriptSessionId\s*=\s*"([^"]+)"/);
@@ -133,7 +106,7 @@ async function withSearchUser(check) {
         method: 'POST', body: new URLSearchParams({ name, password }),
     });
     const token = registration.user.temporaryToken;
-    const browser = browserSession();
+    const browser = browserSession(mine);
     try {
         await browser.request('begin.do');
         const loggedIn = await browser.request('loginAction.do', {

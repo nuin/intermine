@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionMessage;
 import org.intermine.api.InterMineAPI;
@@ -29,7 +28,6 @@ import org.intermine.api.profile.SavedQuery;
 import org.intermine.objectstore.ObjectStoreException;
 import org.intermine.objectstore.intermine.ObjectStoreWriterInterMineImpl;
 import org.intermine.sql.DatabaseUtil;
-import org.intermine.web.logic.Constants;
 import org.intermine.web.logic.session.SessionMethods;
 import org.intermine.web.struts.InterMineAction;
 
@@ -103,18 +101,29 @@ public abstract class LoginHandler extends InterMineAction
      */
     public static ProfileMergeIssues doStaticLogin(HttpServletRequest request,
             String username, String password) {
-        // Merge current history into loaded profile
+        Profile profile = authenticatedProfile(request.getSession(), username, password);
+        return completeLogin(request, profile);
+    }
 
-        Profile currentProfile = SessionMethods.getProfile(request.getSession());
-        HttpSession session = request.getSession();
-        Profile profile = setUpProfile(session, username, password);
-        ProfileMergeIssues issues = new ProfileMergeIssues();
-
-        if (currentProfile != null && StringUtils.isEmpty(currentProfile.getUsername())) {
-            // The current profile was for an anonymous guest.
-            issues = mergeProfiles(currentProfile, profile);
+    /**
+     * Complete an already authenticated browser login, preserving anonymous work.
+     * @param request the browser request
+     * @param profile the authenticated, persisted profile
+     * @return the names changed while transferring anonymous lists
+     */
+    public static ProfileMergeIssues completeLogin(HttpServletRequest request, Profile profile) {
+        if (profile == null || !profile.isLoggedIn() || profile.getUserId() == null) {
+            throw new IllegalArgumentException("An authenticated profile is required");
         }
-
+        HttpSession session = request.getSession();
+        ProfileMergeIssues issues = mergeProfiles(SessionMethods.getProfile(session), profile);
+        request.changeSessionId();
+        session.removeAttribute(AdminAccess.TOKEN_ATTRIBUTE);
+        if (!profile.isSuperuser()
+                && "users".equals(SessionMethods.getWebState(session).getSubtab("subtabmymine"))) {
+            SessionMethods.getWebState(session).addSubtab("subtabmymine", "lists");
+        }
+        setUpProfile(session, profile);
         return issues;
     }
 
@@ -127,15 +136,17 @@ public abstract class LoginHandler extends InterMineAction
      * @return profile, fully ready to use.
      */
     public static Profile setUpProfile(HttpSession session, String username, String password) {
-        final InterMineAPI im = SessionMethods.getInterMineAPI(session);
-        Profile profile;
-        ProfileManager pm = SessionMethods.getInterMineAPI(session).getProfileManager();
-        if (pm.hasProfile(username)) {
-            profile = pm.getProfile(username, password, im.getClassKeys());
-        } else {
-            throw new LoginException("There is no profile for " + username);
+        return setUpProfile(session, authenticatedProfile(session, username, password));
+    }
+
+    private static Profile authenticatedProfile(HttpSession session, String username,
+            String password) {
+        InterMineAPI im = SessionMethods.getInterMineAPI(session);
+        Profile profile = im.getProfileManager().getProfile(username, password, im.getClassKeys());
+        if (profile == null) {
+            throw new LoginException("Invalid username or password");
         }
-        return setUpProfile(session, profile);
+        return profile;
     }
 
     /**
@@ -206,9 +217,6 @@ public abstract class LoginHandler extends InterMineAction
     public static Profile setUpProfile(HttpSession session, Profile profile) {
         SessionMethods.setProfile(session, profile);
         final InterMineAPI im = SessionMethods.getInterMineAPI(session);
-        if (profile.isSuperuser()) {
-            session.setAttribute(Constants.IS_SUPERUSER, Boolean.TRUE);
-        }
         UpgradeBagList upgrade = new UpgradeBagList(profile, im.getBagQueryRunner());
         runBagUpgrade(upgrade, im, profile);
         return profile;

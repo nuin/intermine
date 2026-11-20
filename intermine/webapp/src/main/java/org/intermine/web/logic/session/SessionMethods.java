@@ -68,10 +68,7 @@ import org.intermine.web.struts.LoadQueryAction;
 import org.intermine.web.struts.TemplateAction;
 
 /**
- * Business logic that interacts with session data. These methods are generally
- * called by actions to perform business logic. Obviously, a lot of the business
- * logic happens in other parts of intermine, called from here, then the users
- * session is updated accordingly.
+ * Session state and application services for web requests.
  *
  * @author  Thomas Riley
  */
@@ -793,8 +790,8 @@ public final class SessionMethods
      * @return true for superuser
      */
     public static boolean isSuperUser(HttpSession session) {
-        Boolean superUserAttribute = (Boolean) session.getAttribute(Constants.IS_SUPERUSER);
-        return superUserAttribute != null && superUserAttribute.equals(Boolean.TRUE);
+        Profile profile = getProfile(session);
+        return profile != null && profile.isLoggedIn() && profile.isSuperuser();
     }
 
     /**
@@ -925,6 +922,7 @@ public final class SessionMethods
      */
     public static void setProfile(HttpSession session, Profile profile) {
         session.setAttribute(Constants.PROFILE, profile);
+        session.setAttribute(Constants.IS_SUPERUSER, Boolean.valueOf(isSuperUser(session)));
     }
 
     /**

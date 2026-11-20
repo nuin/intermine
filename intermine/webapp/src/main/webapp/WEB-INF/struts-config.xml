@@ -370,7 +370,8 @@
       <forward name="begin" redirect="true" path="/begin.do"/>
       <forward name="api" redirect="true" path="/api.do?subtab=java"/>
     </action>
-    <action path="/showProperties" forward="showProperties.page">
+    <action path="/showProperties" type="org.intermine.web.struts.ShowPropertiesController">
+      <forward name="success" path="showProperties.page"/>
     </action>
   <action path="/editProperty" name="editPropertyForm" type="org.intermine.web.struts.EditPropertiesAction" input="showProperties">
     <forward name="failure" redirect="true" path="/begin.do"/>

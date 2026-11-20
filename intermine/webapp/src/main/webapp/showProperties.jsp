@@ -8,12 +8,13 @@
 
 <div class="body">
     <c:choose>
-        <c:when test="${IS_SUPERUSER}">
+        <c:when test="${PROFILE.superuser}">
             <div class="collection-table">
 
                 <div class="add-property">
                     <h3><fmt:message key="edit-properties.add"/></h3>
                     <html:form action="/editProperty">
+                        <input type="hidden" name="adminToken" value="<c:out value="${adminToken}"/>"/>
                         <label>
                             Key:
                             <html:text property="propertyName" size="100"/>
@@ -52,6 +53,7 @@
                                 </span>
                                 <div class="edit-property">
                                     <html:form action="/editProperty">
+                        <input type="hidden" name="adminToken" value="<c:out value="${adminToken}"/>"/>
                                         <label>
                                             <fmt:message key="edit-properties.label"/>
                                             <html:text property="propertyValue" value="${WEB_PROPERTIES[entry.value]}" size="100"/>

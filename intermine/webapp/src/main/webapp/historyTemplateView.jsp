@@ -68,7 +68,7 @@
             <th align="left" class="sortable">
               <fmt:message key="history.commentheader"/>
             </th>
-            <c:if test="${IS_SUPERUSER}">
+            <c:if test="${PROFILE.superuser}">
                 <th align="left" class="sortable-numeric">
                   <fmt:message key="history.rankheader"/>
                 </th>
@@ -107,7 +107,7 @@
                       <tiles:put name="name" value="${savedTemplate.value.name}"/>
                       <tiles:put name="type" value="template"/>
                     </tiles:insert>
-                    <c:if test="${IS_SUPERUSER}">
+                    <c:if test="${PROFILE.superuser}">
                       <c:set var="taggable" value="${savedTemplate.value}"/>
                       <tiles:insert name="inlineTagEditor.tile">
                         <tiles:put name="taggable" beanName="taggable"/>
@@ -147,7 +147,7 @@
                 </c:choose>
                 &nbsp;
               </td>
-               <c:if test="${IS_SUPERUSER}">
+               <c:if test="${PROFILE.superuser}">
                <c:set var="minRank" value="minRank"/>
                <td class="sorting">
                    <c:if test="${!empty templateRank}">
@@ -204,7 +204,7 @@
                   <fmt:message key="history.action.export"/>
                 </html:link>
                 <%-- these links need to be fixed, they take a very long time to load --%>
-                <c:if test="${IS_SUPERUSER && savedTemplate.value.valid}">
+                <c:if test="${PROFILE.superuser && savedTemplate.value.valid}">
                   <tiles:insert name="precomputeTemplate.tile">
                     <tiles:put name="templateName" value="${savedTemplate.value.name}"/>
                     <tiles:put name="precomputedTemplateMap" beanName="precomputedTemplateMap" />
@@ -237,7 +237,7 @@
       </html:link>
 
         <br/>
-      <c:if test="${IS_SUPERUSER}">
+      <c:if test="${PROFILE.superuser}">
         <html:link action="/summariseTemplates" titleKey="history.summariseTemplates">
             <fmt:message key="history.summariseTemplates"/>
         </html:link>

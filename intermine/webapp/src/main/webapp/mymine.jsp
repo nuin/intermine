@@ -74,7 +74,7 @@
 
   <%-- tag actions for super user --%>
   <div class="body">
-    <c:if test="${IS_SUPERUSER && subtabs[subtabName]!='tracks'}">
+    <c:if test="${PROFILE.superuser && subtabs[subtabName]!='tracks'}">
       <span class="smallnote">
           <html:link action="/exportTags">
             <fmt:message key="history.exportTags"/>

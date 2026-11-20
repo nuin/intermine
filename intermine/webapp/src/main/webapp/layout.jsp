@@ -173,7 +173,7 @@ if (typeof imtables != 'undefined' && imtables.setMessages) {
           <tiles:insert page="/session.jsp"/>
       </c:if>
 
-    <c:if test="${IS_SUPERUSER}">
+    <c:if test="${PROFILE.superuser}">
       <div class="admin-msg">
         <span class="smallnote">
           <fmt:message key="intermine.superuser.msg"/>

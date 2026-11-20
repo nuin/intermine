@@ -40,7 +40,7 @@
         onkeydown="switchInputs('file','xml');" size="28" />
     </td>
     </tr>
-    <c:if test="${IS_SUPERUSER}">
+    <c:if test="${PROFILE.superuser}">
       <tr>
         <td></td>
         <td align="right" valign="top"><fmt:message key="importTemplates.overwriting"/> <html:checkbox property="overwriting"/></td>

@@ -34,7 +34,7 @@
 </div>
 <c:if test="${!empty stacktrace}">
   <c:choose>
-    <c:when test="${IS_SUPERUSER}">
+    <c:when test="${PROFILE.superuser}">
       <style>
 pre.stacktrace {
  background: #f7f7f7;

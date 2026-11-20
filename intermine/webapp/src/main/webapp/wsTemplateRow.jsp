@@ -47,7 +47,7 @@
           <tiles:put name="name" value="${webSearchable.name}"/>
           <tiles:put name="type" value="template"/>
         </tiles:insert>
-        <c:if test="${IS_SUPERUSER}">
+        <c:if test="${PROFILE.superuser}">
           <c:set var="taggable" value="${webSearchable}"/>
           <tiles:insert name="inlineTagEditor.tile">
             <tiles:put name="taggable" beanName="taggable"/>
@@ -104,7 +104,7 @@
              titleKey="history.action.export.hover">
     <fmt:message key="history.action.export"/>
   </html:link>
-  <c:if test="${IS_SUPERUSER && webSearchable.valid}">
+  <c:if test="${PROFILE.superuser && webSearchable.valid}">
     <tiles:insert name="precomputeTemplate.tile">
       <tiles:put name="templateName" value="${webSearchable.name}"/>
       <tiles:put name="precomputedTemplateMap" beanName="precomputedTemplateMap" />

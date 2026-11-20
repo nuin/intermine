@@ -275,7 +275,6 @@ public class Callback extends LoginHandler
             DelegatedIdentity identity,
             MigrationMapping mapping) {
         LOG.debug("Logging in " + identity + " with migration mapping " + mapping);
-        Profile currentProfile = SessionMethods.getProfile(request.getSession());
         InterMineAPI api = SessionMethods.getInterMineAPI(request.getSession());
         Profile profile = api.getProfileManager()
                  .grantPermission(identity.getProvider(), identity.getId(), api.getClassKeys())
@@ -327,46 +326,12 @@ public class Callback extends LoginHandler
         }
 
         ActionMessages messages = new ActionMessages();
-        setUpProfile(request.getSession(), profile);
         messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(
                 "login.oauth2.successful", identity.getProvider(), profile.getName()));
-        ProfileMergeIssues issues = new ProfileMergeIssues();
-
-        if (currentProfile != null && StringUtils.isEmpty(currentProfile.getUsername())) {
-            // The current profile was for an anonymous guest.
-            issues = mergeProfiles(currentProfile, profile);
-        }
+        ProfileMergeIssues issues = completeLogin(request, profile);
 
         // track the user login
         api.getTrackerDelegate().trackLogin(profile.getUsername());
-
-        // Removed the mapping process because it's no longer necessary, and also blank strings
-        // in the user preferences might be causing trouble.
-        // TODO: Remove related dead code
-        // (DuplicateMappingException and friends must stay because they're used in MyMine)
-//        if (mapping != null) {
-//            Profile migratedFrom = api.getProfileManager().getProfile(mapping.getOldId());
-//            if (migratedFrom != null) {
-//                issues = issues.combineWith(mergeProfiles(migratedFrom, profile));
-//                profile.setApiKey(migratedFrom.getApiKey());
-//                Map<String, String> prefs =
-//                        new HashMap<String, String>(migratedFrom.getPreferences());
-//                migratedFrom.getPreferences().clear();
-//                profile.getPreferences().putAll(prefs);
-//                UserProfile oldUser = api.getProfileManager()
-//                                         .getUserProfile(migratedFrom.getUserId());
-//                if (oldUser != null) { // mark old profile as migrated.
-//                    oldUser.setUsername("__migrated__" + oldUser.getUsername());
-//                    try {
-//                        api.getUserProfile().store(oldUser);
-//                    } catch (ObjectStoreException e) {
-//                        messages.add(ActionMessages.GLOBAL_MESSAGE,
-//                                new ActionMessage("login.migration.error",
-//                                        mapping.getOldId(), e.getMessage()));
-//                    }
-//                }
-//            }
-//        }
 
         for (Entry<String, String> pair: issues.getRenamedBags().entrySet()) {
             messages.add(ActionMessages.GLOBAL_MESSAGE,

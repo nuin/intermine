@@ -64,7 +64,7 @@
       </span>
       ${node.text}
 
-      <c:if test="${IS_SUPERUSER}">
+      <c:if test="${PROFILE.superuser}">
 
         <c:set var="descriptor" value="${node.object}"/>
         <tiles:insert name="inlineTagEditor.tile">

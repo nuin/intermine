@@ -1,6 +1,7 @@
 const assert = require('node:assert/strict');
 const { randomUUID } = require('node:crypto');
 const { test } = require('node:test');
+const { browserSession } = require('./browser-session.cjs');
 
 assert.ok(process.env.TESTMODEL_URL, 'TESTMODEL_URL must identify the disposable test mine');
 const mine = new URL(process.env.TESTMODEL_URL.replace(/\/$/, '') + '/');
@@ -15,11 +16,11 @@ async function api(path, token, options = {}, params = {}) {
     return response.headers.get('content-type').includes('json') ? JSON.parse(body) : body;
 }
 
-async function withAccounts(count, check) {
+async function withAccounts(count, check, names = []) {
     const accounts = [];
     try {
         for (let index = 0; index < count; index++) {
-            const name = `auth-audit-${randomUUID()}`;
+            const name = names[index] || `auth-audit-${randomUUID()}`;
             const password = randomUUID();
             const result = await api('users', undefined, {
                 method: 'POST', body: new URLSearchParams({ name, password }),
@@ -119,4 +120,142 @@ test('logging in from a named account preserves its private lists', async () => 
         assert.equal(await ownsList(second.token, name), false);
         assert.deepEqual(await members(first.token, name), expected);
     });
+});
+
+
+async function browserLogin(browser, account, password = account.password) {
+    return browser.request('loginAction.do', {
+        method: 'POST', body: new URLSearchParams({ username: account.name, password }),
+    });
+}
+
+test('browser login rotates the session, blocks old cookies, and logout removes access', async () => {
+    await withAccounts(1, async ([account]) => {
+        const privateName = `browser-private-${randomUUID()}`;
+        await createList(account.token, privateName);
+        const browser = browserSession(mine);
+        await browser.request('begin.do');
+        const before = browser.cookies.get('JSESSIONID');
+        assert.ok(before);
+        const signedIn = await browserLogin(browser, account);
+        assert.ok(signedIn.includes(account.name));
+        assert.ok(signedIn.includes(privateName));
+        const authenticated = browser.cookies.get('JSESSIONID');
+        const replay = browserSession(mine);
+        replay.cookies.set('JSESSIONID', before);
+        const replayed = await replay.request('mymine.do');
+        const loggedOut = await browser.request('logout.do');
+        assert.deepEqual({ rotated: before !== authenticated,
+            replayHasPrivateList: replayed.includes(privateName),
+            logoutRotated: browser.cookies.get('JSESSIONID') !== authenticated,
+            logoutHasPrivateList: loggedOut.includes(privateName),
+        }, { rotated: true, replayHasPrivateList: false,
+            logoutRotated: true, logoutHasPrivateList: false });
+    });
+});
+
+test('failed browser login preserves anonymous lists and does not authenticate', async () => {
+    await withAccounts(1, async ([account]) => {
+        const privateName = `failed-private-${randomUUID()}`;
+        await createList(account.token, privateName);
+        const guestName = `failed-guest-${randomUUID()}`;
+        const result = await api('search', undefined, {}, { q: 'david' });
+        const member = result.results.find(item => item.fields.name === 'David Brent');
+        assert.ok(member);
+        const browser = browserSession(mine);
+        await browser.request('begin.do');
+        await browser.request('saveFromIdsToBag.do', {
+            method: 'POST', body: new URLSearchParams({ type: 'Employee', allChecked: 'false',
+                ids: String(member.id), newBagName: guestName, source: 'keywordSearchResults' }),
+        });
+        const before = browser.cookies.get('JSESSIONID');
+        await browserLogin(browser, account, 'incorrect-' + randomUUID());
+        const anonymous = await browser.request('mymine.do');
+        assert.equal(browser.cookies.get('JSESSIONID'), before);
+        assert.ok(anonymous.includes(guestName));
+        assert.ok(!anonymous.includes(privateName));
+        assert.equal(await ownsList(account.token, guestName + '_1'), false);
+        await browserLogin(browser, account);
+        assert.deepEqual(await members(account.token, guestName + '_1'), [[member.id]]);
+        await browser.request('logout.do');
+    });
+});
+
+test('switching from an administrator removes privilege and preserves a usable MyMine page', async () => {
+    await withAccounts(1, async ([account]) => {
+        const browser = browserSession(mine);
+        await browser.request('begin.do');
+        try {
+            const admin = await browserLogin(browser, {
+                name: 'superuser@intermine.org', password: 'intermine',
+            });
+            assert.ok(admin.includes('class="admin-msg"'));
+            await browser.request('mymine.do?subtab=users');
+            const ordinary = await browserLogin(browser, account);
+            assert.ok(ordinary.includes(account.name));
+            assert.ok(!ordinary.includes('class="admin-msg"'));
+            await browser.request('showProperties.do', {}, 403);
+            await browser.request('initUsers.do', {}, 403);
+        } finally {
+            await browser.request('logout.do');
+        }
+    });
+});
+
+test('administrator user lists render account names as text', async () => {
+    const name = `<em data-auth-audit=${randomUUID()}>user</em>`;
+    await withAccounts(1, async () => {
+        const browser = browserSession(mine);
+        await browser.request('begin.do');
+        try {
+            await browserLogin(browser, {
+                name: 'superuser@intermine.org', password: 'intermine',
+            });
+            const page = await browser.request('mymine.do?subtab=users');
+            assert.equal(page.includes(name), false, 'Account names must not become HTML');
+            assert.ok(page.includes(name.replaceAll('<', '&lt;').replaceAll('>', '&gt;')));
+        } finally {
+            await browser.request('logout.do');
+        }
+    }, [name]);
+});
+
+
+test('API-key pages keep quoted account names outside inline JavaScript', async () => {
+    const name = `quoted-'"</script><em data-auth-audit=${randomUUID()}>user</em>`;
+    await withAccounts(1, async ([account]) => {
+        const browser = browserSession(mine);
+        await browser.request('begin.do');
+        try {
+            await browserLogin(browser, account);
+            const page = await browser.request('mymine.do?subtab=account');
+            assert.equal(page.includes(name), false, 'Account data must not become script source');
+            assert.ok(page.includes('id="current-user"'));
+            assert.ok(page.includes('&lt;/script&gt;&lt;em'));
+        } finally {
+            await browser.request('logout.do');
+        }
+    }, [name]);
+});
+
+test('server-rendered list sharing escapes the recipient account name', async () => {
+    const recipientName = `share-'"<em data-auth-audit=${randomUUID()}>user</em>`;
+    await withAccounts(2, async ([owner, recipient]) => {
+        const list = `shared-browser-${randomUUID()}`;
+        await createList(owner.token, list);
+        await api('lists/shares', owner.token, { method: 'POST',
+            body: new URLSearchParams({ list, with: recipient.name, notify: 'false' }),
+        });
+        const browser = browserSession(mine);
+        await browser.request('begin.do');
+        try {
+            const page = await browserLogin(browser, owner);
+            assert.equal(page.includes(recipientName), false);
+            assert.ok(page.includes('data-user="share-'));
+            assert.ok(page.includes('&lt;em data-auth-audit='));
+            assert.ok(page.includes('data-bag-name="' + list + '"'));
+        } finally {
+            await browser.request('logout.do');
+        }
+    }, [undefined, recipientName]);
 });

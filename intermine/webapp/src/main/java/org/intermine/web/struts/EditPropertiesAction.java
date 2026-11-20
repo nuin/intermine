@@ -10,6 +10,7 @@ package org.intermine.web.struts;
  *
  */
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +24,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
-import org.intermine.api.profile.Profile;
+import org.intermine.web.logic.profile.AdminAccess;
 import org.intermine.web.logic.session.SessionMethods;
 
 /**
@@ -38,11 +39,9 @@ public class EditPropertiesAction extends InterMineAction
             ActionMapping mapping,
             ActionForm form,
             HttpServletRequest request,
-            HttpServletResponse response) {
-        Profile user = SessionMethods.getProfile(request.getSession());
-        if (!user.isSuperuser()) {
-            recordMessage(new ActionMessage("edit-properties.not-authorised"), request);
-            return mapping.findForward("failure");
+            HttpServletResponse response) throws IOException {
+        if (!AdminAccess.requireAdminMutation(request, response)) {
+            return null;
         }
         Properties webProperties = SessionMethods.getWebProperties(request);
         EditPropertiesForm epf = (EditPropertiesForm) form;

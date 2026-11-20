@@ -17,7 +17,7 @@
   </th>
 </c:if>
 <c:choose>
-  <c:when test="${IS_SUPERUSER}">
+  <c:when test="${PROFILE.superuser}">
     <th align="left" colspan="3" nowrap="true">
   </c:when>
   <c:otherwise>

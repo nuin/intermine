@@ -23,6 +23,8 @@ jobs:
       with:
         node-version: '22'
         package-manager-cache: false
+    - run: npm ci --prefix config/ci/browser
+    - run: npm test --prefix config/ci/browser
     - run: node --test bio/webapp/src/test/js/*.test.cjs
 
   database-migration:
