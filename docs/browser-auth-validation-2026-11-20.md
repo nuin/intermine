@@ -119,8 +119,12 @@ Aislop reports 100, zero errors or fixable warnings, and the six warnings above.
 Hosted CI on the earlier implementation exposed a separate test-helper race:
 four precompute workers appended to an unsynchronized ArrayList, recording nine
 of eleven queries. The test recorder now uses a synchronized list. Production
-precomputation is unchanged. Final-source hosted checks remain required before
-integration.
+precomputation is unchanged. The final core rerun passes 2,214 tests in 2m01s. The exact source
+commit `63952ad837877a3f31765eb6da22485cb4ee346a` passes all six
+[InterMine CI jobs](https://github.com/nuin/intermine/actions/runs/44805593852)
+and [Checkstyle](https://github.com/nuin/intermine/actions/runs/44805593822).
+This verified commit is integrated into the fork's beta branch; this record changes
+documentation only.
 
 The review's minor finding is deferred: opening a second administrative form
 invalidates the first form's unused token. Refreshing the earlier form restores
