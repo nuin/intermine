@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
@@ -54,6 +55,10 @@ public final class MetadataManager
         + " WHERE key = ?";
     private static final String INSERT_METADATA = "INSERT INTO " + METADATA_TABLE
         + " (key, value) VALUES (?, ?)";
+    private static final String INSERT_BINARY_METADATA = "INSERT INTO " + METADATA_TABLE
+        + " (key, blob_value) VALUES (?, ?)";
+    private static final String ADD_BINARY_COLUMN = "ALTER TABLE " + METADATA_TABLE
+        + " ADD blob_value BYTEA";
 
     /**
      * Name of the key under which to store the serialized version of the model
@@ -138,6 +143,32 @@ public final class MetadataManager
      */
     public static final String BG_PROPERTIES = "bgProperties";
 
+    private static final class MetadataTransaction implements AutoCloseable
+    {
+        private final Connection connection;
+        private final boolean autoCommit;
+        private boolean committed;
+
+        MetadataTransaction(Connection connection) throws SQLException {
+            this.connection = connection;
+            autoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+        }
+
+        void commit() throws SQLException {
+            connection.commit();
+            committed = true;
+        }
+
+        @Override
+        public void close() throws SQLException {
+            if (!committed) {
+                connection.rollback();
+            }
+            connection.setAutoCommit(autoCommit);
+        }
+    }
+
     /**
      * Store a (key, value) pair in the metadata table of the database
      * @param database the database
@@ -146,40 +177,20 @@ public final class MetadataManager
      * @throws SQLException if an error occurs
      */
     public static void store(Database database, String key, String value) throws SQLException {
-        Connection connection = database.getConnection();
-        PreparedStatement insert = null, delete = null;
-        boolean autoCommit = connection.getAutoCommit();
-        String removeExisting = "DELETE FROM " + METADATA_TABLE + " where key = ?";
-        String insertNew = "INSERT INTO " + METADATA_TABLE + " (key, value) " + " VALUES (?,?)";
-        try {
-            connection.setAutoCommit(false);
-            delete = connection.prepareStatement(removeExisting);
-            delete.setString(1, key);
-            delete.executeUpdate();
+        try (Connection connection = database.getConnection();
+                MetadataTransaction transaction = new MetadataTransaction(connection)) {
+            try (PreparedStatement delete = connection.prepareStatement(DELETE_METADATA)) {
+                delete.setString(1, key);
+                delete.executeUpdate();
+            }
             if (value != null) {
-                insert = connection.prepareStatement(insertNew);
-                insert.setString(1,  key);
-                insert.setString(2, value);
-                insert.executeUpdate();
+                try (PreparedStatement insert = connection.prepareStatement(INSERT_METADATA)) {
+                    insert.setString(1, key);
+                    insert.setString(2, value);
+                    insert.executeUpdate();
+                }
             }
-            connection.commit();
-        } catch (SQLException e) {
-            if (connection != null) {
-                connection.rollback();
-            }
-            throw e;
-        } finally {
-
-            if (insert != null) {
-                insert.close();
-            }
-            if (delete != null) {
-                delete.close();
-            }
-            if (connection != null) {
-                connection.setAutoCommit(autoCommit);
-                connection.close();
-            }
+            transaction.commit();
         }
     }
 
@@ -193,52 +204,26 @@ public final class MetadataManager
     public static void storeBinary(Database database, String key,
             byte[] value) throws SQLException {
 
-        PreparedStatement delete = null, insert = null;
-        ResultSet columnResult = null;
-        Connection connection = database.getConnection();
-        boolean autoCommit = connection.getAutoCommit();
-
-        try {
-            connection.setAutoCommit(false);
-
-            columnResult =
-                    connection.getMetaData().getColumns(null, null, METADATA_TABLE, "blob_value");
-            if (!columnResult.next()) {
-                String ddl = "ALTER TABLE " + METADATA_TABLE + " ADD blob_value BYTEA";
-                connection.createStatement().execute(ddl);
+        try (Connection connection = database.getConnection();
+                MetadataTransaction transaction = new MetadataTransaction(connection)) {
+            try (ResultSet columns = connection.getMetaData().getColumns(
+                    null, null, METADATA_TABLE, "blob_value")) {
+                if (!columns.next()) {
+                    try (Statement statement = connection.createStatement()) {
+                        statement.execute(ADD_BINARY_COLUMN);
+                    }
+                }
             }
-
-            String deleteExisting = "DELETE FROM " + METADATA_TABLE + " where key = ?";
-            delete = connection.prepareStatement(deleteExisting);
-            delete.setString(1, key);
-            delete.executeUpdate();
-
-            String sql = "INSERT INTO " + METADATA_TABLE + " (key, blob_value) VALUES (?, ?)";
-            insert = connection.prepareStatement(sql);
-            insert.setString(1, key);
-            insert.setBytes(2, value);
-            insert.executeUpdate();
-
-            connection.commit();
-        } catch (SQLException e) {
-            if (connection != null) {
-                connection.rollback();
+            try (PreparedStatement delete = connection.prepareStatement(DELETE_METADATA);
+                    PreparedStatement insert = connection.prepareStatement(
+                            INSERT_BINARY_METADATA)) {
+                delete.setString(1, key);
+                delete.executeUpdate();
+                insert.setString(1, key);
+                insert.setBytes(2, value);
+                insert.executeUpdate();
             }
-            throw e;
-        } finally {
-            if (columnResult != null) {
-                columnResult.close();
-            }
-            if (insert != null) {
-                insert.close();
-            }
-            if (delete != null) {
-                delete.close();
-            }
-            if (connection != null) {
-                connection.setAutoCommit(autoCommit);
-                connection.close();
-            }
+            transaction.commit();
         }
     }
 
@@ -322,7 +307,9 @@ public final class MetadataManager
     public static LargeObjectOutputStream storeLargeBinary(Database database, String key)
         throws SQLException {
         Connection con = database.getConnection();
+        boolean commitMode = true;
         try {
+            commitMode = con.getAutoCommit();
             con.setAutoCommit(false);
             long blob = 0;
             boolean needNewBlob = true;
@@ -352,14 +339,9 @@ public final class MetadataManager
             }
             LargeObject obj = lom.open(blob, LargeObjectManager.WRITE);
             obj.truncate(0);
-            return new LargeObjectOutputStream(con, obj);
+            return new LargeObjectOutputStream(con, obj, commitMode);
         } catch (SQLException e) {
-            try (Connection failedConnection = con) {
-                failedConnection.rollback();
-                failedConnection.setAutoCommit(true);
-            } catch (SQLException e2) {
-                e.addSuppressed(e2);
-            }
+            closeFailedConnection(con, commitMode, e);
             throw e;
         }
     }
@@ -373,10 +355,9 @@ public final class MetadataManager
      * @throws SQLException if an error occurs
      */
     public static boolean deleteLargeBinary(Database database, String key) throws SQLException {
-        Connection con = database.getConnection();
         boolean foundBlob = false;
-        try {
-            con.setAutoCommit(false);
+        try (Connection con = database.getConnection();
+                MetadataTransaction transaction = new MetadataTransaction(con)) {
             try (PreparedStatement select = con.prepareStatement(SELECT_METADATA);
                     PreparedStatement delete = con.prepareStatement(DELETE_METADATA)) {
                 select.setString(1, key);
@@ -393,9 +374,7 @@ public final class MetadataManager
                     }
                 }
             }
-        } finally {
-            con.setAutoCommit(true);
-            con.close();
+            transaction.commit();
         }
         return foundBlob;
     }
@@ -404,8 +383,22 @@ public final class MetadataManager
         return value.startsWith("BLOB: ");
     }
 
-    private static long getBlobId(String value) {
-        return Long.parseLong(value.substring("BLOB: ".length()));
+    private static long getBlobId(String value) throws SQLException {
+        try {
+            return Long.parseLong(value.substring("BLOB: ".length()));
+        } catch (NumberFormatException error) {
+            throw new SQLException("Invalid large-object reference", error);
+        }
+    }
+
+    private static void closeFailedConnection(Connection con, boolean commitMode,
+            SQLException error) {
+        try (Connection failedConnection = con) {
+            failedConnection.rollback();
+            failedConnection.setAutoCommit(commitMode);
+        } catch (SQLException cleanupError) {
+            error.addSuppressed(cleanupError);
+        }
     }
 
     /**
@@ -504,42 +497,32 @@ public final class MetadataManager
     public static LargeObjectInputStream readLargeBinary(Database database, String key)
         throws SQLException {
         Connection con = database.getConnection();
-        PreparedStatement s;
-        boolean commitMode = con.getAutoCommit();
+        boolean commitMode = true;
         try {
+            commitMode = con.getAutoCommit();
             con.setAutoCommit(false); // Large Objects may not be used in auto-commit mode.
-            s = con.prepareStatement(SELECT_METADATA);
-            s.setString(1, key);
-            ResultSet r = s.executeQuery();
-            long blob = 0;
-            if (r.next()) {
-                String blobValue = r.getString(1);
-                if ((blobValue != null) && blobValue.startsWith("BLOB: ")) {
-                    blob = Long.parseLong(blobValue.substring(6));
-                    LargeObjectManager lom = getLargeObjectManager(con);
-                    LargeObject obj = lom.open(blob, LargeObjectManager.READ);
-                    return new LargeObjectInputStream(con, obj, commitMode);
-                } else {
-                    throw new SQLException("Value is not a large object");
+            try (PreparedStatement statement = con.prepareStatement(SELECT_METADATA)) {
+                statement.setString(1, key);
+                try (ResultSet result = statement.executeQuery()) {
+                    if (result.next()) {
+                        String blobValue = result.getString(1);
+                        if (blobValue == null || !isLargeObject(blobValue)) {
+                            throw new SQLException("Value is not a large object");
+                        }
+                        long blob = getBlobId(blobValue);
+                        LargeObject obj = getLargeObjectManager(con).open(
+                                blob, LargeObjectManager.READ);
+                        return new LargeObjectInputStream(con, obj, commitMode);
+                    }
                 }
-            } else {
-                if (con != null) {
-                    con.rollback();
-                    con.setAutoCommit(commitMode);
-                    con.close();
-                }
-                return null;
             }
+            try (Connection unusedConnection = con) {
+                unusedConnection.rollback();
+                unusedConnection.setAutoCommit(commitMode);
+            }
+            return null;
         } catch (SQLException e) {
-            try {
-                if (con != null) {
-                    con.rollback();
-                    con.setAutoCommit(commitMode);
-                    con.close();
-                }
-            } catch (SQLException e2) {
-                e.addSuppressed(e2);
-            }
+            closeFailedConnection(con, commitMode, e);
             throw e;
         } // Note the lack of finally - we DO NOT WANT to finally close; that needs
           // to be handled by the LargeObjectInputStream.

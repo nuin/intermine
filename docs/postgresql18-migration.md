@@ -18,7 +18,10 @@ Stop web applications, imports, scheduled jobs and other writers to both databas
 
 Use PostgreSQL 18 client tools for the migration, including when dumping the old server. Older `pg_dump` versions cannot back up a newer server.
 
+)
 ```sh
+(
+set -eu
 umask 077
 pg_dump --version
 PGSERVICE=intermine_old pg_dumpall --globals-only --file=roles-and-grants.sql
@@ -26,9 +29,12 @@ PGSERVICE=intermine_old pg_dump --format=custom --dbname=mine --file=mine.dump
 PGSERVICE=intermine_old pg_dump --format=custom --dbname=userprofile --file=userprofile.dump
 PGSERVICE=intermine_old python3 config/lib/verify_database.py snapshot --database mine --output mine-before.json
 PGSERVICE=intermine_old python3 config/lib/verify_database.py snapshot --database userprofile --output userprofile-before.json
+)
 ```
 
-The snapshot role needs read access to every application table and the PostgreSQL large-object catalogs. An administrative connection is suitable for an isolated rehearsal. The tool fails on inaccessible data instead of silently excluding it. Snapshot files contain names, schema attributes, owners, sequence state and hashes, rather than application row contents; protect the backups and role export as sensitive data.
+Each command block runs in a fail-fast subshell. If either target database already exists or its creation fails, the restore block stops before restoring either database. Verify that the two service entries identify different clusters before starting.
+
+The snapshot role needs read access to every application table and the PostgreSQL large-object catalogs. An administrative connection is suitable for an isolated rehearsal. The tool fails on inaccessible data instead of silently excluding it. Verification disables row-security filtering, causing an error if the role cannot see every row. Snapshot files contain names, schema attributes, owners, sequence state and hashes, rather than application row contents; protect the backups and role export as sensitive data.
 
 ## Restore into empty target databases
 
@@ -36,27 +42,35 @@ Review the role export and recreate the required application roles and grants. D
 
 Create the target databases with the intended application owners and the encoding/locale selected during the rehearsal. The example commands use target cluster defaults; supply explicit locale/encoding options when these differ from the required values.
 
+)
 ```sh
+(
+set -eu
 PGSERVICE=intermine_new createdb --template=template0 --owner=mine_owner mine
 PGSERVICE=intermine_new createdb --template=template0 --owner=profile_owner userprofile
 PGSERVICE=intermine_new pg_restore --exit-on-error --dbname=mine mine.dump
 PGSERVICE=intermine_new pg_restore --exit-on-error --dbname=userprofile userprofile.dump
 PGSERVICE=intermine_new psql --dbname=mine --set=ON_ERROR_STOP=1 --command=ANALYZE
 PGSERVICE=intermine_new psql --dbname=userprofile --set=ON_ERROR_STOP=1 --command=ANALYZE
+)
 ```
 
 Do not use `--no-owner` unless ownership changes are intentional and have been separately verified. PostgreSQL 15 changed the default `public` schema privileges. New InterMine test databases now belong to their application role, which can create tables through `pg_database_owner` on PostgreSQL 18. A restored PostgreSQL 14 database can retain older schema ownership and grants: inspect these explicitly. Where `public` is dedicated to the mine, assign it to `pg_database_owner` and remove public `CREATE` privileges; retain explicit grants required by additional import or maintenance roles. Test schema creation and data loading as the actual application role, not only as an administrator.
 
 ## Compare and exercise the restored mine
 
+)
 ```sh
+(
+set -eu
 PGSERVICE=intermine_new python3 config/lib/verify_database.py snapshot --database mine --output mine-after.json
 PGSERVICE=intermine_new python3 config/lib/verify_database.py snapshot --database userprofile --output userprofile-after.json
 python3 config/lib/verify_database.py compare mine-before.json mine-after.json
 python3 config/lib/verify_database.py compare userprofile-before.json userprofile-after.json
+)
 ```
 
-The comparison checks all non-system physical tables, including inherited tables without double-counting child rows and materialized-view contents; column attributes and owners; sequence definitions and state; and large-object owners, ACLs and page contents. Rows are ordered using the `C` collation before hashing, so physical row order does not affect the result. Foreign tables cause an explicit failure and need their own migration procedure. This is a logical-data comparison, not a complete audit of view/function definitions, extensions, privileges or application behavior.
+The comparison checks all non-system physical tables, including inherited tables without double-counting child rows and materialized-view contents; column attributes and owners; sequence definitions and state; and large-object owners, ACLs and page contents. Rows use PostgreSQL composite text output wrapped as a JSON string, preserving SQL NULL versus JSON null and array lower bounds. They are ordered using the `C` collation before hashing, so physical row order does not affect the result. Foreign tables cause an explicit failure and need their own migration procedure. Snapshot format 2 rejects earlier or incomplete manifests; recapture both sides with the same tool version. This is a logical-data comparison, not a complete audit of view/function definitions, extensions, privileges or application behavior.
 
 Start a staging InterMine instance against the restored pair. Verify login, private and public saved lists, templates, uploads, exports, enrichment, keyword search and the relevant client suites. Restart it and verify persistent lists again. Exercise imports and postprocessing against a disposable copy. Capture representative query results and `EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)` plans/timings on both servers with comparable data, statistics and settings. Investigate changed results or material slowdowns before cutover; optimizer plan changes alone are expected.
 

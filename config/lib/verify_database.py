@@ -4,13 +4,15 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import subprocess
 import tempfile
 from pathlib import Path
 
 SECTIONS = ("tables", "sequences", "large_objects")
+FORMAT_VERSION = 2
 SESSION_OPTIONS = (
-    "-c default_transaction_read_only=on -c timezone=UTC "
+    "-c default_transaction_read_only=on -c row_security=off -c timezone=UTC "
     "-c extra_float_digits=3 -c bytea_output=hex "
     "-c datestyle=ISO,YMD -c intervalstyle=postgres"
 )
@@ -86,8 +88,8 @@ def snapshot_tables(database):
         table.update(
             digest_query(
                 database,
-                f"SELECT row_json FROM (SELECT row_to_json(t)::text AS row_json "
-                f'FROM {only}{name} t) rows ORDER BY row_json COLLATE "C"',
+                f"SELECT row_text FROM (SELECT to_json(t::text)::text AS row_text "
+                f'FROM {only}{name} t) rows ORDER BY row_text COLLATE "C"',
             )
         )
         tables[name] = table
@@ -144,7 +146,7 @@ def snapshot_database(database):
     """,
     )
     return {
-        "format_version": 1,
+        "format_version": FORMAT_VERSION,
         **identity,
         "tables": snapshot_tables(database),
         "sequences": snapshot_sequences(database),
@@ -152,12 +154,102 @@ def snapshot_database(database):
     }
 
 
+def require_fields(record, fields):
+    if not isinstance(record, dict) or any(
+        type(record.get(key)) is not expected for key, expected in fields.items()
+    ):
+        raise ValueError("Incomplete or invalid database snapshot record")
+
+
+def validate_digest(record):
+    require_fields(record, {"rows": int, "sha256": str})
+    if record["rows"] < 0 or not re.fullmatch("[0-9a-f]{64}", record["sha256"]):
+        raise ValueError("Invalid database snapshot row digest")
+
+
+def validate_snapshot(snapshot):
+    require_fields(
+        snapshot,
+        {
+            "format_version": int,
+            "database": str,
+            "server_version": str,
+            **{section: dict for section in SECTIONS},
+        },
+    )
+    if snapshot["format_version"] != FORMAT_VERSION:
+        raise ValueError("Unsupported database snapshot format")
+    for name, table in snapshot["tables"].items():
+        require_fields(table, {"owner": str, "kind": str})
+        validate_digest(table)
+        columns = table.get("columns")
+        if (
+            not isinstance(name, str)
+            or not name
+            or not table["owner"]
+            or table["kind"] not in ("r", "p", "m")
+            or "columns" not in table
+            or (columns is not None and not isinstance(columns, list))
+        ):
+            raise ValueError("Invalid database snapshot table")
+        for column in columns or []:
+            if (
+                not isinstance(column, list)
+                or len(column) != 5
+                or any(
+                    type(value) is not expected
+                    for value, expected in zip(column, (str, str, bool, str, str))
+                )
+            ):
+                raise ValueError("Invalid database snapshot column")
+    for name, sequence in snapshot["sequences"].items():
+        require_fields(
+            sequence,
+            {
+                "owner": str,
+                "type": str,
+                "cycle": bool,
+                "is_called": bool,
+                **{
+                    key: int
+                    for key in (
+                        "start",
+                        "increment",
+                        "minimum",
+                        "maximum",
+                        "cache",
+                        "last_value",
+                    )
+                },
+            },
+        )
+        if not isinstance(name, str) or not name or not sequence["owner"]:
+            raise ValueError("Invalid database snapshot sequence")
+    large_objects = snapshot["large_objects"]
+    require_fields(large_objects, {"metadata": list, "pages": dict})
+    validate_digest(large_objects["pages"])
+    for metadata in large_objects["metadata"]:
+        if (
+            not isinstance(metadata, list)
+            or len(metadata) != 3
+            or type(metadata[0]) is not int
+            or metadata[0] <= 0
+            or not isinstance(metadata[1], str)
+            or not metadata[1]
+            or (
+                metadata[2] is not None
+                and (
+                    not isinstance(metadata[2], list)
+                    or any(not isinstance(acl, str) for acl in metadata[2])
+                )
+            )
+        ):
+            raise ValueError("Invalid database snapshot large object")
+
+
 def compare_snapshots(before, after):
     for snapshot in (before, after):
-        if snapshot.get("format_version") != 1:
-            raise ValueError("Unsupported database snapshot format")
-        if any(not isinstance(snapshot.get(section), dict) for section in SECTIONS):
-            raise ValueError("Incomplete database snapshot")
+        validate_snapshot(snapshot)
     differences = []
     for section in SECTIONS:
         for name in sorted(before[section].keys() | after[section].keys()):
