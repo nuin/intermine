@@ -363,6 +363,48 @@ public class OAuthExchangeIntegrationTest extends InterMineAPITestCase {
         assertEquals("TEST", identity.getProvider());
     }
 
+    public void testRestPreservesPrivateUseRedirectSchemes() throws Exception {
+        for (String redirect : new String[] {"org.example.app:/oauth/callback?value=one%20two&plus=%2B",
+                "org.example.app:oauth/callback?value=%E9%9B%AA"}) {
+            provider.requests.clear();
+            OAuthHttpFixture.Browser rest = browser();
+            Object previous = rest.sessionValues.get(Constants.PROFILE);
+            rest.parameters.put("redirect_uri", redirect);
+            new CallbackService(im).service(rest.request, rest.response);
+            assertEquals(rest.text(), 200, rest.status);
+            assertFalse(new JSONObject(rest.text()).getJSONObject("output").getString("token").isEmpty());
+            assertEquals(redirect, parameters(provider.requests.get(0).body).get("redirect_uri"));
+            assertSame(previous, rest.sessionValues.get(Constants.PROFILE));
+        }
+    }
+
+    public void testRestRejectsRelativeOrFragmentRedirectBeforeProviderRequest() throws Exception {
+        for (String redirect : new String[] {"/oauth/callback", "org.example.app:/callback#fragment"}) {
+            OAuthHttpFixture.Browser rest = browser();
+            rest.parameters.put("redirect_uri", redirect);
+            new CallbackService(im).service(rest.request, rest.response);
+            assertEquals(rest.text(), 400, rest.status);
+            assertTrue(provider.requests.isEmpty());
+        }
+    }
+
+    public void testMalformedUserInfoWithValidIdentityCannotAuthenticate() throws Exception {
+        for (String body : new String[] {"{id:'malformed-person'}", "{\"id\":\"malformed-person\"} trailing",
+                "{\"id\":\"malformed-person\",}", "{\"id\":\"malformed-person\"} {\"id\":\"other\"}"}) {
+            provider.identityBody = body;
+            int profiles = im.getProfileManager().getProfileUserNames().size();
+            OAuthHttpFixture.Browser web = browser();
+            Object previous = web.sessionValues.get(Constants.PROFILE);
+            assertEquals(body, "login", callback(web).getName());
+            assertSame(previous, web.sessionValues.get(Constants.PROFILE));
+            assertEquals(profiles, im.getProfileManager().getProfileUserNames().size());
+            OAuthHttpFixture.Browser rest = browser();
+            new CallbackService(im).service(rest.request, rest.response);
+            assertEquals(body, 502, rest.status);
+            assertEquals(profiles, im.getProfileManager().getProfileUserNames().size());
+        }
+    }
+
     private static Map<String, String> parameters(String encoded) {
         Map<String, String> result = new HashMap<>();
         if (encoded != null && !encoded.isEmpty()) {

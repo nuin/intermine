@@ -44,6 +44,7 @@ import org.intermine.web.struts.oauth2.DefaultOAuthProvider;
 import org.intermine.web.struts.oauth2.DelegatedIdentity;
 import org.intermine.web.struts.oauth2.MessageFormat;
 import org.intermine.web.struts.oauth2.OAuthProvider;
+import org.json.JSONParserConfiguration;
 
 /**
  * Shared authorization-code exchange for browser and REST entry points.
@@ -96,7 +97,7 @@ public final class OAuthClientSupport
                 builder.scope(Scope.parse(scopes));
             }
             if (redirectUri != null) {
-                builder.redirectionURI(endpoint(redirectUri.toString()));
+                builder.redirectionURI(redirect(redirectUri));
             }
             if (state != null) {
                 builder.state(new State(state));
@@ -157,7 +158,7 @@ public final class OAuthClientSupport
                     new ClientSecretPost(new ClientID(provider.getClientId()),
                         new Secret(provider.getClientSecret())),
                     new AuthorizationCodeGrant(new AuthorizationCode(code),
-                        endpoint(redirectUri.toString()))).build().toHTTPRequest();
+                        redirect(redirectUri))).build().toHTTPRequest();
             if (provider.getMessageFormat() == MessageFormat.QUERY) {
                 tokenRequest.appendQueryString(tokenRequest.getBody());
                 tokenRequest.setBody(null);
@@ -240,7 +241,8 @@ public final class OAuthClientSupport
     private DelegatedIdentity readIdentity(String provider, String body) {
         try {
             String prefix = prefix(provider);
-            org.json.JSONObject json = new org.json.JSONObject(body);
+            org.json.JSONObject json = new org.json.JSONObject(body,
+                    new JSONParserConfiguration().withStrictMode());
             if (json.has("error")) {
                 throw new IllegalArgumentException("Provider rejected userinfo");
             }
@@ -287,6 +289,13 @@ public final class OAuthClientSupport
             throw new IllegalArgumentException("Missing provider");
         }
         return "oauth2." + provider;
+    }
+
+    private static URI redirect(URI uri) {
+        if (!uri.isAbsolute() || uri.getFragment() != null) {
+            throw new IllegalArgumentException("Invalid OAuth redirect URI");
+        }
+        return uri;
     }
 
     private static URI endpoint(String value) {

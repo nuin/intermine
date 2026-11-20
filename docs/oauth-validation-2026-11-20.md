@@ -109,3 +109,25 @@ checks on the final source remain required before integration.
   notification renderer retains its existing rich-HTML contract.
 - Enable the existing custom-preference UI flag in testmine only, so disposable-user
   live checks exercise arbitrary keys without changing administrator fixtures.
+
+## Fresh review and corrections
+
+One fresh whole-branch review found two Important issues and no Critical issues.
+Both reproduced before correction: a private-use native redirect URI returned HTTP
+400, and malformed userinfo with an otherwise usable ID completed browser login.
+The fixes separate client redirect validation from outbound endpoint validation and
+use the pinned JSON library's strict parser. The review regressions cover hierarchical
+and opaque native URIs with percent-encoded values, relative/fragment rejection
+before HTTP, and malformed userinfo through both browser and REST adapters without
+profile creation. All 43 focused tests and Checkstyle pass (1m10s) after the fixes.
+The parser's strict behavior is documented in the
+[JSON-java 20260814 source](https://github.com/stleary/JSON-java/blob/20260814/src/main/java/org/json/JSONParserConfiguration.java).
+
+Deferred Minor: the provider guide could make clearer that overriding `url.token`
+selects the existing custom-provider path and also requires `messageformat` and
+`responsetype`. That historical configuration behavior is unchanged.
+
+The reviewer did not establish remote-provider compatibility, cross-process login
+completion, PKCE/ID-token migration, wider rich-HTML safety or hosted CI results.
+Those retain the documented operator/client responsibilities and scope limits; the
+executor independently requires all corrected-source local and hosted gates.

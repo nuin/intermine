@@ -57,7 +57,9 @@ no remaining repository consumers use them.
 
 Connect and read waits are bounded at ten seconds each; redirects are not followed
 for credential or userinfo exchanges. Provider errors, malformed responses and
-invalid identities cannot authenticate. Browser failures return to login with a
+invalid identities cannot authenticate. Userinfo must be a complete, strictly valid
+JSON object; unquoted/single-quoted fields, trailing commas and trailing documents
+are rejected even when they contain a usable identity ID. Browser failures return to login with a
 sanitized message. JSON REST failures carry an error HTTP status; the existing
 JSONP convention retains HTTP 200 with a structured error payload.
 
@@ -72,7 +74,9 @@ across session passivation or migration to another process; restart login in tha
 
 REST clients retain their existing contract: request an authorization link, supply
 their own redirect URI and correlation state, then exchange provider/code/redirect
-through the REST callback. The callback returns a temporary API token without
+through the REST callback. Redirect URIs must be absolute and fragment-free;
+provider-registered private-use schemes for native clients are preserved exactly.
+Only endpoints contacted by the server require HTTP(S). The callback returns a temporary API token without
 installing browser authentication. Clients remain responsible for validating state
 and redirect correlation; no mandatory browser cookie is added.
 
