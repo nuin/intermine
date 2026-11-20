@@ -126,8 +126,12 @@ upstream registry case is a no-op and does not establish registry coverage.
 All four registration/OAuth regressions pass. After both clients, eight
 authenticated and two public lists have exactly the same IDs, sizes and members
 as the preserved PostgreSQL baseline; all 11 saved-list database records remain.
-The running Tomcat JVM reports OpenJDK 21.0.13. The initial hosted InterMine CI run 44769503594 passes all six jobs, including both
-clients, and Checkstyle run 44769503541 passes. Final-source CI remains pending.
+The running Tomcat JVM reports OpenJDK 21.0.13. The initial hosted InterMine CI run 44769503594 and Checkstyle44769503541 pass.
+The final source commit `10817a1fb3` also passes all six jobs in
+[InterMine CI44772906191](https://github.com/nuin/intermine/actions/runs/44772906191)
+and [Checkstyle44772905576](https://github.com/nuin/intermine/actions/runs/44772905576).
+The independent final review and its single regression-verified fix pass are complete;
+no minor findings were deferred. The following documentation commit changes no code.
 
 The whole-branch Aislop scan reports 99 with zero errors. Its one fixable warning
 is a false positive on the existing Constants class Javadoc, “Container for
@@ -160,3 +164,24 @@ Review boundaries remain explicit: rebuilds are not atomic replacements of activ
 cores, exact scores/tie ordering are not compatibility invariants, and autocomplete
 still builds its document batch in memory. Operators must use fresh separate cores
 for migration; very large autocomplete sources can still require substantial heap.
+
+## Implementation decisions
+
+- Continue inline in the existing maintenance checkout, preserving validated caches.
+  Concurrent implementation would require separate worktrees.
+- Use the user-selected Java21 floor for major6, with builder-selected Solr10.1 and
+  Lucene10.6. Downstream mines need Java21 and rebuilt search indexes.
+- Retain invalidated heap directories while active searches reference them; close
+  per-search resources and discarded candidates. Memory reclamation depends on GC.
+- Preserve the aggregated global UI map while using repository/document identity
+  for Lucene results. These representations must continue to agree on visibility.
+- Build indexes outside repository locks and publish only if the revision still
+  matches. Changes during indexing may cause a candidate to be discarded and rebuilt.
+- Run the independent final review while hosted CI runs. Both remain integration
+  gates; neither substitutes for the other.
+- Require fresh separate cores for migration. An interrupted in-place rebuild can
+  still expose empty or partial results.
+- Preserve result identities/counts/facets, not exact scores or tie ordering.
+  Consumers relying on ranking details need their own acceptance checks.
+- Retain autocomplete's in-memory batch. Extremely large sources can still exhaust
+  heap; streaming autocomplete indexing is separate work.
