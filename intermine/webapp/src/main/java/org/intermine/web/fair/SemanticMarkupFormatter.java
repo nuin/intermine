@@ -35,16 +35,15 @@ import org.intermine.web.context.InterMineContext;
 import org.intermine.web.logic.PermanentURIHelper;
 import org.intermine.web.logic.session.SessionMethods;
 import org.intermine.web.registry.model.Instance;
-import org.intermine.web.registry.model.RegistryResponse;
+import org.intermine.web.registry.RegistryClient;
 import org.intermine.web.util.URLGenerator;
 import org.intermine.webservice.server.core.SessionlessRequest;
-import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.net.URI;
+import java.time.Duration;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -65,6 +64,8 @@ public final class SemanticMarkupFormatter
     private static final String GENE_TYPE = "Gene";
     private static final String INTERMINE_CITE = "http://www.ncbi.nlm.nih.gov/pubmed/23023984";
     private static final String INTERMINE_REGISTRY = "https://registry.intermine.org/";
+    private static final RegistryClient REGISTRY = new RegistryClient(
+            URI.create(INTERMINE_REGISTRY), Duration.ofSeconds(5));
     private static String baseURI = null;
     private static final Logger LOG = Logger.getLogger(SemanticMarkupFormatter.class);
 
@@ -89,26 +90,16 @@ public final class SemanticMarkupFormatter
         }
 
         String mineURL = new URLGenerator(request).getPermanentBaseURL();
-        Client client = ClientBuilder.newClient();
         try {
-            Response response = client.target(INTERMINE_REGISTRY
-                    + "service/namespace?url=" + mineURL).request().get();
-            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-                JSONObject result = new JSONObject(response.readEntity(String.class));
-                String namespace = result.getString("namespace");
-                LOG.info("Namespace is: " + namespace);
-                response = client.target(INTERMINE_REGISTRY
-                        + "service/instances/" + namespace).request().get();
-                if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-                    RegistryResponse registryRes = response.readEntity(RegistryResponse.class);
-                    imInstance = registryRes.getInstance();
-                }
-                if (!(request instanceof SessionlessRequest)) {
-                    SessionMethods.setBasicInstanceInfo(request.getSession().getServletContext(),
-                            imInstance);
-                }
+            imInstance = REGISTRY.findInstance(mineURL);
+            if (imInstance != null && !(request instanceof SessionlessRequest)) {
+                SessionMethods.setBasicInstanceInfo(request.getSession().getServletContext(),
+                        imInstance);
             }
-        } catch (RuntimeException ex) {
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            return null;
+        } catch (IOException | RuntimeException ex) {
             LOG.error("Problems connecting to InterMine registry");
             return null;
         }
@@ -209,7 +200,7 @@ public final class SemanticMarkupFormatter
                 dataSets.add(formatDataSet(name, description, url, licence, request));
             }
         } catch (ObjectStoreException ex) {
-            //
+            LOG.warn("Failed to retrieve dataset metadata", ex);
         }
         return dataSets;
     }
@@ -362,7 +353,7 @@ public final class SemanticMarkupFormatter
             }
             return geneMarkups;
         } catch (IllegalAccessException e1) {
-            e1.printStackTrace();
+            LOG.warn("Failed to read gene metadata for " + gene.getId(), e1);
         }
         return null;
     }
@@ -405,7 +396,7 @@ public final class SemanticMarkupFormatter
                 }
             }
         } catch (IllegalAccessException e1) {
-            e1.printStackTrace();
+            LOG.warn("Failed to read organism metadata for " + imObject.getId(), e1);
         }
     }
 
@@ -432,7 +423,7 @@ public final class SemanticMarkupFormatter
             return proteinMarkups;
 
         } catch (IllegalAccessException e1) {
-            e1.printStackTrace();
+            LOG.warn("Failed to read protein metadata for " + protein.getId(), e1);
         }
         return null;
     }

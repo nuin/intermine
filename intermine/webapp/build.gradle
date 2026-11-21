@@ -46,9 +46,6 @@ dependencies {
     api group: 'org.everit.json', name: 'org.everit.json.schema', version: '1.5.1'
     api 'com.nimbusds:oauth2-oidc-sdk:11.39'
     api 'com.fasterxml.jackson.core:jackson-databind'
-    api group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: '2.25'
-    api group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.0.1'
-    api group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '2.25'
     api group: 'org.apache.jena', name: 'jena-core', version: '3.16.0'
     providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
 
@@ -76,6 +73,7 @@ dependencies {
     testImplementation group: 'org.easymock', name: 'easymock', version: '5.7.0'
     testImplementation group: 'xmlunit', name: 'xmlunit', version: '1.0'
     testImplementation group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+    testImplementation 'javax.xml.bind:jaxb-api:2.3.1'
     testRuntimeOnly group: 'javax.el', name: 'javax.el-api', version: '3.0.0'
 }
 

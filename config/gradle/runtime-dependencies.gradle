@@ -44,12 +44,10 @@ pluginManager.withPlugin('war') {
         exclude group: 'javax.activation', module: 'activation'
         exclude group: 'javax.activation', module: 'javax.activation-api'
         exclude group: 'jakarta.activation', module: 'jakarta.activation-api'
-        exclude group: 'javax.inject', module: 'javax.inject'
         exclude group: 'org.slf4j', module: 'jcl-over-slf4j'
     }
     dependencies {
         api 'com.sun.activation:jakarta.activation:1.2.2'
-        api 'org.glassfish.hk2.external:javax.inject:2.5.0-b30'
         api 'commons-logging:commons-logging:1.3.5'
     }
 }

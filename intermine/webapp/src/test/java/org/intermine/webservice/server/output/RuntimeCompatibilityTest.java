@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,11 +18,9 @@ import javax.activation.DataHandler;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.util.ByteArrayDataSource;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpServer;
 import junit.framework.TestCase;
 import org.apache.commons.io.IOUtils;
@@ -29,10 +31,9 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.WriterAppender;
-import org.glassfish.jersey.jackson.JacksonFeature;
 
 public class RuntimeCompatibilityTest extends TestCase {
-    public void testJerseyJsonRoundTrip() throws IOException {
+    public void testJdkHttpJsonRoundTrip() throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         server.createContext("/echo", exchange -> {
             try {
@@ -45,20 +46,23 @@ public class RuntimeCompatibilityTest extends TestCase {
             }
         });
         server.start();
-        Client client = ClientBuilder.newClient().register(JacksonFeature.class);
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
             Map<String, Object> payload = new LinkedHashMap<String, Object>();
             payload.put("name", "BRCA1 – 遺伝子");
             payload.put("count", 9007199254740993L);
             payload.put("active", true);
-            JsonNode response = client.target("http://127.0.0.1:"
-                    + server.getAddress().getPort() + "/echo").request()
-                    .post(Entity.json(payload), JsonNode.class);
+            ObjectMapper mapper = new ObjectMapper();
+            HttpRequest request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:"
+                    + server.getAddress().getPort() + "/echo"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(mapper.writeValueAsBytes(payload)))
+                    .build();
+            JsonNode response = mapper.readTree(client.send(request,
+                    HttpResponse.BodyHandlers.ofByteArray()).body());
             assertEquals(payload.get("name"), response.get("name").asText());
             assertEquals(9007199254740993L, response.get("count").asLong());
             assertTrue(response.get("active").asBoolean());
         } finally {
-            client.close();
             server.stop(0);
         }
     }
