@@ -66,7 +66,6 @@ public final class SemanticMarkupFormatter
     private static final String INTERMINE_REGISTRY = "https://registry.intermine.org/";
     private static final RegistryClient REGISTRY = new RegistryClient(
             URI.create(INTERMINE_REGISTRY), Duration.ofSeconds(5));
-    private static String baseURI = null;
     private static final Logger LOG = Logger.getLogger(SemanticMarkupFormatter.class);
 
     private SemanticMarkupFormatter() {
@@ -79,7 +78,6 @@ public final class SemanticMarkupFormatter
      * @return the identifier
      */
     private static Instance getMineInstance(HttpServletRequest request) {
-        baseURI = new PermanentURIHelper(request).getPermanentBaseURI();
         Instance imInstance = null;
         if (!(request instanceof SessionlessRequest)) {
             HttpSession session = request.getSession();
@@ -289,7 +287,8 @@ public final class SemanticMarkupFormatter
             LOG.warn("Failed to find object with id: " + id, ose);
         }
 
-        Map<String, Object> semanticMarkup = formatBioEntity(entity);
+        String baseURI = new PermanentURIHelper(request).getPermanentBaseURI();
+        Map<String, Object> semanticMarkup = formatBioEntity(entity, baseURI);
         if (semanticMarkup == null) {
             return null;
         }
@@ -308,37 +307,41 @@ public final class SemanticMarkupFormatter
     /**
      * Build the dataset markups given the intermine entity
      * @param imObject InterMine object
+     * @param baseURI permanent identifier base for this request
      * @return the map representing the dataset
      */
-    private static Map<String, Object> formatBioEntity(InterMineObject imObject) {
+    private static Map<String, Object> formatBioEntity(InterMineObject imObject,
+            String baseURI) {
         String type = DynamicUtil.getSimpleClass(imObject).getSimpleName();
 
         if ("Gene".equalsIgnoreCase(type)) {
-            return formatGene(imObject, false);
+            return formatGene(imObject, false, baseURI);
         } else if ("Protein".equalsIgnoreCase(type)) {
-            return formatProtein(imObject, false);
+            return formatProtein(imObject, false, baseURI);
         } else if (isBioChemEntityType(type)) {
-            return formatBioChemEntity(imObject);
+            return formatBioChemEntity(imObject, baseURI);
         } else {
             return null;
         }
     }
 
-    private static Map<String, Object> formatGene(InterMineObject gene, boolean onlyMinimun) {
+    private static Map<String, Object> formatGene(InterMineObject gene, boolean onlyMinimun,
+            String baseURI) {
         Map<String, Object> geneMarkups = new LinkedHashMap<>();
         geneMarkups.put("@type", GENE_TYPE);
-        setBasicProperties(gene.getId(), geneMarkups);
+        setBasicProperties(gene.getId(), geneMarkups, baseURI);
         setName(gene, geneMarkups);
         setSameAs(gene, geneMarkups);
         try {
             geneMarkups.put("description", (String) gene.getFieldValue("description"));
-            setTaxonomicRange(gene, geneMarkups);
+            setTaxonomicRange(gene, geneMarkups, baseURI);
             if (!onlyMinimun) {
                 //isPartOfBioChemEntity -> chromosome
                 ProxyReference chromRef = (ProxyReference) gene.getFieldProxy("chromosome");
                 if (chromRef != null) {
                     InterMineObject chromosome = chromRef.getObject();
-                    geneMarkups.put("isPartOfBioChemEntity", formatBioChemEntity(chromosome));
+                    geneMarkups.put("isPartOfBioChemEntity",
+                            formatBioChemEntity(chromosome, baseURI));
                 }
                 //encodesBioChemEntity -> proteins
                 ProxyCollection proteinsCollections =
@@ -347,7 +350,8 @@ public final class SemanticMarkupFormatter
                     Iterator it = proteinsCollections.iterator();
                     while (it.hasNext()) {
                         InterMineObject protein = (InterMineObject) it.next();
-                        geneMarkups.put("encodesBioChemEntity", formatProtein(protein, true));
+                        geneMarkups.put("encodesBioChemEntity",
+                                formatProtein(protein, true, baseURI));
                     }
                 }
             }
@@ -358,7 +362,8 @@ public final class SemanticMarkupFormatter
         return null;
     }
 
-    private static void setBasicProperties(Integer intermineId, Map<String, Object> entityMarkups) {
+    private static void setBasicProperties(Integer intermineId, Map<String, Object> entityMarkups,
+            String baseURI) {
         InterMineLUI lui = (new InterMineLUIConverter()).getInterMineLUI(intermineId);
         if (lui != null) {
             String url = baseURI.concat(lui.toString());
@@ -385,7 +390,8 @@ public final class SemanticMarkupFormatter
         }
     }
 
-    private static void setTaxonomicRange(InterMineObject imObject, Map<String, Object> markups) {
+    private static void setTaxonomicRange(InterMineObject imObject, Map<String, Object> markups,
+            String baseURI) {
         try {
             ProxyReference organismRef = (ProxyReference) imObject.getFieldProxy("organism");
             if (organismRef != null) {
@@ -400,13 +406,14 @@ public final class SemanticMarkupFormatter
         }
     }
 
-    private static Map<String, Object> formatProtein(InterMineObject protein, boolean onlyMinimun) {
+    private static Map<String, Object> formatProtein(InterMineObject protein, boolean onlyMinimun,
+            String baseURI) {
         Map<String, Object> proteinMarkups = new LinkedHashMap<>();
         proteinMarkups.put("@type", PROTEIN_TYPE);
-        setBasicProperties(protein.getId(), proteinMarkups);
+        setBasicProperties(protein.getId(), proteinMarkups, baseURI);
         setName(protein, proteinMarkups);
         setSameAs(protein, proteinMarkups);
-        setTaxonomicRange(protein, proteinMarkups);
+        setTaxonomicRange(protein, proteinMarkups, baseURI);
 
         try {
             if (!onlyMinimun) {
@@ -416,7 +423,8 @@ public final class SemanticMarkupFormatter
                     Iterator it = genesCollections.iterator();
                     while (it.hasNext()) {
                         InterMineObject gene = (InterMineObject) it.next();
-                        proteinMarkups.put("isEncodedByBioChemEntity", formatGene(gene, true));
+                        proteinMarkups.put("isEncodedByBioChemEntity",
+                                formatGene(gene, true, baseURI));
                     }
                 }
             }
@@ -428,10 +436,11 @@ public final class SemanticMarkupFormatter
         return null;
     }
 
-    private static Map<String, Object> formatBioChemEntity(InterMineObject bioChemEntity) {
+    private static Map<String, Object> formatBioChemEntity(InterMineObject bioChemEntity,
+            String baseURI) {
         Map<String, Object> bioChemEntityMarkups = new LinkedHashMap<>();
         bioChemEntityMarkups.put("@type", BIOCHEMENTITY_TYPE);
-        setBasicProperties(bioChemEntity.getId(), bioChemEntityMarkups);
+        setBasicProperties(bioChemEntity.getId(), bioChemEntityMarkups, baseURI);
         setName(bioChemEntity, bioChemEntityMarkups);
         setSameAs(bioChemEntity, bioChemEntityMarkups);
         return bioChemEntityMarkups;
