@@ -1,6 +1,6 @@
 # Java 21 readiness implementation plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Build and run InterMine 6 and Alliance BlueGenes together on Java 21, removing InterMine's obsolete Jersey client.
 
@@ -33,12 +33,12 @@
 
 **Interfaces:** Produces `bluegenes.java-runtime/require-java21!` (zero arguments uses the JVM specification version; one string argument validates it). Produces `lein test-backend`, separate from browser-based `lein kaocha`.
 
-- [ ] Add tests accepting `21`/`25` and rejecting `1.8`/`17`/`20` with a clear Java 21 message; run and observe the missing implementation.
-- [ ] Implement the shared guard, load it at project evaluation and invoke it before server startup; add backend test paths/profile/alias.
-- [ ] Run `lein test-backend`; expected zero failures/errors. Run `lein cljfmt check`; expected success.
-- [ ] Make the BlueGenes CI JVM consistently 21 with explicit validation and backend checks; document clean `npm ci`, runtime floor and test commands.
-- [ ] Build from the committed npm lockfile with `npm ci` and `lein build`; expected fingerprinted JS/CSS artifacts. Fix observed build failures with regression coverage where behavior changes.
-- [ ] Commit the independently verified Java 21 changes in the isolated BlueGenes branch.
+- [x] Add tests accepting `21`/`25` and rejecting `1.8`/`17`/`20` with a clear Java 21 message; run and observe the missing implementation.
+- [x] Implement the shared guard, load it at project evaluation and invoke it before server startup; add backend test paths/profile/alias.
+- [x] Run `lein test-backend`; expected zero failures/errors. Run `lein cljfmt check`; expected success.
+- [x] Make the BlueGenes CI JVM consistently 21 with explicit validation and backend checks; document clean `npm ci`, runtime floor and test commands.
+- [x] Build from the committed npm lockfile with `npm ci` and `lein build`; expected fingerprinted JS/CSS artifacts. Fix observed build failures with regression coverage where behavior changes.
+- [x] Commit the independently verified Java 21 changes in the isolated BlueGenes branch.
 
 ## Task 2: Retire the Jersey registry client
 
@@ -46,12 +46,12 @@
 
 **Interfaces:** Produces `RegistryClient(URI registryRoot, Duration timeout)` and `Instance findInstance(String mineUrl) throws IOException, InterruptedException`. The formatter keeps its existing null-instance fallback and restores interrupt status if interrupted.
 
-- [ ] Add local HTTP fixture tests for two-step JSON lookup, UTF-8/query/path encoding, missing namespace/instance, error status, redirects, malformed/trailing JSON and request timeout. Run focused Gradle tests; expected missing implementation.
-- [ ] Implement finite connection/request timeouts, no redirects, explicit strict Jackson decoding, and Java 21 HTTP client closure. Do not store per-request base URLs in mutable static state.
-- [ ] Replace the formatter's Jersey calls, preserve cache/fallback, and replace the runtime JSON round-trip test with the JDK HTTP client.
-- [ ] Scan all consumers, remove unused Jersey/JAX-RS/HK2 dependencies, and make the WAR verifier reject retired package providers. Preserve unrelated injection consumers if the dependency scan finds any.
-- [ ] Run focused tests, core build/install and WAR verification; expected zero failures and no retired providers.
-- [ ] Commit the Jersey retirement and tests.
+- [x] Add local HTTP fixture tests for two-step JSON lookup, UTF-8/query/path encoding, missing namespace/instance, error status, redirects, malformed/trailing JSON and request timeout. Run focused Gradle tests; expected missing implementation.
+- [x] Implement finite connection/request timeouts, no redirects, explicit strict Jackson decoding, and Java 21 HTTP client closure. Do not store per-request base URLs in mutable static state.
+- [x] Replace the formatter's Jersey calls, preserve cache/fallback, and replace the runtime JSON round-trip test with the JDK HTTP client.
+- [x] Scan all consumers, remove unused Jersey/JAX-RS/HK2 dependencies, and make the WAR verifier reject retired package providers. Preserve unrelated injection consumers if the dependency scan finds any.
+- [x] Run focused tests, core build/install and WAR verification; expected zero failures and no retired providers.
+- [x] Commit the Jersey retirement and tests.
 
 ## Task 3: Verify the Java 21 pair
 
@@ -59,9 +59,9 @@
 
 **Interfaces:** Consumes both prior tasks; produces `lein intermine6`, a production-profile run against an explicitly configured InterMine 6 root and namespace under `/bluegenes`.
 
-- [ ] Add the local profile and operator instructions without embedding credentials or resetting databases.
-- [ ] Start the preserved InterMine runtime and the compiled BlueGenes server; check real metadata, login/logout, lists, templates and report navigation in the browser. Record scientific-data fixture requirements for subsequent UI parity work.
-- [ ] Run existing frontend/backend/tool suites and InterMine live/client/list-preservation gates; expected all applicable checks pass, with any pre-existing pending tests named.
-- [ ] Replace the legacy CI integration harness with a reproducible Java 21 / InterMine 6 fixture or a bounded explicitly configured runtime check; do not claim old bootstrap data proves InterMine 6 compatibility.
-- [ ] Run Aislop on both change ranges; fix errors and fixable warnings. Complete one fresh whole-project review and one Important/Critical fix pass with regression tests.
+- [x] Add the local profile and operator instructions without embedding credentials or resetting databases.
+- [x] Start the preserved InterMine runtime and the compiled BlueGenes server; check real metadata, login/logout, lists, templates and report navigation in the browser. Record scientific-data fixture requirements for subsequent UI parity work.
+- [x] Run existing frontend/backend/tool suites and InterMine live/client/list-preservation gates; expected all applicable checks pass, with any pre-existing pending tests named.
+- [x] Replace the legacy CI integration harness with a reproducible Java 21 / InterMine 6 fixture or a bounded explicitly configured runtime check; do not claim old bootstrap data proves InterMine 6 compatibility.
+- [x] Run Aislop on both change ranges; fix errors and fixable warnings. Complete one fresh whole-project review and one Important/Critical fix pass with regression tests.
 - [ ] Commit, push InterMine changes to the user's fork and record exact validation evidence. Prepare BlueGenes changes for an authorized fork destination. Continue to the authentication integration project.

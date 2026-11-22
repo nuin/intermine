@@ -18,6 +18,14 @@ has search, lists, reports, templates, a query builder, regions and Alliance-spe
 tools. Keeping JSP as the primary UI would not deliver the requested replacement;
 rewriting these working capabilities in another frontend would duplicate maintenance.
 
+On 2026-11-21 the user requested a separate visible product identity and confirmed
+the Alliance fork as the preferred styling source. Working display name: **Alluvium**,
+descriptor **Biological data explorer**, following the user's proposal. Remove upstream
+product branding from primary navigation, page titles, homepage messaging and prominent
+funding sections. Preserve upstream copyright, license and provenance records. Keep
+backend package names and REST contracts compatible. Existing unrelated software uses
+the name Alluvium; no uniqueness or domain-availability claim has been made.
+
 This is a program of independently testable projects, in order:
 
 1. Java 21 readiness across both repositories and replacement of the one Jersey HTTP
