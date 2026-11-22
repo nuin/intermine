@@ -64,4 +64,4 @@
 - [x] Run existing frontend/backend/tool suites and InterMine live/client/list-preservation gates; expected all applicable checks pass, with any pre-existing pending tests named.
 - [x] Replace the legacy CI integration harness with a reproducible Java 21 / InterMine 6 fixture or a bounded explicitly configured runtime check; do not claim old bootstrap data proves InterMine 6 compatibility.
 - [x] Run Aislop on both change ranges; fix errors and fixable warnings. Complete one fresh whole-project review and one Important/Critical fix pass with regression tests.
-- [ ] Commit, push InterMine changes to the user's fork and record exact validation evidence. Prepare BlueGenes changes for an authorized fork destination. Continue to the authentication integration project.
+- [x] Commit, push InterMine changes to the user's fork and record exact validation evidence. Prepare BlueGenes changes for an authorized fork destination. Continue to the authentication integration project.

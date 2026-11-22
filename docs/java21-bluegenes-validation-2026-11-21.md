@@ -53,11 +53,11 @@ passed its InterMine 6 integration job but exposed Node 22's rejection of a
 directory passed to `node --test`. Explicit test-file discovery fixes that; all
 seven tool packages pass under Node 22.
 
-Final-source hosted checks are running:
+All final-source hosted checks passed:
 [InterMine CI](https://github.com/nuin/intermine/actions/runs/44978033651),
 [Checkstyle](https://github.com/nuin/intermine/actions/runs/44978033652), and
 [paired BlueGenes CI](https://github.com/nuin/bluegenes/actions/runs/44978035589).
-The final BlueGenes unit job has passed; overall completion is still pending.
+Both BlueGenes jobs passed: unit verification and the fresh InterMine 6 integration fixture.
 
 ## Review and decisions
 
