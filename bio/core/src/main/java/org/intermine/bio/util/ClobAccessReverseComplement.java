@@ -196,7 +196,7 @@ public class ClobAccessReverseComplement extends ClobAccess
 
     private static final ClobAccessSubclassFactory FACTORY = new Factory();
 
-    private static class Factory extends ClobAccessSubclassFactory
+    private static final class Factory extends ClobAccessSubclassFactory
     {
         @Override
         public ClobAccess invokeConstructor(ClobAccess clobAccess) {

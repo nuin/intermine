@@ -28,7 +28,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class InvitationHandler extends DefaultHandler
 {
 
-    private static class UnresolvedInvite
+    private static final class UnresolvedInvite
     {
         String bag;
         String invitee;

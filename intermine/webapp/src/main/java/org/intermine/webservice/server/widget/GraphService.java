@@ -31,7 +31,7 @@ import org.intermine.webservice.server.output.XMLFormatter;
 public class GraphService extends WidgetService
 {
 
-    private class GraphXMLFormatter extends XMLFormatter
+    private final class GraphXMLFormatter extends XMLFormatter
     {
 
         @Override

@@ -15,4 +15,10 @@ package org.intermine.pathquery;
  *
  * @author Matthew Wakeling
  */
-public enum OuterJoinStatus { INNER, OUTER };
+public enum OuterJoinStatus
+{
+    /** Require a matching value on both sides of the join. */
+    INNER,
+    /** Retain rows without a matching joined value. */
+    OUTER
+}

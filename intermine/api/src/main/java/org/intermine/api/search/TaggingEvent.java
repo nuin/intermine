@@ -22,7 +22,13 @@ public class TaggingEvent extends OriginatingEvent
     /**
      * The possible actions that this event can represent.
      */
-    public enum TagChange { ADDED, REMOVED };
+    public enum TagChange
+    {
+        /** A tag was added. */
+        ADDED,
+        /** A tag was removed. */
+        REMOVED
+    }
 
     protected final String tagName;
     protected final TagChange action;

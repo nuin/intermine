@@ -66,10 +66,9 @@ public class ExternalLinksService extends JSONService
     static final String ATTR_MARKER_RE = "<<attributeValue>>";
     static final String JSON_KEY = "links";
 
-    @SuppressWarnings("serial")
-    private class ConfigMap extends HashMap<String, Object>
+    private final class ConfigMap extends HashMap<String, Object>
     {
-        // empty
+        private static final long serialVersionUID = -3941809320211479968L;
     }
 
     @Override
@@ -117,7 +116,7 @@ public class ExternalLinksService extends JSONService
             try {
                 organismReference = (Organism) imo.getFieldValue("organism");
             } catch (Exception e) {
-                // no organism field
+                LOG.debug("Could not resolve an organism for external links", e);
             }
             if (organismReference == null || organismReference.getTaxonId() == null) {
                 geneOrgKey += "(\\.(\\*))?";
@@ -277,107 +276,4 @@ public class ExternalLinksService extends JSONService
         }
     }
 
-    /* =========================================================
-    // All the methods below should be useful for the bag links
-    // ========================================================*/
-
-    /**
-     * Process configs. Configs that have specified that POST method
-     * should be used when request is submitted to third party site are modified with this method.
-     * GET form of url is modified to POST form.
-     * @param linkConfigs
-     */
-/*
-    private Map<String, ConfigMap> processConfigs(InterMineAPI im,
-                                                  Map<String, ConfigMap> linkConfigs,
-                                                  ReportObject reportObject) {
-        Map<String, ConfigMap> newMap = new HashMap<String, ConfigMap>(linkConfigs);
-        for (Map.Entry<String, ConfigMap> entry : newMap.entrySet()) {
-            ConfigMap config = entry.getValue();
-            if (config.get("delimiter") != null) {
-                modifyIdString(config);
-            }
-            if (config.get("usePost") != null
-                    && ((String) config.get("usePost")).equalsIgnoreCase("true")) {
-                modifyConfigToPost(config);
-            }
-            if (config.get("dataset") != null) {
-                String datasetToMatch = (String) config.get("dataset");
-                boolean hasValidDataset = false;
-                try {
-                    hasValidDataset = hasDataset(im, reportObject, datasetToMatch);
-                } catch (Exception e) {
-                    // no dataset
-                }
-                if (!hasValidDataset) {
-                    linkConfigs.remove(entry.getKey());
-                }
-            }
-        }
-        return linkConfigs;
-    }
-
-    private static boolean hasDataset(InterMineAPI im, ReportObject reportObject,
-                                      String datasetToMatch) throws PathException {
-        LOG.info("in hasDataset");
-        boolean isValidDataset = false;
-        InterMineObject imo = reportObject.getObject();
-        Path path = new Path(im.getModel(), DynamicUtil.getSimpleClass(
-                imo.getClass()).getSimpleName()
-                + ".dataSets");
-        Set<Object> listOfListObjects = PathUtil.resolveCollectionPath(path, imo);
-        for (Object listObject : listOfListObjects) {
-            InterMineObject interMineListObject = (InterMineObject) listObject;
-            Object value = null;
-            try {
-                // get field values from the object
-                value = interMineListObject.getFieldValue("name");
-            } catch (IllegalAccessException e) {
-                // no dataset
-                continue;
-            }
-            if (value != null && value.toString().equals(datasetToMatch)) {
-                isValidDataset = true;
-            }
-        }
-        return isValidDataset;
-    }
-
-    private static void modifyIdString(ConfigMap config) {
-        LOG.info("in modifyIdStrin");
-
-        String delim = (String) config.get("delimiter");
-        String urlString = (String) config.get("url");
-
-        String idString = (String) config.get("attributeValue");
-
-        if ("NEWLINE".equals(delim)) {
-            urlString = urlString.replace(",", System.getProperty("line.separator"));
-            idString = idString.replace(",", System.getProperty("line.separator"));
-        } else {
-            urlString = urlString.replace(",", delim);
-            idString = idString.replace(",", delim);
-        }
-        config.put("url", urlString);
-        config.put("attributeValue", idString);
-    }
-
-    private static void modifyConfigToPost(ConfigMap config) {
-        LOG.info("in modifyConfigPost");
-
-        String urlString = (String) config.get("url");
-        AttributeLinkURL link;
-        try {
-            // Verifies, that url is valid
-            link = new AttributeLinkURL(urlString);
-        } catch (MalformedURLException e) {
-            LOG.error("Converting url from GET to POST form failed. Url retained in GET form.", e);
-            return;
-        }
-        config.put("url", link.getBaseURL());
-        if (link.getParameters().size() > 0) {
-            config.put("parameters", link.getParameters());
-        }
-    }
-*/
 }

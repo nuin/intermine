@@ -19,4 +19,14 @@ package org.intermine.api.profile;
  * conflicts that the user has to solve manually ))
  * @author Daniela Butano
  */
-public enum BagState { CURRENT, NOT_CURRENT, UPGRADING, TO_UPGRADE }
+public enum BagState
+{
+    /** The list matches the current database. */
+    CURRENT,
+    /** The upgrade process has not run for this list. */
+    NOT_CURRENT,
+    /** The upgrade process is running for this list. */
+    UPGRADING,
+    /** Conflicts require manual resolution before the list can be upgraded. */
+    TO_UPGRADE
+}

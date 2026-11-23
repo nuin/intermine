@@ -94,7 +94,7 @@ public class BioGridConverter extends BioFileConverter
      */
     public BioGridConverter(ItemWriter writer, Model model) {
         super(writer, model, "BioGRID", "BioGRID interaction data set",
-        "https://opensource.org/licenses/MIT");
+                "https://opensource.org/licenses/MIT");
         readConfig();
     }
 

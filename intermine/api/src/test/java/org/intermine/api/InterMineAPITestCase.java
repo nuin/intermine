@@ -137,9 +137,6 @@ public abstract class InterMineAPITestCase extends TestCase {
             clearUserprofile();
             uosw.close();
         }
-
-        // should be closed!
-        im.getBagManager().close();
     }
 
     private void clearDatabase() throws Exception {

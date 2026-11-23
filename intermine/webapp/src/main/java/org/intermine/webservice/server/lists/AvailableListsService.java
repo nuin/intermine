@@ -60,7 +60,7 @@ public class AvailableListsService extends WebService
         }
     }
 
-    private enum Filter { PREFIX, SUFFIX, CONTAINS, EXACT };
+    private enum Filter { PREFIX, SUFFIX, CONTAINS, EXACT }
 
     /**
      * Get the lists for this request.

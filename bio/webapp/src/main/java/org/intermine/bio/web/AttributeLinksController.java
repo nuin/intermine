@@ -60,10 +60,9 @@ public class AttributeLinksController extends TilesAction
 
     static final String ATTR_MARKER_RE = "<<attributeValue>>";
 
-    @SuppressWarnings("serial")
-    private class ConfigMap extends HashMap<String, Object>
+    private final class ConfigMap extends HashMap<String, Object>
     {
-        // empty
+        private static final long serialVersionUID = 5285430961497036119L;
     }
 
     /**
@@ -108,7 +107,7 @@ public class AttributeLinksController extends TilesAction
             try {
                 organismReference = (Organism) imo.getFieldValue("organism");
             } catch (Exception e) {
-                // no organism field
+                LOG.debug("Could not resolve an organism for external links", e);
             }
 
             if (organismReference == null || organismReference.getTaxonId() == null) {
@@ -294,7 +293,7 @@ public class AttributeLinksController extends TilesAction
                 try {
                     hasValidDataset = hasDataset(im, reportObject, datasetToMatch);
                 } catch (Exception e) {
-                    // no dataset
+                    LOG.warn("Could not determine dataset eligibility for an external link", e);
                 }
                 if (!hasValidDataset) {
                     linkConfigs.remove(entry.getKey());

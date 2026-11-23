@@ -235,13 +235,13 @@ public class FastaLoaderTask extends FileDirectDataLoaderTask
     @Override
     public void processFile(File file) {
         try {
-            System.err .println("reading " + sequenceType + " sequence from: " + file);
+            LOG.info("Reading " + sequenceType + " sequence from: " + file);
             LOG.debug("FastaLoaderTask loading file " + file.getName());
             if ("dna".equalsIgnoreCase(sequenceType)) {
                 FastaReader<DNASequence, NucleotideCompound> aFastaReader
                         = new FastaReader<DNASequence, NucleotideCompound>(file,
-                        new PlainFastaHeaderParser<DNASequence, NucleotideCompound>(),
-                        new DNASequenceCreator(AmbiguityDNACompoundSet.getDNACompoundSet()));
+                            new PlainFastaHeaderParser<DNASequence, NucleotideCompound>(),
+                            new DNASequenceCreator(AmbiguityDNACompoundSet.getDNACompoundSet()));
 
                 LinkedHashMap<String, DNASequence> b = aFastaReader.process();
                 for (Entry<String, DNASequence> entry : b.entrySet()) {
@@ -351,7 +351,7 @@ public class FastaLoaderTask extends FileDirectDataLoaderTask
         try {
             imo.setFieldValue("md5checksum", md5checksum);
         } catch (Exception e) {
-            // Ignore - we don't care if the field doesn't exist.
+            LOG.debug("Could not assign the optional sequence checksum", e);
         }
 
         extraProcessing(bioJavaSequence, flymineSequence, imo, organism, getDataSet());

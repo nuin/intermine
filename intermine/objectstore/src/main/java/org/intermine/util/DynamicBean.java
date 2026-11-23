@@ -44,7 +44,7 @@ import org.intermine.objectstore.proxy.ProxyReference;
 public class DynamicBean implements MethodHandler
 {
 
-    private static class FinalizeFilter implements MethodFilter
+    private static final class FinalizeFilter implements MethodFilter
     {
 
         @Override

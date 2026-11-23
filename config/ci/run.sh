@@ -64,10 +64,13 @@ elif [ "$TEST_SUITE" = "bio" ]; then
 
     echo ALL TESTS PASSED
 elif [ "$TEST_SUITE" = "checkstyle" ]; then
+    "${WORKSPACE_DIR}/intermine/gradlew" --no-daemon --max-workers=2 \
+        -p "${WORKSPACE_DIR}/config/checkstyle/verification" verifyCheckstyle
     run_gradle intermine checkstyleMain
     run_gradle bio checkstyleMain
     run_gradle bio/sources checkstyleMain
     run_gradle bio/postprocess checkstyleMain
+    run_gradle bio/postprocess-test checkstyleMain
 
     "${WORKSPACE_DIR}"/config/lib/parse_checkstyle_report.py "${WORKSPACE_DIR}"
 elif [ "$TEST_SUITE" = "ws" ]; then

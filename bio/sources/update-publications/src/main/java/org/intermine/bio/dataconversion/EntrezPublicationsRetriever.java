@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputFilter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Reader;
@@ -86,6 +87,10 @@ public class EntrezPublicationsRetriever
     protected static final int BATCH_SIZE = 500;
     // number of times to try the same batch from the server
     private static final int MAX_TRIES = 5;
+    private static final int MAX_CACHED_PUBLICATION_BYTES = 8 * 1024 * 1024;
+    private static final ObjectInputFilter CACHE_FILTER = ObjectInputFilter.Config.createFilter(
+            "maxdepth=8;maxrefs=100000;maxarray=100000;java.util.HashMap;java.util.ArrayList;"
+            + "java.lang.String;java.lang.Object;java.util.Map$Entry;!*");
     private String osAlias = null, outputFile = null;
     private Set<Integer> seenPubMeds = new HashSet<Integer>();
     private Map<String, Item> authorMap = new HashMap<String, Item>();
@@ -188,16 +193,12 @@ public class EntrezPublicationsRetriever
                     try {
                         // Try to find this publication object in berkeleydb and write item xml to
                         // cache file
-                        ByteArrayInputStream mapInputStream =
-                                new ByteArrayInputStream(data.getData());
-                        ObjectInputStream deserializer = new ObjectInputStream(mapInputStream);
-                        Map<String, Object> pubMap = (Map) deserializer.readObject();
+                        Map<?, ?> pubMap = readCachedPublication(data.getData());
                         writeItems(writer, mapToItems(itemFactory, pubMap));
                         seenPubMeds.add(pubMedIdInteger);
                     } catch (EOFException e) {
                         // ignore and fetch it again
-                        System.err .println("found in cache, but igored due to cache problem: "
-                                + pubMedIdInteger);
+                        LOG.warn("Incomplete cached publication: " + pubMedIdInteger, e);
                     }
                 } else {
                     // berkeleydb cached pubs will be written to cache file, the rest will be
@@ -307,6 +308,27 @@ public class EntrezPublicationsRetriever
             DatabaseEntry data = new DatabaseEntry(arrayOutputStream.toByteArray());
 
             db.put(txn, key, data);
+        }
+    }
+
+    /**
+     * Read a publication from the local Berkeley DB cache.
+     * @param data serialized publication map
+     * @return the cached publication
+     * @throws IOException if the cache entry cannot be read
+     * @throws ClassNotFoundException if a cached class is unavailable
+     */
+    static Map<?, ?> readCachedPublication(byte[] data) throws IOException, ClassNotFoundException {
+        if (data.length > MAX_CACHED_PUBLICATION_BYTES) {
+            throw new IOException("Cached publication is too large");
+        }
+        try (ObjectInputStream input = new ObjectInputStream(new ByteArrayInputStream(data))) {
+            input.setObjectInputFilter(CACHE_FILTER);
+            Object publication = input.readObject();
+            if (publication instanceof Map<?, ?> map) {
+                return map;
+            }
+            throw new IOException("Cached publication must be a map");
         }
     }
 
@@ -632,7 +654,7 @@ public class EntrezPublicationsRetriever
             name = null;
         }
 
-        private class AuthorHolder
+        private final class AuthorHolder
         {
             protected String firstName;
             protected String lastName;

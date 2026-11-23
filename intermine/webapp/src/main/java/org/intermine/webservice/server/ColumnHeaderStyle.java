@@ -15,4 +15,12 @@ package org.intermine.webservice.server;
  *
  * @author Alex Kalderimis
  */
-public enum ColumnHeaderStyle { PATH, FRIENDLY, NONE }
+public enum ColumnHeaderStyle
+{
+    /** Use query paths as column headers. */
+    PATH,
+    /** Use human-readable column labels. */
+    FRIENDLY,
+    /** Omit column headers. */
+    NONE
+}

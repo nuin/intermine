@@ -42,10 +42,12 @@ public final class ClassKeyHelper
 
     private static final Map<Model, ClassKeys> CLASS_KEYS = new HashMap<Model, ClassKeys>();
 
-    private static class ClassKeysImpl
+    private static final class ClassKeysImpl
         extends HashMap<String, List<FieldDescriptor>>
         implements ClassKeys
     {
+        private static final long serialVersionUID = 8599799731965673650L;
+
         // don't instantiate
     }
 

@@ -355,7 +355,7 @@ public class Results extends AbstractList<Object> implements LazyCollection<Obje
         return iter;
     }
 
-    private class Iter implements Iterator<Object>
+    private final class Iter implements Iterator<Object>
     {
         /**
          * Index of element to be returned by subsequent call to next.
@@ -378,9 +378,8 @@ public class Results extends AbstractList<Object> implements LazyCollection<Obje
                 nextObject = get(cursor);
                 return true;
             } catch (IndexOutOfBoundsException e) {
-                // Ignore - it means that we should return false;
+                return false;
             }
-            return false;
         }
 
         public Object next() {

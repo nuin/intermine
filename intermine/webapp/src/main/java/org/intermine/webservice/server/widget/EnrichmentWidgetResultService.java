@@ -51,7 +51,7 @@ import org.intermine.webservice.server.output.XMLFormatter;
  */
 public class EnrichmentWidgetResultService extends WidgetService
 {
-    private class EnrichmentXMLFormatter extends XMLFormatter
+    private final class EnrichmentXMLFormatter extends XMLFormatter
     {
 
         @Override

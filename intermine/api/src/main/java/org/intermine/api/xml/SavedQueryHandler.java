@@ -39,7 +39,7 @@ public class SavedQueryHandler extends PathQueryHandler
      */
     public SavedQueryHandler(Map<String, SavedQuery> queries,
             @SuppressWarnings("unused") Map savedBags, int version) {
-        super(new HashMap<String, PathQuery> (), version);
+        super(new HashMap<String, PathQuery>(), version);
         this.queries = queries;
     }
 

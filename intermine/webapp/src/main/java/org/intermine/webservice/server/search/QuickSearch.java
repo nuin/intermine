@@ -239,7 +239,7 @@ public class QuickSearch extends JSONService
         }
     }
 
-    private class QuickSearchXMLFormatter extends XMLFormatter
+    private final class QuickSearchXMLFormatter extends XMLFormatter
     {
         @Override
         public String formatResult(List<String> resultRow) {

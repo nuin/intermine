@@ -65,13 +65,13 @@ public abstract class QueryExecutor
      **
      * The format of the results is as follows:
      * <ul>
-     *  <li> For non-numeric types:</li>
+     *  <li> For non-numeric types:
      *    <ol>
      *      <li>The item</li>
      *      <li>The count of occurrences of this item</li>
      *    </ol>
      *   </li>
-     *   <li> For numeric types:</li>
+     *   <li> For numeric types:
      *     <ol>
      *       <li>Minimum Value</li>
      *       <li>Maximum Value</li>
@@ -133,13 +133,13 @@ public abstract class QueryExecutor
      *
      * The format of the results is as follows:
      * <ul>
-     *  <li> For non-numeric types:</li>
+     *  <li> For non-numeric types:
      *    <ol>
      *      <li>The item</li>
      *      <li>The count of occurrences of this item</li>
      *    </ol>
      *   </li>
-     *   <li> For numeric types:</li>
+     *   <li> For numeric types:
      *     <ol>
      *       <li>Minimum Value</li>
      *       <li>Maximum Value</li>

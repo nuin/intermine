@@ -93,7 +93,7 @@ public class BagQueryHandler extends DefaultHandler
             }
             String matchOnFirstStr = attrs.getValue("matchOnFirst");
             if (StringUtils.isNotEmpty(matchOnFirstStr)) {
-                matchOnFirst = ("false".equalsIgnoreCase(matchOnFirstStr) ? false : true);
+                matchOnFirst = !"false".equalsIgnoreCase(matchOnFirstStr);
             }
             bagQueryConfig.setMatchOnFirst(matchOnFirst);
         }

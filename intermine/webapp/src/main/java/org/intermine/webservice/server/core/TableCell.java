@@ -67,7 +67,7 @@ public final class TableCell implements ResultCell
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Error retrieving field value for " + column, e);
         }
-    };
+    }
 
     @Override
     public FastPathObject getObject() {

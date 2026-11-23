@@ -25,6 +25,7 @@
 
 <module name="Checker">
   <property name="severity" value="warning"/>
+  <property name="tabWidth" value="4"/>
 
   <module name="TreeWalker">
     <property name="tabWidth" value="4"/>
@@ -35,14 +36,30 @@
       <property name="tokens" value="INTERFACE_DEF,CLASS_DEF" />
     </module>
 
-    <module name="JavadocMethod">
+    <module name="MissingJavadocType">
       <property name="scope" value="package" />
-      <property name="allowUndeclaredRTE" value="true" />
-      <property name="tokens" value="METHOD_DEF,CTOR_DEF" />
+      <property name="tokens" value="INTERFACE_DEF,CLASS_DEF,RECORD_DEF" />
+    </module>
+
+    <module name="MissingJavadocMethod">
+      <property name="scope" value="package" />
+      <property name="tokens" value="METHOD_DEF,CTOR_DEF,COMPACT_CTOR_DEF" />
+    </module>
+
+    <module name="JavadocMethod">
+      <property name="accessModifiers" value="public,protected,package" />
+      <property name="validateThrows" value="true" />
+      <property name="tokens" value="METHOD_DEF,CTOR_DEF,COMPACT_CTOR_DEF" />
+    </module>
+
+    <!-- Retain the existing requirement for declared exceptions only. -->
+    <module name="SuppressionXpathSingleFilter">
+      <property name="checks" value="JavadocMethod" />
+      <property name="query" value="//LITERAL_THROW/EXPR/LITERAL_NEW/IDENT | //LITERAL_THROW/EXPR/LITERAL_NEW/DOT" />
     </module>
 
     <module name="JavadocVariable">
-      <property name="scope" value="public" />
+      <property name="accessModifiers" value="public" />
     </module>
 
     <!--                         code conventions -->
@@ -97,10 +114,6 @@
 
     <!-- size violations -->
 
-    <module name="LineLength">
-      <property name="max" value="100"/>
-      <property name="ignorePattern" value="^$"/>
-    </module>
 
     <module name="MethodLength">
       <property name="tokens" value="METHOD_DEF, CTOR_DEF"/>
@@ -234,6 +247,11 @@
     <!--<module name="RedundantModifier"/>-->
     <module name="EqualsAvoidNull"/>
     <module name="GenericWhitespace"/>
+  </module>
+
+  <module name="LineLength">
+    <property name="max" value="100"/>
+    <property name="ignorePattern" value="^$"/>
   </module>
 
   <!-- enforce package documentation -->

@@ -64,7 +64,7 @@ public class TableController extends TilesAction
 
         request.setAttribute("table", table);
 
-        Map<Path, String> pathNames = new HashMap<Path, String> ();
+        Map<Path, String> pathNames = new HashMap<Path, String>();
         request.setAttribute("pathNames", pathNames);
 
         return null;

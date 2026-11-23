@@ -11,7 +11,7 @@ package org.intermine.api.profile;
  */
 
 import static org.apache.commons.lang.StringUtils.isBlank;
-import static org.apache.commons.lang.StringEscapeUtils.escapeXml;;
+import static org.apache.commons.lang.StringEscapeUtils.escapeXml;
 
 /**
  * A class representing a value stored in an InterMineBag.

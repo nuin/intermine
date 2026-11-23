@@ -682,7 +682,7 @@ public final class Util
         return retval;
     }
 
-    private static class ClassNameComparator implements Comparator<Class<?>>
+    private static final class ClassNameComparator implements Comparator<Class<?>>
     {
         @Override
         public int compare(Class<?> a, Class<?> b) {

@@ -53,8 +53,10 @@ import static org.intermine.web.logic.config.FieldConfigHelper.getClassFieldConf
 public final class PathQueryResultHelper
 {
 
-    private static class UnconfiguredException extends Exception
+    private static final class UnconfiguredException extends Exception
     {
+        private static final long serialVersionUID = -6633939010411542196L;
+
     }
 
     private PathQueryResultHelper() {

@@ -1292,7 +1292,13 @@ public class ProfileManager
         /**
          * The possible permission levels.
          */
-        public enum Level { RO, RW };
+        public enum Level
+        {
+            /** Read-only access. */
+            RO,
+            /** Read and write access. */
+            RW
+        }
 
         private final Level level;
         private final Profile profile;

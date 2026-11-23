@@ -216,7 +216,8 @@ public final class PrefetchManager
                     try {
                         request.result.wait();
                     } catch (InterruptedException e) {
-                        // Ignore interruption.
+                        Thread.currentThread().interrupt();
+                        throw new ObjectStoreException("Interrupted while waiting for a batch", e);
                     }
                 }
                 // At this point, either our wait was interrupted by notifyAll(), or someone has
@@ -277,7 +278,7 @@ public final class PrefetchManager
                 try {
                     sync.wait();
                 } catch (InterruptedException e) {
-                    // Ignore interruption.
+                    LOG.debug("Idle prefetch worker interrupted; continuing to service requests");
                 }
             }
             // Get a request from the pending set. We know there is something in there, because we
@@ -341,7 +342,7 @@ public final class PrefetchManager
         }
     }
 
-    private static class ServiceThread extends Thread
+    private static final class ServiceThread extends Thread
     {
         @Override
         public void run() {

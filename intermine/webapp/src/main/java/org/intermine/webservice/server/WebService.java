@@ -508,7 +508,7 @@ public abstract class WebService
      *
      * <ul>
      *   <li>
-     *     <h4>Basic Authentication</h3>
+     *     <h4>Basic Authentication</h4>
      *     Standard username and password stuff - best avoided.
      *   </li>
      *   <li>
@@ -524,15 +524,17 @@ public abstract class WebService
      *     <h4>JWT bearer tokens</h4>
      *     The user passes back a bearer token issued by someone we trust (could
      *     include ourselves). This requires the configuration of a keystore
-     *     {@see KeyStoreBuilder}. Provides delegated authentication capabilities.
+     *     {@link org.intermine.web.security.KeyStoreBuilder}.
+     *     Provides delegated authentication capabilities.
      *     Overkill for most users. The token must be provided in the <code>Authorization</code>
      *     header, preceded by the string <code>"Bearer "</code>, e.g.:
      *     <code>Authorization: Bearer yourjwttokenhere</code>
      *   </li>
      * </ul>
      *
-     * {@link "http://en.wikipedia.org/wiki/Basic_access_authentication"}
-     * {@link "http://jwt.io/"}
+     * @see <a href="https://en.wikipedia.org/wiki/Basic_access_authentication">
+     *     Basic authentication</a>
+     * @see <a href="https://jwt.io/">JSON Web Tokens</a>
      */
     private void authenticate() {
 
@@ -795,7 +797,7 @@ public abstract class WebService
      * @return Whether or not this request wants to export data package.
      */
     protected boolean wantsDataPackage() {
-        return request.getParameter(EXPORT_DATAPACKAGE) == null ? false : true;
+        return request.getParameter(EXPORT_DATAPACKAGE) != null;
     }
 
     /**

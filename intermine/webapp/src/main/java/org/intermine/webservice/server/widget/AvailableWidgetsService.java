@@ -89,7 +89,7 @@ public class AvailableWidgetsService extends JSONService
         return new StreamedOutput(out, new WidgetXMLFormatter());
     }
 
-    private class WidgetXMLFormatter extends XMLFormatter
+    private final class WidgetXMLFormatter extends XMLFormatter
     {
         @Override
         public String formatResult(List<String> resultRow) {

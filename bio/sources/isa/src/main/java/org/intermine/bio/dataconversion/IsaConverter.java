@@ -669,7 +669,7 @@ public class IsaConverter extends BioFileConverter
         try {
             date = readFormat.parse(subDate);
         } catch (ParseException e) {
-            e.printStackTrace();
+            LOG.warn("Could not parse the submission date", e);
         }
         String formattedDate = "";
         if (date != null) {
@@ -897,7 +897,7 @@ public class IsaConverter extends BioFileConverter
     /**
      * adds an element to a list which is the value of a map
      *
-     * @param m     the map (<String, List<String>>)
+     * @param m     the map ({@code Map<String, List<String>>})
      * @param key   the key for the map
      * @param value the list
      */

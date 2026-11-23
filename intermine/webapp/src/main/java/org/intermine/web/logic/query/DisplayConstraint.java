@@ -440,7 +440,7 @@ public class DisplayConstraint
                                                              //|| op.value == '>='))}">
             // TODO this should show different options if a dropdown is to be used
             boolean existPossibleValues =
-                (getPossibleValues() != null && getPossibleValues().size() > 0) ? true : false;
+                getPossibleValues() != null && getPossibleValues().size() > 0;
             for (ConstraintOp op : allOps) {
                 if (existPossibleValues
                     || (!op.getIndex().equals(ConstraintOp.MATCHES.getIndex())

@@ -200,7 +200,7 @@ public class JaccardIndexService extends WebService
         return result;
     }
 
-    private static class ResultsComparator implements Comparator
+    private static final class ResultsComparator implements Comparator
     {
         public int compare(Object o1, Object o2) {
             BigDecimal d1 = (BigDecimal) o1;

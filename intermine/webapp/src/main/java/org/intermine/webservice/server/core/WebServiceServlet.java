@@ -43,7 +43,7 @@ public abstract class WebServiceServlet extends HttpServlet
         PUT,
         /** DELETE **/
         DELETE
-    };
+    }
 
     /** Constructor **/
     public WebServiceServlet() {

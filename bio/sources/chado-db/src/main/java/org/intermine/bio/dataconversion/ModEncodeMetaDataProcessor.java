@@ -69,7 +69,6 @@ public class ModEncodeMetaDataProcessor extends ChadoProcessor
 
 
     // submission maps
-    // ---------------
     private Map<Integer, String> submissionOrganismMap = new HashMap<Integer, String>();
     // maps from chado identifier to lab/project details
     private Map<Integer, SubmissionDetails> submissionMap =
@@ -84,7 +83,6 @@ public class ModEncodeMetaDataProcessor extends ChadoProcessor
     private Map<Integer, String> deletedSubMap = new HashMap<Integer, String>();
 
     // applied_protocol/data/attribute maps
-    // -------------------
     // chado submission id to chado data_id
     private Map<Integer, List<Integer>> submissionDataMap = new HashMap<Integer, List<Integer>>();
     // chado data id to chado submission id
@@ -101,7 +99,6 @@ public class ModEncodeMetaDataProcessor extends ChadoProcessor
             new HashMap<Integer, AppliedData>();
 
     // project/lab/experiment/submission maps
-    // --------------------------------------
 
     // for projects, the maps link the project name with the identifiers...
     private Map<String, Integer> projectIdMap = new HashMap<String, Integer>();
@@ -125,7 +122,6 @@ public class ModEncodeMetaDataProcessor extends ChadoProcessor
     private Set<Integer> submissionWithExpTypeSet = new HashSet<Integer>();
 
     // submission/applied_protocol/protocol maps
-    // -----------------------------------------
 
     private Map<String, String> protocolsMap = new HashMap<String, String>();
     private Map<Integer, String> protocolItemIds = new HashMap<Integer, String>();
@@ -143,7 +139,6 @@ public class ModEncodeMetaDataProcessor extends ChadoProcessor
     private Map<Integer, String> publicationIdRefMap = new HashMap<Integer, String>();
 
     // experimental factor maps
-    // ------------------------
     // chado submission id to list of top level attributes, e.g. dev stage, organism_part
     private Map<Integer, ExperimentalFactor> submissionEFMap =
             new HashMap<Integer, ExperimentalFactor>();
@@ -155,7 +150,6 @@ public class ModEncodeMetaDataProcessor extends ChadoProcessor
     private Map<Integer, List<String>> submissionEFactorMap = new HashMap<Integer, List<String>>();
 
     // caches
-    // ------
     // cache cv term names by id
     private Map<String, String> cvtermCache = new HashMap<String, String>();
 
@@ -2825,8 +2819,6 @@ public class ModEncodeMetaDataProcessor extends ChadoProcessor
             if (prop.details.containsKey(targetType)) {
                 if (prop.details.get(targetType).size() != 1) {
 
-                    // we used to complain if multiple values, now only
-                    // if they don't have the same value
                     if (sameTargetValue(prop, source, targetType)) {
                         tooMany = true;
                         break;
@@ -4103,7 +4095,7 @@ public class ModEncodeMetaDataProcessor extends ChadoProcessor
 
     /**
      * adds an element to a list which is the value of a map
-     * @param m       the map (<Integer, List<String>>)
+     * @param m       the map ({@code Map<Integer, List<String>>})
      * @param key     the key for the map
      * @param value   the list
      */

@@ -307,7 +307,7 @@ public class TableRowIterator implements
     /**
      *  Utility class to make recursive shape determination more tractable.
      */
-    private class ColumnConversionInput
+    private final class ColumnConversionInput
     {
         List<? extends QuerySelectable> select;
         Map<String, QuerySelectable> pathToQueryNode;

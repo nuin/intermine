@@ -52,7 +52,7 @@ import org.intermine.util.DynamicUtil;
 /**
  * Manager class for tags. Implements retrieving, adding and deleting tags in user profile
  * database.
- * @author Jakub Kulaviak <jakub@flymine.org>
+ * @author Jakub Kulaviak &lt;jakub@flymine.org&gt;
  * @author Alex Kalderimis
  * @author Daniela Butano
  */
@@ -825,11 +825,7 @@ public class TagManager
      * @throws ObjectStoreException in exceptional circumstances
      */
     public void close() throws ObjectStoreException {
-        try {
-            osWriter.close();
-        } catch (Throwable e) {
-            //LOG.info("tried to close the db connection", e);
-        }
+        osWriter.close();
     }
 
     /**

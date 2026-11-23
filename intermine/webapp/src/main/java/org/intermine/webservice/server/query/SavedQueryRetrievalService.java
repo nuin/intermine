@@ -156,7 +156,7 @@ public class SavedQueryRetrievalService extends JSONService
         return "queries";
     }
 
-    private class AlwaysTrue implements Predicate<String>
+    private final class AlwaysTrue implements Predicate<String>
     {
 
         @Override

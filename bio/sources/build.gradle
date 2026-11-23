@@ -176,7 +176,6 @@ subprojects {
 
     if (it.name != 'bio-source-malaria-gff') {
         checkstyle {
-            toolVersion = '7.8.1'
             configFile file("${rootDir}/../../config/checkstyle/checkstyle.xml")
             sourceSets = [sourceSets.main]
             showViolations = true
@@ -192,7 +191,6 @@ subprojects {
 
     if (it.name == 'bio-source-malaria-gff') {
         checkstyle {
-            toolVersion = '7.8.1'
             configFile file("${rootDir}/../../config/checkstyle/checkstyle.xml")
             sourceSets = [sourceSets.main]
             showViolations = true

@@ -36,7 +36,7 @@ public abstract class WidgetProcessorImpl implements WidgetProcessor
         TABLE,
         /** And there is a catch-all type, in case someone goes ahead and creates a new type. **/
         UNKNOWN
-    };
+    }
 
     /**
      * Process a list called x with a widget y

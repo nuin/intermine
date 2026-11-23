@@ -32,7 +32,7 @@ public class JSONRowResultProcessor extends JSONResultProcessor
         MINIMAL,
         /** Very verbose - with cells as objects with class names and stuff. **/
         FULL
-    };
+    }
 
     private final InterMineAPI im;
 

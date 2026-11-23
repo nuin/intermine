@@ -413,7 +413,8 @@ public class ObjectStoreWriterInterMineImpl extends ObjectStoreInterMineImpl
             try {
                 wait(1000L);
             } catch (InterruptedException e) {
-                // ignore
+                Thread.currentThread().interrupt();
+                throw new SQLException("Interrupted while waiting for the writer connection", e);
             }
             LOG.debug("Notified or timed out");
             loops++;
@@ -477,7 +478,7 @@ public class ObjectStoreWriterInterMineImpl extends ObjectStoreInterMineImpl
             try {
                 os.releaseConnection(c);
             } catch (Exception e) {
-                // ignore
+                LOG.error("Could not release connection after closing ObjectStoreWriter", e);
             }
         } else if (c == conn) {
             connInUse = false;
@@ -551,7 +552,7 @@ public class ObjectStoreWriterInterMineImpl extends ObjectStoreInterMineImpl
             try {
                 os.releaseConnection(conn);
             } catch (Exception e) {
-                // ignore
+                LOG.error("Could not release connection while closing ObjectStoreWriter", e);
             }
 
             conn = null;
@@ -1791,7 +1792,7 @@ public class ObjectStoreWriterInterMineImpl extends ObjectStoreInterMineImpl
         return retval;
     }
 
-    private static class TableInfo
+    private static final class TableInfo
     {
         String tableName;
         String[] colNames;

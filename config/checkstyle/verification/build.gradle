@@ -1,0 +1,57 @@
+plugins {
+    id 'java'
+    id 'checkstyle'
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply from: '../../gradle/java-compatibility.gradle'
+
+checkstyle {
+    configFile = file('../checkstyle.xml')
+    configProperties = [
+        'checkstyle.header.file': file('../copyright_header.txt').absolutePath,
+        'suppressionFile': file('../suppressions.xml').absolutePath
+    ]
+    maxWarnings = 0
+}
+
+apply from: '../../gradle/checkstyle.gradle'
+
+tasks.register('checkstyleNegative', Checkstyle) {
+    source = fileTree('src/invalid') { include '**/*.java' }
+    classpath = files()
+    ignoreFailures = true
+    reports {
+        xml.required = true
+        xml.outputLocation = layout.buildDirectory.file('reports/checkstyle/negative.xml')
+        html.required = false
+    }
+}
+
+tasks.register('verifyCheckstyle') {
+    dependsOn 'compileJava', 'checkstyleMain', 'checkstyleNegative'
+    doLast {
+        def positive = new XmlSlurper().parse(file('build/reports/checkstyle/main.xml'))
+        if (positive.file.size() != 1 || !positive.file.error.isEmpty()) {
+            throw new GradleException('Valid Java 21 must pass the style policy')
+        }
+        def negative = new XmlSlurper().parse(file('build/reports/checkstyle/negative.xml'))
+        def actual = negative.file.error.collect { it.@source.text().tokenize('.').last() }.toSet()
+        def required = ['MissingJavadocMethodCheck', 'MissingJavadocTypeCheck',
+                        'JavadocVariableCheck', 'UnusedImportsCheck',
+                        'WhitespaceAfterCheck', 'JavadocMethodCheck'].toSet()
+        if (!actual.containsAll(required)) {
+            throw new GradleException("Missing expected style violations: ${required - actual}")
+        }
+        def packageMethod = negative.file.error.findAll {
+            it.@source.text().endsWith('.MissingJavadocMethodCheck') &&
+                    it.@message.text().contains("'packageMethod'")
+        }
+        if (packageMethod.size() != 1) {
+            throw new GradleException('Package-visible methods must still require Javadoc')
+        }
+    }
+}

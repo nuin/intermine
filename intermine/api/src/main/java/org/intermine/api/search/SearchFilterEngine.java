@@ -21,7 +21,7 @@ import org.intermine.api.tag.TagNames;
 
 /**
  * Class filtering web searchables according to the associated tags.
- * @author Jakub Kulaviak <jakub@flymine.org>
+ * @author Jakub Kulaviak &lt;jakub@flymine.org&gt;
  */
 public class SearchFilterEngine
 {

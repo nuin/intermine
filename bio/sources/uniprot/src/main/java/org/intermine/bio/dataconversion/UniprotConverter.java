@@ -156,7 +156,7 @@ public class UniprotConverter extends BioDirectoryConverter
             }
             UniprotHandler handler = new UniprotHandler();
             try {
-                System .out.println("Processing file: " + file.getPath());
+                LOG.info("Processing file: " + file.getPath());
                 Reader reader = new FileReader(file);
                 SAXParser.parse(new InputSource(reader), handler);
             } catch (Exception e) {
@@ -318,7 +318,7 @@ public class UniprotConverter extends BioDirectoryConverter
     }
 
     /* converts the XML into UniProt entry objects.  run once per file */
-    private class UniprotHandler extends DefaultHandler
+    private final class UniprotHandler extends DefaultHandler
     {
         private UniprotEntry entry;
         private Stack<String> stack = new Stack<String>();
@@ -997,7 +997,7 @@ public class UniprotConverter extends BioDirectoryConverter
                         + uniprotEntry.getPrimaryAccession());
                 return;
             }
-            boolean hasMultipleGenes = (geneIdentifiers.size() == 1 ? false : true);
+            boolean hasMultipleGenes = geneIdentifiers.size() != 1;
             Item gene = null;
             for (String identifier : geneIdentifiers) {
                 if (StringUtils.isEmpty(identifier)) {
@@ -1252,9 +1252,6 @@ public class UniprotConverter extends BioDirectoryConverter
         return refId;
     }
 
-    // putting publications in map for later use
-    // key = EC1, value = reference to publication
-    // used by comments
     private String getEvidence(String attribute) throws SAXException {
         if (attribute.contains("=")) {
             String[] bits = attribute.split("=");

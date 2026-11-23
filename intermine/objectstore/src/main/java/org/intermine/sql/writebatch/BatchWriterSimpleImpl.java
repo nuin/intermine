@@ -349,7 +349,7 @@ public class BatchWriterSimpleImpl implements BatchWriter
             return new CombinedIterator();
         }
 
-        private class CombinedIterator implements Iterator<T>
+        private final class CombinedIterator implements Iterator<T>
         {
             private boolean state = true;
             private Iterator<T> iter = setA.iterator();

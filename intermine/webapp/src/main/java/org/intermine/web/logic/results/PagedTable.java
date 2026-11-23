@@ -573,7 +573,7 @@ public class PagedTable
         selectedClass = null;
     }
 
-    private class SelectionEntry
+    private final class SelectionEntry
     {
         Integer id;
         String fieldValue;

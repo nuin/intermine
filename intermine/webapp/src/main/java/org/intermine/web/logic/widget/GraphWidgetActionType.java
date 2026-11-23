@@ -15,4 +15,12 @@ package org.intermine.web.logic.widget;
  *
  * @author dbutano
  */
-public enum GraphWidgetActionType { TOTAL, ACTUAL, EXPECTED };
+public enum GraphWidgetActionType
+{
+    /** Total count. */
+    TOTAL,
+    /** Observed count. */
+    ACTUAL,
+    /** Expected count. */
+    EXPECTED
+}
