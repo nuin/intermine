@@ -168,6 +168,9 @@ final class OAuthHttpFixture implements AutoCloseable {
         final Map<String, Object> contextValues;
         final Map<String, Object> requestValues = new HashMap<>();
         final Map<String, String> parameters = new HashMap<>();
+        final Map<String, String[]> repeatedParameters = new HashMap<>();
+        final Map<String, String> headers = new HashMap<>();
+        final Map<String, String> responseHeaders = new HashMap<>();
         final ByteArrayOutputStream body = new ByteArrayOutputStream();
         final HttpSession session;
         final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
@@ -176,6 +179,9 @@ final class OAuthHttpFixture implements AutoCloseable {
         int status = 200;
         int rotations;
         String redirect;
+        String method = "GET";
+        String pathInfo;
+        String queryString;
 
         Browser() throws IOException {
             this(new SessionState(new ConcurrentHashMap<>()));
@@ -192,11 +198,15 @@ final class OAuthHttpFixture implements AutoCloseable {
             contextValues = initial.contextValues;
             expect(request.getSession()).andAnswer(this::currentSession).anyTimes();
             expect(request.getSession(false)).andAnswer(() -> active.invalidated ? null : active.session).anyTimes();
-            expect(request.getMethod()).andStubReturn("GET");
+            expect(request.getMethod()).andAnswer(() -> method).anyTimes();
+            expect(request.getPathInfo()).andAnswer(() -> pathInfo).anyTimes();
+            expect(request.getQueryString()).andAnswer(() -> queryString).anyTimes();
+            expect(request.getHeader(anyString())).andAnswer(() -> headers.get(getCurrentArgument(0))).anyTimes();
             expect(request.getParameter(anyString())).andAnswer(() -> parameters.get(getCurrentArgument(0))).anyTimes();
             expect(request.getParameterMap()).andAnswer(() -> {
                 Map<String, String[]> result = new HashMap<>();
                 parameters.forEach((k, v) -> result.put(k, new String[] {v}));
+                result.putAll(repeatedParameters);
                 return result;
             }).anyTimes();
             expect(request.getAttribute(anyString())).andAnswer(() -> requestValues.get(getCurrentArgument(0))).anyTimes();
@@ -212,6 +222,8 @@ final class OAuthHttpFixture implements AutoCloseable {
             });
             response.setStatus(anyInt());
             expectLastCall().andAnswer(() -> { status = getCurrentArgument(0); return null; }).anyTimes();
+            response.setHeader(anyString(), anyString());
+            expectLastCall().andAnswer(() -> { responseHeaders.put(getCurrentArgument(0), getCurrentArgument(1)); return null; }).anyTimes();
             response.sendRedirect(anyString());
             expectLastCall().andAnswer(() -> { redirect = getCurrentArgument(0); return null; }).anyTimes();
             replay(request, response);

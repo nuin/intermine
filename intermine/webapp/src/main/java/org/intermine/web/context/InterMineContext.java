@@ -29,6 +29,7 @@ import org.intermine.util.ShutdownHook;
 import org.intermine.util.Shutdownable;
 import org.intermine.web.logic.ResourceOpener;
 import org.intermine.web.logic.config.WebConfig;
+import org.intermine.web.logic.oauth2.OAuthTransactions;
 import org.intermine.web.security.KeyStoreBuilder;
 
 /**
@@ -49,6 +50,7 @@ public final class InterMineContext implements Shutdownable
 
     private static final int WORKERS = 10;
     private static InterMineAPI im;
+    private static OAuthTransactions oauthTransactions;
     private static Properties webProperties;
     private static WebConfig webConfig;
     private static volatile boolean isInitialised = false;
@@ -81,6 +83,7 @@ public final class InterMineContext implements Shutdownable
         webProperties = webProps;
         webConfig = wc;
         opener = resourceOpener;
+        oauthTransactions = new OAuthTransactions(imApi, webProps);
 
         emailer = EmailerFactory.getEmailer(webProps);
         mailQueue = new ArrayBlockingQueue<MailAction>(10000);
@@ -104,6 +107,12 @@ public final class InterMineContext implements Shutdownable
     public static InterMineAPI getInterMineAPI() {
         checkInit();
         return im;
+    }
+
+    /** @return the application's deferred OAuth transactions */
+    public static OAuthTransactions getOAuthTransactions() {
+        checkInit();
+        return oauthTransactions;
     }
 
     /**
@@ -172,6 +181,10 @@ public final class InterMineContext implements Shutdownable
      * undeployed.
      */
     public static void doShutdown() {
+        if (oauthTransactions != null) {
+            oauthTransactions.close();
+            oauthTransactions = null;
+        }
         if (mailQueue != null && mailService != null) {
             int leftToSend = mailQueue.size();
             // Allocate more actors to send the remaining messages.

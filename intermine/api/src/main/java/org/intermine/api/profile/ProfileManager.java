@@ -784,7 +784,9 @@ public class ProfileManager
     public synchronized String generateSingleUseKey(Profile profile) {
         String key = TextUtil.generateRandomUniqueString();
         LimitedAccessToken token = new SingleAccessToken(profile);
-        limitedAccessTokens.put(key, token);
+        synchronized (limitedAccessTokens) {
+            limitedAccessTokens.put(key, token);
+        }
         return key;
     }
 
@@ -796,8 +798,27 @@ public class ProfileManager
     public synchronized String generate24hrKey(Profile profile) {
         String key = TextUtil.generateRandomUniqueString();
         LimitedAccessToken token = new DayToken(profile);
-        limitedAccessTokens.put(key, token);
+        synchronized (limitedAccessTokens) {
+            limitedAccessTokens.put(key, token);
+        }
         return key;
+    }
+
+    /**
+     * Revoke one temporary token without invalidating the owner's other credentials.
+     * @param token the temporary token
+     * @param owner the profile that received it
+     * @return whether a matching temporary token was removed
+     */
+    public boolean revokeTemporaryToken(String token, Profile owner) {
+        synchronized (limitedAccessTokens) {
+            LimitedAccessToken current = limitedAccessTokens.get(token);
+            if (current == null || !sameTokenOwner(current.getProfile(), owner)) {
+                return false;
+            }
+            limitedAccessTokens.remove(token);
+            return true;
+        }
     }
 
     /**
@@ -815,11 +836,16 @@ public class ProfileManager
             while (itr.hasNext()) {
                 String key = itr.next();
                 LimitedAccessToken token = limitedAccessTokens.get(key);
-                if (profile.equals(token.getProfile())) {
+                if (sameTokenOwner(token.getProfile(), profile)) {
                     itr.remove();
                 }
             }
         }
+    }
+
+    private static boolean sameTokenOwner(Profile tokenOwner, Profile owner) {
+        return tokenOwner != null && owner != null && (tokenOwner == owner
+                || (owner.getUserId() != null && owner.getUserId().equals(tokenOwner.getUserId())));
     }
 
     /**
@@ -829,12 +855,14 @@ public class ProfileManager
      */
     public synchronized boolean tokenHasMoreUses(String token) {
         if (token != null) {
-            if (limitedAccessTokens.containsKey(token)) {
+            synchronized (limitedAccessTokens) {
                 LimitedAccessToken lat = limitedAccessTokens.get(token);
-                if (lat.isValid()) {
-                    return lat.hasMoreUses();
-                } else {
-                    limitedAccessTokens.remove(token);
+                if (lat != null) {
+                    if (lat.isValid()) {
+                        return lat.hasMoreUses();
+                    } else {
+                        limitedAccessTokens.remove(token);
+                    }
                 }
             }
             try {
@@ -843,7 +871,7 @@ public class ProfileManager
                     return true;
                 }
             } catch (IllegalArgumentException e) {
-                // Suppress.
+                return false;
             }
         }
         return false;
@@ -1384,37 +1412,42 @@ public class ProfileManager
      */
     public ApiPermission getPermission(String token, Map<String, List<FieldDescriptor>> classKeys) {
         ApiPermission permission;
-        if (limitedAccessTokens.containsKey(token)) {
+        synchronized (limitedAccessTokens) {
             LimitedAccessToken t = limitedAccessTokens.get(token);
-            if (!t.isValid()) {
-                throw new AuthenticationException("This token (" + token + ")is invalid.");
-            }
-            Profile p = t.getProfile();
-            t.use();
-            if (!t.isValid()) {
-                limitedAccessTokens.remove(token);
-            }
-            permission = new ApiPermission(p, t.getAuthenticationLevel());
-        } else {
-            try {
-                UUID key = UUID.fromString(token);
-                if (permanentTokens.containsKey(key)) {
-                    return getPermission(permanentTokens.get(key), classKeys);
+            if (t != null) {
+                if (!t.isValid()) {
+                    limitedAccessTokens.remove(token);
+                    throw new AuthenticationException("This temporary token is invalid.");
                 }
-            } catch (IllegalArgumentException e) {
-                // Suppress, continue.
-            }
-            Profile p = getProfileByApiKey(token, classKeys);
-            if (p == null) {
-                throw new AuthenticationException(
-                        "This token is not a valid access key: "
-                        + token);
-            } else {
-                // Grant RW permission to user data
-                permission = new ApiPermission(p, ApiPermission.Level.RW);
+                Profile p = t.getProfile();
+                t.use();
+                if (!t.isValid()) {
+                    limitedAccessTokens.remove(token);
+                }
+                return new ApiPermission(p, t.getAuthenticationLevel());
             }
         }
+        PermanentToken permanent = findPermanentToken(token);
+        if (permanent != null) {
+            return getPermission(permanent, classKeys);
+        }
+        Profile p = getProfileByApiKey(token, classKeys);
+        if (p == null) {
+            throw new AuthenticationException(
+                    "This token is not a valid access key: " + token);
+        } else {
+            // Grant RW permission to user data
+            permission = new ApiPermission(p, ApiPermission.Level.RW);
+        }
         return permission;
+    }
+
+    private PermanentToken findPermanentToken(String token) {
+        try {
+            return permanentTokens.get(UUID.fromString(token));
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     /**
@@ -1451,8 +1484,8 @@ public class ProfileManager
     public void removePermanentToken(PermanentToken token) {
         try {
             permanentTokens.remove(UUID.fromString(token.getToken()));
-        } catch (Exception e) {
-            // Ignore.
+        } catch (IllegalArgumentException e) {
+            LOG.warn("Removing a persisted token with an invalid UUID");
         }
         try {
             uosw.delete(token);

@@ -305,4 +305,53 @@ public class ProfileManagerTest extends InterMineAPITestCase
             assertEquals(permission.getProfile().getUsername(), bobProfile.getUsername());
         }
     }
+
+    public void testRevokeTemporaryTokenPreservesOtherCredentials() throws Exception {
+        String oldToken = pm.generate24hrKey(bobProfile);
+        String newToken = pm.generate24hrKey(bobProfile);
+        assertFalse(pm.revokeTemporaryToken(oldToken, sallyProfile));
+        assertTrue(pm.tokenHasMoreUses(oldToken));
+        assertTrue(pm.revokeTemporaryToken(oldToken, bobProfile));
+        assertFalse(pm.revokeTemporaryToken(oldToken, bobProfile));
+        assertFalse(pm.tokenHasMoreUses(oldToken));
+        assertEquals(bobProfile, pm.getPermission(newToken, classKeys).getProfile());
+        assertFalse(pm.revokeTemporaryToken(bobKey, bobProfile));
+        assertEquals(bobProfile.getUserId(),
+                pm.getPermission(bobKey, classKeys).getProfile().getUserId());
+        String permanent = pm.generateReadOnlyAccessToken(bobProfile, "retained");
+        assertFalse(pm.revokeTemporaryToken(permanent, bobProfile));
+        assertEquals(bobProfile.getUserId(),
+                pm.getPermission(permanent, classKeys).getProfile().getUserId());
+    }
+
+    public void testOrdinaryLogoutStillRevokesAllTemporaryTokens() {
+        String first = pm.generate24hrKey(bobProfile);
+        String second = pm.generate24hrKey(bobProfile);
+        String other = pm.generate24hrKey(sallyProfile);
+        pm.removeTokensForProfile(bobProfile);
+        assertFalse(pm.tokenHasMoreUses(first));
+        assertFalse(pm.tokenHasMoreUses(second));
+        assertEquals(sallyProfile, pm.getPermission(other, classKeys).getProfile());
+    }
+
+    public void testRevocationRecognizesPersistedOwnerButSeparatesAnonymousProfiles() {
+        String token = pm.generate24hrKey(bobProfile);
+        Profile loaded = pm.getPermission(bobKey, classKeys).getProfile();
+        assertTrue(pm.revokeTemporaryToken(token, loaded));
+        Profile first = pm.createAnonymousProfile();
+        Profile second = pm.createAnonymousProfile();
+        String anonymous = pm.generate24hrKey(first);
+        assertFalse(pm.revokeTemporaryToken(anonymous, second));
+        assertFalse(pm.revokeTemporaryToken(anonymous, null));
+        assertTrue(pm.revokeTemporaryToken(anonymous, first));
+    }
+
+    public void testOrdinaryLogoutRecognizesReloadedOwner() {
+        String first = pm.generate24hrKey(bobProfile);
+        String second = pm.generate24hrKey(bobProfile);
+        Profile loaded = pm.getPermission(bobKey, classKeys).getProfile();
+        pm.removeTokensForProfile(loaded);
+        assertFalse(pm.tokenHasMoreUses(first));
+        assertFalse(pm.tokenHasMoreUses(second));
+    }
 }

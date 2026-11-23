@@ -90,14 +90,16 @@ provider-ID identity authority remain in the already-tested InterMine adapter.
   current logout endpoint cannot serve both purposes, so add a token-specific
   revocation operation and prove it preserves a newer token for the same account.
 - Use a dedicated InterMine transaction API, available only on the upgraded
-  server, for prepare/exchange/complete/acknowledge/cancel. Prepare binds the
+  server, for prepare/exchange/complete/acknowledge/cancel and token-specific revoke. Prepare binds the
   anonymous profile and returns an opaque handle. Exchange verifies the provider
   without creating an authenticated token or moving data. Complete is the
   serialized transfer boundary and returns the existing identity/token response.
   Repeated completion for the same handle returns the same result without a
   second transfer. Acknowledgement marks delivery; cancellation revokes only that
   transaction's token. Expired unacknowledged completions revoke their token.
-  Never send the transaction handle to the external provider or frontend.
+  After transaction expiry, token-specific revoke can still discard a late response
+  without invalidating newer credentials for the same account. Never send the
+  transaction handle to the external provider or frontend.
 - Do not use a stale Ring session snapshot as proof that a transaction is still
   valid. Session rotation, callback completion and init-data delivery must consult
   authoritative lifecycle state. Test both callback-before-logout and

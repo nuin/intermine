@@ -11,7 +11,7 @@ package org.intermine.web.logic;
  */
 
 /**
- * Container for ServletContext and Session attribute names used by the webapp
+ * Web application attribute names and service constants.
  *
  * @author Kim Rutherford
  * @author Thomas Riley
@@ -223,7 +223,7 @@ public final class Constants
      * 34 - Add alltemplates
      * 35 - Entity representation
      */
-    public static final int WEB_SERVICE_VERSION = 35;
+    public static final int WEB_SERVICE_VERSION = 36;
 
     /**
      * Current version of the InterMine code
