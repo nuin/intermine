@@ -36,7 +36,7 @@ import org.intermine.objectstore.query.Results;
 import org.intermine.pathquery.Path;
 import org.intermine.pathquery.PathException;
 import org.intermine.pathquery.PathQuery;
-import org.intermine.util.DynamicUtil;
+import org.intermine.metadata.Util;
 import org.intermine.webservice.server.core.DisjointRecursiveList.Eacher;
 import org.intermine.webservice.server.exceptions.NotImplementedException;
 
@@ -524,13 +524,18 @@ public class TableRowIterator implements
                 } else if (o instanceof FastPathObject) {
                     FastPathObject fpo = (FastPathObject) o;
                     for (Path p: views) {
-                        String cls = TypeUtil.unqualifiedName(
-                                DynamicUtil.getSimpleClassName(o.getClass()));
+                        // An object can have several classes; a field is a key
+                        // field when it is one for any of them.
                         boolean isKeyField = false;
                         if (im != null) {
-                            List<FieldDescriptor> keyFields = im.getClassKeys().get(cls);
-                            if (keyFields != null) {
-                                isKeyField = keyFields.contains(p.getEndFieldDescriptor());
+                            for (Class<?> c : Util.decomposeClass(o.getClass())) {
+                                List<FieldDescriptor> keyFields = im.getClassKeys()
+                                        .get(TypeUtil.unqualifiedName(c.getName()));
+                                if (keyFields != null
+                                        && keyFields.contains(p.getEndFieldDescriptor())) {
+                                    isKeyField = true;
+                                    break;
+                                }
                             }
                         }
                         retVal.addLeft(new TableCell(fpo, p, isKeyField));
