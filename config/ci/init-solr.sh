@@ -39,8 +39,14 @@ create_solr_core() {
 
 if [ ! -d "$SOLR_DIR" ]; then
     if [ ! -f "$SOLR_PACKAGE" ]; then
-        curl -fL --retry 3 -o "$SOLR_PACKAGE" \
-            "https://archive.apache.org/dist/solr/solr/${SOLR_VERSION}/${SOLR_PACKAGE}"
+        if ! curl -fL --retry 3 --retry-max-time 300 --connect-timeout 15 \
+            --max-time 300 -o "$SOLR_PACKAGE" \
+            "https://dlcdn.apache.org/solr/solr/${SOLR_VERSION}/${SOLR_PACKAGE}"; then
+            echo "Primary Solr download failed; trying the Apache archive" >&2
+            curl -fL --retry 2 --retry-max-time 2700 --connect-timeout 15 \
+                --max-time 2700 -o "$SOLR_PACKAGE" \
+                "https://archive.apache.org/dist/solr/solr/${SOLR_VERSION}/${SOLR_PACKAGE}"
+        fi
     fi
     printf '%s  %s\n' "$SOLR_SHA512" "$SOLR_PACKAGE" | sha512sum --check -
     tar xzf "$SOLR_PACKAGE"
