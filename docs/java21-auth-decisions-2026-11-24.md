@@ -79,4 +79,4 @@ Hosted verification passed for both exact revisions: [InterMine](https://github.
 
 Documentation-only commits after these revisions do not change the validated executable sources. The paired BlueGenes workflow pins the backend revision above.
 
-Alluvium display branding, biological workflow validation and the primary UI cutover remain subsequent work. The Employee fixture proves authentication and list behavior, not biological tool correctness. Completed Alliance styling is already present in the isolated BlueGenes branch; the original Alliance checkout and Claude's worktrees remain untouched.
+The user confirmed on 2026-11-24 that the InterMine and BlueGenes names will be retained and development will be coordinated with Gos Micklem. This supersedes the earlier renaming proposal. Biological workflow validation and the primary UI cutover remain subsequent work, sequenced with the shared integration plan. The Employee fixture proves authentication and list behavior, not biological tool correctness. Completed Alliance styling is already present in the isolated BlueGenes branch; the original Alliance checkout and Claude's worktrees remain untouched.

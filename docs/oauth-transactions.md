@@ -1,6 +1,6 @@
 # Deferred OAuth transactions (service version 36)
 
-Alluvium uses this opt-in API to verify a provider before committing anonymous
+BlueGenes uses this opt-in API to verify a provider before committing anonymous
 lists, preferences and query history to the authenticated account. The existing
 OAuth callback and ordinary account-wide logout endpoints remain available.
 
@@ -63,6 +63,6 @@ idempotent cleanup. The eight authenticated and two public preserved lists retai
 identical names, types, counts and members. Aislop scores this change range at 100;
 its only warning is the existing size of `ProfileManager.java`.
 
-This validates the InterMine API prerequisite. Ring/Alluvium callback correlation,
+This validates the InterMine API prerequisite. Ring/BlueGenes callback correlation,
 frontend request ownership and production-browser pairing are the next tasks;
 they are not completion claims of this API change.

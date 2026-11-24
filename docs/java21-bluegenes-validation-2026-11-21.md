@@ -89,9 +89,11 @@ environment URL. BlueGenes' unused-code scan reports that Knip is not configured
 ## Continuing work
 
 This is Java 21 readiness, not the completed primary-UI replacement. The next
-projects cover browser-bound OAuth, cancellation and profile ownership; Alluvium
-display identity using the Alliance style; biological fixtures/capabilities and
+projects cover browser-bound OAuth, cancellation and profile ownership;
+the Alliance style with InterMine and BlueGenes branding; biological fixtures/capabilities and
 report links; legacy framework retirement; dependency and release validation.
+The 2026-11-24 decision to retain the product names and collaborate with Gos Micklem
+supersedes the earlier renaming proposal.
 
 Known UI gaps recorded for that work: generic mines trigger Organism queries,
 the generic API lacks biological elinks/RDF, and result-table cells lack report

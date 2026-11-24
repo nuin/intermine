@@ -1,8 +1,8 @@
-# Alluvium authentication integration implementation plan
+# BlueGenes authentication integration implementation plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans inline, task by task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Secure Alluvium's OAuth callback and asynchronous login lifecycle while preserving mine-specific identity and anonymous work.
+**Goal:** Secure BlueGenes' OAuth callback and asynchronous login lifecycle while preserving mine-specific identity and anonymous work.
 
 **Architecture:** Ring owns browser correlation and request generations. A new opt-in InterMine transaction API separates provider verification from anonymous-profile transfer, with atomic cancellation and token-specific cleanup. Existing REST callback and account-wide logout contracts remain available to other clients.
 
@@ -76,4 +76,6 @@
 - [x] Commit/push verified work and record sources, tests, configuration and known deployment boundary.
 
 Completion evidence and retained decisions: [Java 21 and browser authentication](../../java21-auth-decisions-2026-11-24.md).
-Alluvium display identity, scientific workflow validation and primary-UI cutover remain the next project.
+Scientific workflow validation and primary-UI cutover remain the next project,
+coordinated with Gos Micklem. Retain InterMine and BlueGenes branding; the user
+withdrew the renaming proposal on 2026-11-24.

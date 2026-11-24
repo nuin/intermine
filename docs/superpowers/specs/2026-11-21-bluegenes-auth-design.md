@@ -1,11 +1,11 @@
-# Alluvium authentication integration
+# BlueGenes authentication integration
 
 ## Intent and scope
 
 Project 2 of the authorized Java 21 / Alliance BlueGenes replacement program.
 Keep InterMine accounts, lists and preferences authoritative while making the
-primary UI safe to use with InterMine 6. The working display identity is Alluvium;
-the package names and API contract remain compatible. The user has authorized the
+primary UI safe to use with InterMine 6. Retain the InterMine and BlueGenes names,
+as confirmed on 2026-11-24; package names and the API contract remain compatible. The user has authorized the
 whole program and implementation choices; this document records the builder's
 decisions without reopening the accepted UI or Java choices.
 
@@ -156,4 +156,5 @@ implementation choices. Prefer a small atomic state machine with injected clock
 and narrowly scoped network adapters over reflection or timing-dependent tests.
 Use measured tests before expanding runs. If inspection reveals a prerequisite
 to the required race guarantees, include it explicitly rather than weakening them.
-Continue to Alluvium branding, scientific workflows and primary-UI cutover next.
+Continue to scientific workflows and primary-UI cutover, coordinating integration
+with Gos Micklem and retaining the existing product names.

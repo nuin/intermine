@@ -18,13 +18,18 @@ has search, lists, reports, templates, a query builder, regions and Alliance-spe
 tools. Keeping JSP as the primary UI would not deliver the requested replacement;
 rewriting these working capabilities in another frontend would duplicate maintenance.
 
-On 2026-11-21 the user requested a separate visible product identity and confirmed
-the Alliance fork as the preferred styling source. Working display name: **Alluvium**,
-descriptor **Biological data explorer**, following the user's proposal. Remove upstream
-product branding from primary navigation, page titles, homepage messaging and prominent
-funding sections. Preserve upstream copyright, license and provenance records. Keep
-backend package names and REST contracts compatible. Existing unrelated software uses
-the name Alluvium; no uniqueness or domain-availability claim has been made.
+On 2026-11-24 the user superseded the earlier renaming proposal: retain the
+**InterMine** and **BlueGenes** names and collaborate with Gos Micklem. Keep the
+Alliance fork as the preferred styling source and preserve upstream attribution.
+Product renaming and removal of upstream branding are no longer planned. Backend
+package names and REST contracts remain compatible.
+
+Prepare modernization work as focused contributions for coordinated integration.
+Agree on the shared base, ownership of overlapping changes, release targets and
+upstream Java baseline with Gos before merging into shared release branches.
+The current development branches continue to require Java 21; this does not assert
+that upstream has adopted that release policy. The UI replacement program remains
+in scope, with sequencing coordinated against the shared integration plan.
 
 This is a program of independently testable projects, in order:
 

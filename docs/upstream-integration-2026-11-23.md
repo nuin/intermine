@@ -3,6 +3,10 @@
 This proposal compares public source snapshots. It does not establish an upstream
 release policy.
 
+Direction confirmed on 2026-11-24: retain the InterMine and BlueGenes names and
+collaborate with Gos Micklem. The sequence below is a proposal for that collaboration;
+the shared base, release targets and upstream Java baseline still need joint agreement.
+
 | Source | Revision |
 | --- | --- |
 | `gmicklem/intermine`, `maint-2026` | `97a2647d78306829abcf9b1b41c60c24e90e8acc` |
@@ -41,8 +45,8 @@ Importer changes are visible in the
 4. Integrate search, database and authentication changes with their regression gates.
 5. Integrate completed BlueGenes tools/style commits, then exercise scientific
    workflows against a small biological mine and the deployed API.
-6. Keep Alluvium display branding in a separate change so upstream can reuse the
-   functional work independently.
+6. Retain InterMine and BlueGenes branding, preserve contribution attribution and
+   document the agreed release and deployment migration path.
 
 Use one integration branch and one owner for conflict resolution. Compare behavior
 and tests before replacing overlapping implementations; preserve commit attribution.
