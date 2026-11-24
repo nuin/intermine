@@ -21,8 +21,9 @@ including package-visible methods. No Aislop rule or configuration was disabled.
 | Postprocess / postprocess-test style | Passed; the latter has no main Java source |
 | Java 21 Gradle fixture | Records, record patterns, guarded switch and text blocks compile and pass style |
 | Negative style fixture | Eight intentional warnings detected, including declared-exception and package-method documentation |
-| XML report parser | 62 main reports, zero violations; negative fixture uses a separate report name |
-| Publication cache module | Five tests pass, including existing importer fixture and four cache tests |
+| Production report coverage | Five Gradle manifests identify 61 reports covering 1,442 Java sources, with zero violations |
+| Report-parser regressions | Seven tests pass, including fixture-only results, missing reports/manifests and incomplete source coverage |
+| Publication cache module | Eight tests pass, including the existing importer fixture, four decoder tests and three Berkeley DB integration tests |
 | Serialization compatibility | Four modified serializable private helpers retain their measured prior serialVersionUID |
 
 Checkstyle 7.8.1 failed the positive Java 21 fixture before the engine update.
@@ -32,6 +33,16 @@ it once. The cache tests initially accepted unexpected classes, excessive nestin
 and an oversized entry; the filtered reader rejects all three while retaining the
 existing HashMap/String/ArrayList cache format.
 
+The fresh review identified four additional cases, reproduced before the fixes:
+fixture-only reports, truncated cache records, entries accepted by the writer but
+rejected by the reader, and an unbounded database value read. The report parser now
+requires a manifest from every build root and checks every expected source in its
+report. Genuine `NO-SOURCE` projects produce no report entries. Berkeley DB reads
+return at most 8 MiB plus one overflow byte. Damaged cached publications fail with
+their PMID. New entries are validated against the reader before persistence;
+valid publications beyond cache limits are exported with a warning and left
+uncached. Two consecutive imports verify that behavior.
+
 The source cleanup also reports previously silent cleanup failures, logs optional
 schema lookup failures, removes redundant syntax and commented-out code, and fixes
 malformed Javadoc. Caller interruptions now preserve the interrupt flag and throw
@@ -40,10 +51,11 @@ fetch running. Idle service workers remain available to process requests.
 
 ## Aislop assessment
 
-The final local scan scores 96, with zero fixable warnings. There are 67 existing
-nonfixable warnings: broad exception declarations, large files/functions, deep
-nesting, and one legacy source URL. These require separate design decisions rather
-than mechanical edits.
+The final local scan scores 96, with zero fixable warnings. There are 72
+nonfixable warnings: 67 for existing broad exception declarations, large
+files/functions, deep nesting and one legacy source URL, plus five false positives
+for the report parser's intentional CLI diagnostic output. The legacy warnings
+require separate design decisions rather than mechanical edits.
 
 Four error-level diagnostics remain as reviewed false positives:
 
@@ -56,10 +68,12 @@ Four error-level diagnostics remain as reviewed false positives:
   identifiers. A future caller accepting arbitrary names must validate them.
 - `EntrezPublicationsRetriever.readCachedPublication` now installs a per-stream
   type filter before `readObject`, limits depth/references/arrays, and rejects
-  input larger than 8 MiB before decoding. The scanner still flags `readObject`;
+  input larger than 8 MiB before decoding. The database read also requests a bounded
+  partial value. The scanner still flags `readObject`;
   the regression verifies rejection before an unexpected deserialization callback
   can execute. Rejected cache entries fail the import explicitly.
 
 The cache filter uses the JDK's supported
 [serialization filtering API](https://docs.oracle.com/en/java/javase/21/core/serialization-filtering1.html).
-Cache entries outside those bounds must be regenerated from publication data.
+Damaged existing cache entries stop the import explicitly. Fresh publication data
+outside the cache bounds can still be exported without caching.

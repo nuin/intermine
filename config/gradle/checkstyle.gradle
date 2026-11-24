@@ -1,3 +1,32 @@
+import groovy.json.JsonOutput
+import org.gradle.api.plugins.quality.Checkstyle
+
 checkstyle {
     toolVersion = '14.4.0'
+}
+
+if (rootProject.tasks.findByName('writeCheckstyleReportManifest') == null) {
+    rootProject.tasks.register('writeCheckstyleReportManifest') {
+        doLast {
+            def analyses = rootProject.allprojects.collectMany { candidate ->
+                candidate.tasks.withType(Checkstyle).findAll { task ->
+                    task.name == 'checkstyleMain' && !task.source.empty
+                }
+            }
+            def reports = analyses.collect { task ->
+                def report = task.reports.xml.outputLocation.get().asFile
+                [path: rootProject.projectDir.toPath().relativize(report.toPath()).toString(),
+                 sources: task.source.files.collect { it.absolutePath }.sort()]
+            }.sort { it.path }
+            def manifest = rootProject.layout.buildDirectory.file('checkstyle-reports.json')
+                    .get().asFile
+            java.nio.file.Files.createDirectories(manifest.parentFile.toPath())
+            manifest.text = JsonOutput.toJson([reports: reports])
+        }
+    }
+}
+
+def mainCheckstyle = tasks.named('checkstyleMain', Checkstyle)
+rootProject.tasks.named('writeCheckstyleReportManifest') {
+    dependsOn mainCheckstyle
 }

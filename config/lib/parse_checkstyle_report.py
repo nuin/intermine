@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
-from collections import defaultdict
-import glob
-import os
+import json
 import sys
 import xml.sax
+from collections import defaultdict
+from pathlib import Path
 from xml.sax.handler import ContentHandler, ErrorHandler
 
 
-class Error(object):
+class Error:
     def __init__(self, severity, line, column, message):
         self.severity = severity
         self.line = line
@@ -19,23 +19,22 @@ class Error(object):
 class CheckStyleHandler(ContentHandler):
     def __init__(self):
         self.errors = defaultdict(list)
+        self.files = set()
         self.currentFile = None
 
     def startElement(self, name, attrs):
         if name == "file":
             self.currentFile = attrs.get("name")
+            self.files.add(self.currentFile)
         elif name == "error":
             self.handleError(attrs)
 
-    # TODO - compile the classes so we don't have to do this.
     def can_ignore(self, err):
         if "Unable to get class information" in err.message:
             return True
         if "Redundant throws" in err.message:
             return True
-        if "Unused @throws tag" in err.message:
-            return True
-        return False
+        return "Unused @throws tag" in err.message
 
     def handleError(self, attrs):
         err = Error(
@@ -56,23 +55,41 @@ class NervousErrorHandler(ErrorHandler):
         raise exception
 
 
-ERROR_FMT = (
-    "  line: {0.line:>4}, column: {0.column:>3} - {0.severity} - {0.message}"
-)
+ERROR_FMT = "  line: {0.line:>4}, column: {0.column:>3} - {0.severity} - {0.message}"
 
-workspace_dir = sys.argv[1]
+workspace_dir = Path(sys.argv[1])
+build_roots = (
+    "intermine",
+    "bio",
+    "bio/sources",
+    "bio/postprocess",
+    "bio/postprocess-test",
+)
 
 error_count = 0
 report_count = 0
 
-for report in glob.glob(
-    "**/reports/checkstyle/main.xml", root_dir=workspace_dir, recursive=True
-):
-    report_path = os.path.join(workspace_dir, report)
-    with open(report_path) as f:
+for build_root in build_roots:
+    project_dir = workspace_dir / build_root
+    manifest = project_dir / "build/checkstyle-reports.json"
+    if not manifest.is_file():
+        sys.exit(f"MISSING STYLE MANIFEST: {manifest}")
+    reports = json.loads(manifest.read_text())["reports"]
+    for report in reports:
+        report_path = project_dir / report["path"]
+        if not report_path.is_file():
+            sys.exit(f"MISSING STYLE REPORT: {report_path}")
+        expected_sources = set(report["sources"])
+        if not expected_sources:
+            sys.exit(f"EMPTY SOURCE MANIFEST: {report_path}")
         report_count += 1
         handler = CheckStyleHandler()
-        xml.sax.parse(f, handler, NervousErrorHandler())
+        with report_path.open() as stream:
+            xml.sax.parse(stream, handler, NervousErrorHandler())
+        missing_sources = expected_sources - handler.files
+        for source in sorted(missing_sources):
+            print(f"SOURCE MISSING FROM STYLE REPORT: {source}")
+            error_count += 1
         for file_name, errors in handler.errors.items():
             print("FILE:", file_name)
             for e in errors:

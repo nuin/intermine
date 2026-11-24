@@ -13,7 +13,6 @@ package org.intermine.bio.dataconversion;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -140,6 +139,7 @@ public class EntrezPublicationsRetriever
 
         Database db = null;
         Transaction txn = null;
+        Environment env = null;
         try {
             if (osAlias == null) {
                 throw new BuildException("osAlias attribute is not set");
@@ -153,8 +153,7 @@ public class EntrezPublicationsRetriever
             envConfig.setTransactional(true);
             envConfig.setAllowCreate(true);
 
-            File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-            Environment env = new Environment(tmpDir, envConfig);
+            env = new Environment(getCacheDirectory(), envConfig);
 
             DatabaseConfig dbConfig = new DatabaseConfig();
             dbConfig.setTransactional(true);
@@ -188,18 +187,17 @@ public class EntrezPublicationsRetriever
                     continue;
                 }
                 DatabaseEntry key = new DatabaseEntry(pubMedId.getBytes());
-                DatabaseEntry data = new DatabaseEntry();
-                if (db.get(txn, key, data, null).equals(OperationStatus.SUCCESS)) {
+                DatabaseEntry data = readCacheEntry(db, txn, key);
+                if (data != null) {
+                    Map<?, ?> pubMap;
                     try {
-                        // Try to find this publication object in berkeleydb and write item xml to
-                        // cache file
-                        Map<?, ?> pubMap = readCachedPublication(data.getData());
-                        writeItems(writer, mapToItems(itemFactory, pubMap));
-                        seenPubMeds.add(pubMedIdInteger);
-                    } catch (EOFException e) {
-                        // ignore and fetch it again
-                        LOG.warn("Incomplete cached publication: " + pubMedIdInteger, e);
+                        pubMap = readCachedPublication(data.getData());
+                    } catch (IOException | ClassNotFoundException e) {
+                        throw new IOException("Cannot read cached publication "
+                                + pubMedIdInteger, e);
                     }
+                    writeItems(writer, mapToItems(itemFactory, pubMap));
+                    seenPubMeds.add(pubMedIdInteger);
                 } else {
                     // berkeleydb cached pubs will be written to cache file, the rest will be
                     // fetched from NCBI
@@ -282,8 +280,32 @@ public class EntrezPublicationsRetriever
             if (db != null) {
                 db.close();
             }
+            if (env != null) {
+                env.close();
+            }
             Thread.currentThread().setContextClassLoader(cl);
         }
+    }
+
+    /**
+     * Locate the local publication cache.
+     * @return the directory containing the Berkeley DB environment
+     */
+    protected File getCacheDirectory() {
+        return new File(System.getProperty("java.io.tmpdir"));
+    }
+
+    /**
+     * Look up a serialized publication in the cache.
+     * @param db publication cache
+     * @param txn active transaction
+     * @param key publication identifier
+     * @return the entry, or null if it is not cached
+     */
+    static DatabaseEntry readCacheEntry(Database db, Transaction txn, DatabaseEntry key) {
+        DatabaseEntry data = new DatabaseEntry();
+        data.setPartial(0, MAX_CACHED_PUBLICATION_BYTES + 1, true);
+        return db.get(txn, key, data, null) == OperationStatus.SUCCESS ? data : null;
     }
 
     private static void writeItems(Writer writer, Collection<Item> items) throws IOException {
@@ -301,14 +323,35 @@ public class EntrezPublicationsRetriever
         for (Map.Entry<String, Map<String, Object>> entry: fromServerMap.entrySet()) {
             String pubMedId = entry.getKey();
             DatabaseEntry key = new DatabaseEntry(pubMedId.getBytes());
-            Map dataMap = entry.getValue();
-            ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-            ObjectOutputStream serializer = new ObjectOutputStream(arrayOutputStream);
-            serializer.writeObject(dataMap);
-            DatabaseEntry data = new DatabaseEntry(arrayOutputStream.toByteArray());
-
-            db.put(txn, key, data);
+            byte[] serialized;
+            try {
+                serialized = encodeCachedPublication(entry.getValue());
+            } catch (IOException e) {
+                LOG.warn("Exported publication " + pubMedId + " will not be cached", e);
+                continue;
+            }
+            db.put(txn, key, new DatabaseEntry(serialized));
         }
+    }
+
+    /**
+     * Encode a publication only if the cache reader can accept it.
+     * @param publication parsed publication fields
+     * @return serialized cache entry
+     * @throws IOException if the entry cannot be encoded within the cache limits
+     */
+    static byte[] encodeCachedPublication(Map<String, Object> publication) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
+            output.writeObject(publication);
+        }
+        byte[] serialized = bytes.toByteArray();
+        try {
+            readCachedPublication(serialized);
+        } catch (ClassNotFoundException e) {
+            throw new IOException("Publication contains an unsupported cache class", e);
+        }
+        return serialized;
     }
 
     /**
