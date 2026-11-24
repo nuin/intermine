@@ -29,9 +29,9 @@
 **Files:** new `intermine/webapp/src/main/java/org/intermine/web/filters/PrimaryUiFilter.java`, `PrimaryUiRoutes.java`; corresponding tests; `WEB-INF/web.xml`, `global.web.properties`; operator guide `docs/bluegenes-primary-ui.md`.
 **Interfaces:** `PrimaryUiRoutes(String target)` validates configuration; `destination(String path, Map<String,String[]> parameters, boolean sessionQuery, ReportTypeResolver resolver)` returns a target or null for retained legacy handling. Resolver maps an object ID to its model class and can report a missing object. `PrimaryUiFilter` translates invalid request/missing object to 400/404, delegates unknown paths/methods and maps servlet configuration to the helper.
 
-- [ ] Add route/filter regressions for enabled/disabled entry, report/list/template/query links, Unicode/reserved characters, ambiguous parameters, invalid target, absent object, legacy escape, session query, HEAD/POST, APIs/static/export preservation; observe RED.
-- [ ] Implement the route helper and filter with explicit validation, temporary uncached redirects, allowlisted parameters and object-type lookup; observe focused GREEN.
-- [ ] Wire before permanent-URL handling, document mappings and rollback, run core/checkstyle and Aislop; commit.
+- [x] Add route/filter regressions for enabled/disabled entry, report/list/template/query links, Unicode/reserved characters, ambiguous parameters, invalid target, absent object, legacy escape, session query, HEAD/POST, APIs/static/export preservation; observe RED.
+- [x] Implement the route helper and filter with explicit validation, temporary uncached redirects, allowlisted parameters and object-type lookup; observe focused GREEN.
+- [x] Wire before permanent-URL handling, document mappings and rollback, run core/checkstyle and Aislop; commit.
 
 ## Task 2: BlueGenes query-link import
 
