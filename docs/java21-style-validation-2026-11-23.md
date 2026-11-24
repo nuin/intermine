@@ -77,3 +77,11 @@ The cache filter uses the JDK's supported
 [serialization filtering API](https://docs.oracle.com/en/java/javase/21/core/serialization-filtering1.html).
 Damaged existing cache entries stop the import explicitly. Fresh publication data
 outside the cache bounds can still be exported without caching.
+
+## Hosted verification
+
+Commit `fde56493d32054f2fa97b5dacdbddeaeac46685c` passed
+[Checkstyle](https://github.com/nuin/intermine/actions/runs/45298956447) and all six
+[InterMine CI jobs](https://github.com/nuin/intermine/actions/runs/45298956306):
+core and bio tests, PostgreSQL migration, browser tests, and JavaScript/Python
+web-service clients.

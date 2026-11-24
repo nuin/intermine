@@ -193,7 +193,7 @@ public class ProfileManager
                 }
             }
             for (PermanentToken t: badTokens) {
-                LOG.info("Removing bad token: " + t);
+                LOG.info("Removing invalid persisted token");
                 uosw.delete(t);
             }
         } catch (Exception e) {
@@ -1440,7 +1440,7 @@ public class ProfileManager
         Profile p = getProfileByApiKey(token, classKeys);
         if (p == null) {
             throw new AuthenticationException(
-                    "This token is not a valid access key: " + token);
+                    "This token is not a valid access key");
         } else {
             // Grant RW permission to user data
             permission = new ApiPermission(p, ApiPermission.Level.RW);
@@ -1471,7 +1471,7 @@ public class ProfileManager
         Profile profile = getProfile(token.getUserProfile().getUsername(), classKeys);
         if (profile == null) {
             removePermanentToken(token);
-            throw new AuthenticationException("This token is not a valid access key: " + token);
+            throw new AuthenticationException("This token is not a valid access key");
         }
         ApiPermission.Level level;
         try {
@@ -1541,7 +1541,7 @@ public class ProfileManager
         }
         if (profile == null) {
             throw new AuthenticationException(
-                "'" + token + "' is not a valid API access key");
+                "This token is not a valid API access key");
         }
         return getProfile(profile.getUsername(), classKeys);
     }

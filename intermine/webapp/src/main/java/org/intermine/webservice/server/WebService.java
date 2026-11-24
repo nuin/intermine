@@ -647,8 +647,7 @@ public abstract class WebService
         String truncatedStackTrace = getTruncatedStackTrace(t);
 
         if (code == Output.SC_INTERNAL_SERVER_ERROR) {
-            LOG.error("Service failed by internal error. Request parameters: \n"
-                    + requestParametersToString() + t + "\n" + truncatedStackTrace);
+            LOG.error("Service failed by internal error: " + t + "\n" + truncatedStackTrace);
         } else {
             LOG.debug("Service didn't succeed. It's not an internal error. "
                     + "Reason: " + getErrorDescription(msg, code) + "\n"
@@ -678,21 +677,6 @@ public abstract class WebService
         }
         ps.flush();
         return b.toString();
-    }
-
-    private String requestParametersToString() {
-        StringBuilder sb = new StringBuilder();
-        @SuppressWarnings("unchecked") // Old pre-generic API.
-        Map<String, String[]> map = request.getParameterMap();
-        for (String name : map.keySet()) {
-            for (String value : map.get(name)) {
-                sb.append(name);
-                sb.append(": ");
-                sb.append(value);
-                sb.append("\n");
-            }
-        }
-        return sb.toString();
     }
 
     private String getErrorDescription(String msg, int errorCode) {

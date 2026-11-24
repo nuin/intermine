@@ -181,8 +181,8 @@ public final class OAuthTransactions implements AutoCloseable
     public void expire() {
         for (Map.Entry<String, Transaction> entry : snapshot().entrySet()) {
             Transaction transaction = entry.getValue();
-            synchronized (transaction) {
-                if (!clock.instant().isBefore(transaction.expires)) {
+            if (!clock.instant().isBefore(transaction.expires)) {
+                synchronized (transaction) {
                     discard(entry.getKey(), transaction, transaction.phase != Phase.DELIVERED);
                 }
             }
@@ -231,6 +231,9 @@ public final class OAuthTransactions implements AutoCloseable
     }
 
     private void discard(String handle, Transaction transaction, boolean revoke) {
+        if (transaction.phase == Phase.CANCELED) {
+            return;
+        }
         if (revoke && transaction.token != null) {
             api.getProfileManager().revokeTemporaryToken(transaction.token, transaction.profile);
         }

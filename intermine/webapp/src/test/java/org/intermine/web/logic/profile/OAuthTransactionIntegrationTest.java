@@ -14,6 +14,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
@@ -32,6 +33,8 @@ import org.intermine.web.context.InterMineContext;
 import org.intermine.web.logic.ClassResourceOpener;
 import org.intermine.web.logic.config.WebConfig;
 import org.intermine.web.logic.oauth2.OAuthTransactions;
+import org.intermine.webservice.server.core.JSONService;
+import org.intermine.webservice.server.user.LogoutService;
 import org.intermine.webservice.server.oauth2.TransactionService;
 import org.intermine.webservice.server.oauth2.TransactionServlet;
 import org.json.JSONObject;
@@ -229,6 +232,14 @@ public class OAuthTransactionIntegrationTest extends InterMineAPITestCase {
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             var completion = executor.submit(() -> success("complete", Map.of("handle", handle)));
             assertTrue(transferring.await(3, TimeUnit.SECONDS));
+            var unrelated = executor.submit(() -> transactions.prepare(anonymous, "TEST",
+                    URI.create("https://client.example.test/callback"), "another-state"));
+            try {
+                assertNotNull(unrelated.get(1, TimeUnit.SECONDS).get("handle"));
+            } catch (TimeoutException error) {
+                release.countDown();
+                fail("An unrelated preparation waited for a live transfer");
+            }
             CountDownLatch cancelStarted = new CountDownLatch(1);
             var cancellation = executor.submit(() -> {
                 cancelStarted.countDown();
@@ -289,6 +300,87 @@ public class OAuthTransactionIntegrationTest extends InterMineAPITestCase {
         clock.now = clock.now.plusSeconds(300);
         transactions.expire();
         assertTrue(im.getProfileManager().tokenHasMoreUses(result.getString("token")));
+    }
+
+    public void testConcurrentExpiryKeepsAcknowledgedToken() throws Exception {
+        String handle = prepare();
+        exchange(handle);
+        String token = success("complete", Map.of("handle", handle)).getString("token");
+        success("acknowledge", Map.of("handle", handle));
+        clock.now = clock.now.plusSeconds(300);
+        CountDownLatch entered = new CountDownLatch(1);
+        CountDownLatch release = new CountDownLatch(1);
+        AtomicReference<Thread> firstThread = new AtomicReference<>();
+        AtomicReference<Thread> secondThread = new AtomicReference<>();
+        clock.beforeRead = () -> {
+            if (Thread.currentThread() == firstThread.get()) {
+                entered.countDown();
+                try {
+                    if (!release.await(5, TimeUnit.SECONDS)) {
+                        throw new IllegalStateException("Expiry barrier not released");
+                    }
+                } catch (InterruptedException error) {
+                    Thread.currentThread().interrupt();
+                    throw new IllegalStateException(error);
+                }
+            }
+        };
+        try (var executor = Executors.newFixedThreadPool(2)) {
+            var first = executor.submit(() -> {
+                firstThread.set(Thread.currentThread());
+                transactions.expire();
+            });
+            try {
+                assertTrue(entered.await(3, TimeUnit.SECONDS));
+                var second = executor.submit(() -> {
+                    secondThread.set(Thread.currentThread());
+                    transactions.expire();
+                });
+                long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(3);
+                while (!second.isDone() && (secondThread.get() == null
+                        || secondThread.get().getState() != Thread.State.BLOCKED)
+                        && System.nanoTime() < deadline) {
+                    Thread.sleep(1);
+                }
+                assertTrue(second.isDone() || (secondThread.get() != null
+                        && secondThread.get().getState() == Thread.State.BLOCKED));
+                release.countDown();
+                first.get(3, TimeUnit.SECONDS);
+                second.get(3, TimeUnit.SECONDS);
+            } finally {
+                release.countDown();
+            }
+        } finally {
+            clock.beforeRead = () -> { };
+        }
+        assertTrue(im.getProfileManager().tokenHasMoreUses(token));
+    }
+
+    public void testInvalidCredentialNeverAppearsInResponseOrLogs() throws Exception {
+        String sentinel = "unknown-credential-sentinel";
+        OAuthHttpFixture.Browser http = request("logout", Map.of("format", "json"));
+        http.headers.put("Authorization", "Token " + sentinel);
+        new LogoutService(im).service(http.request, http.response);
+        assertEquals(401, http.status);
+        assertFalse(http.text().contains(sentinel));
+        assertFalse(String.join("\n", logs).contains(sentinel));
+    }
+
+    public void testServerErrorDoesNotLogRequestCredentials() throws Exception {
+        OAuthHttpFixture.Browser http = request("fixture", Map.of("format", "json",
+                "token", anonymousToken, "password", "password-sentinel",
+                "code", "authorization-code-sentinel", "state", "state-sentinel"));
+        new JSONService(im) {
+            @Override protected void execute() throws Exception {
+                throw new Exception("Fixture failure");
+            }
+        }.service(http.request, http.response);
+        assertEquals(500, http.status);
+        String captured = http.text() + String.join("\n", logs);
+        for (String secret : List.of(anonymousToken, "password-sentinel",
+                "authorization-code-sentinel", "state-sentinel")) {
+            assertFalse(captured.contains(secret));
+        }
     }
 
     public void testDeliveredTokenCanBeRevokedAfterHandleExpiryWithoutAffectingNewLogin()
@@ -385,6 +477,7 @@ public class OAuthTransactionIntegrationTest extends InterMineAPITestCase {
         private volatile Instant now = Instant.parse("2026-11-21T12:00:00Z");
         @Override public ZoneId getZone() { return ZoneOffset.UTC; }
         @Override public Clock withZone(ZoneId zone) { return this; }
-        @Override public Instant instant() { return now; }
+        private volatile Runnable beforeRead = () -> { };
+        @Override public Instant instant() { beforeRead.run(); return now; }
     }
 }
