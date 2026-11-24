@@ -49,11 +49,11 @@
 
 **Interfaces:** Consume Task 1's six POST operations (including token-specific cleanup after handle expiry). Produce a backend-owned authorization URL response from `/api/auth/oauth2authenticator`; callback parameters remain provider/state/code. Add `BLUEGENES_PUBLIC_URL` (absolute application URL including deployment path). Session holds an opaque browser context reference; authoritative state tracks attempt, mine, roots, provider, callback, deadline, remote transaction and delivery status.
 
-- [ ] Add tests through the public Ring handler and a local HTTP InterMine fixture, using real session cookies: valid flow, cross-browser state, wrong/missing/duplicate provider/state, stale expiry, denial, replay, redirect tampering, namespace/root mismatch and default-backend-root mapping. Observe rejection tests failing against the current handler.
-- [ ] Implement SecureRandom state, exact public callback construction, safe authorization-URL assembly and atomic consumption. Preserve provider-specific callback URIs and cookie rotation. Reject unsupported transaction endpoints without trying the legacy flow.
-- [ ] Add barrier-driven tests for two callbacks, logout/new login during exchange/completion, stale Ring response writes and init delivery after logout. Assert exchange/transfer/revocation counts and that no rejected identity enters HTML. Observe each race regression before fixing it.
-- [ ] Implement authoritative lifecycle checks and serialized completion/cancellation using Task 1. Resolve identity/init data through the live context, not an embedded stale session identity. Acknowledge only an owned delivery; invalidate prior attempts on new login/register/logout. Bound waits and retain safe warnings for unconfirmed cancellation.
-- [ ] Sanitize upstream errors, disable auth/init caching, configure Secure cookies for HTTPS, document process-local sessions and required public URL. Run `lein test-backend` and `lein cljfmt check`; expected all pass. Commit.
+- [x] Add tests through the public Ring handler and a local HTTP InterMine fixture, using real session cookies: valid flow, cross-browser state, wrong/missing/duplicate provider/state, stale expiry, denial, replay, redirect tampering, namespace/root mismatch and default-backend-root mapping. Observe rejection tests failing against the current handler.
+- [x] Implement SecureRandom state, exact public callback construction, safe authorization-URL assembly and atomic consumption. Preserve provider-specific callback URIs and cookie rotation. Reject unsupported transaction endpoints without trying the legacy flow.
+- [x] Add barrier-driven tests for two callbacks, logout/new login during exchange/completion, stale Ring response writes and init delivery after logout. Assert exchange/transfer/revocation counts and that no rejected identity enters HTML. Observe each race regression before fixing it.
+- [x] Implement authoritative lifecycle checks and serialized completion/cancellation using Task 1. Resolve identity/init data through the live context, not an embedded stale session identity. Acknowledge only an owned delivery; invalidate prior attempts on new login/register/logout. Bound waits and retain safe warnings for unconfirmed cancellation.
+- [x] Sanitize upstream errors, disable auth/init caching, configure Secure cookies for HTTPS, document process-local sessions and required public URL. Run `lein test-backend` and `lein cljfmt check`; expected all pass. Commit.
 
 ## Task 3: Frontend request ownership and paired account behavior
 
@@ -61,16 +61,19 @@
 
 **Interfaces:** Each auth operation carries initiating mine, service root and generation into success/failure handlers. OAuth success follows the backend's complete URL without appending redirect/state. Stale results cannot replace another mine or a newer authentication generation. Logout warnings distinguish local clearing from confirmed remote revocation.
 
-- [ ] Add delayed-response tests for mine switches, login after logout, overlapping logins and late failures. Assert per-mine token/local-storage/list changes. Run focused CLJS tests and observe current behavior failing.
-- [ ] Implement request ownership, generation checks and origin-mine refresh. Preserve renamed-list notices and boot token validation. Follow backend-generated OAuth URLs.
-- [ ] Add tests for revocation failure warning and local logout cleanup, then implement safe messages. Add paired list/preference retention and ownership checks using disposable accounts.
-- [ ] Run all CLJS tests, build production assets sequentially, restart the task server and run browser/API suites against Task 1's API. Expected all applicable checks pass and fixture cleanup preserves existing lists. Commit.
+- [x] Add delayed-response tests for mine switches, login after logout, overlapping logins and late failures. Assert per-mine token/local-storage/list changes. Run focused CLJS tests and observe current behavior failing.
+- [x] Implement request ownership, generation checks and origin-mine refresh. Preserve renamed-list notices and boot token validation. Follow backend-generated OAuth URLs.
+- [x] Add tests for revocation failure warning and local logout cleanup, then implement safe messages. Add paired list/preference retention and ownership checks using disposable accounts.
+- [x] Run all CLJS tests, build production assets sequentially, restart the task server and run browser/API suites against Task 1's API. Expected all applicable checks pass and fixture cleanup preserves existing lists. Commit.
 
 ## Task 4: Exact-source integration and review
 
 **Files:** both CI workflows as needed, BlueGenes configuration/operator docs, InterMine modernization decision record.
 
-- [ ] Pin the paired workflow to the tested InterMine commit, run backend/CLJS/tool/browser/API and relevant live-client gates, and inspect hosted results for both exact revisions.
-- [ ] Run Aislop on both ranges. Fix errors/fixable warnings and surface nonfixable warnings.
-- [ ] Complete one fresh whole-project review, grade by effect, and make one Important/Critical fix pass with regressions and green suites. Do not re-review; record deferred minors and rulings.
-- [ ] Commit/push verified work and record sources, tests, configuration and known deployment boundary. Continue to Alluvium display identity, scientific workflow validation and primary-UI cutover.
+- [x] Pin the paired workflow to the tested InterMine commit, run backend/CLJS/tool/browser/API and relevant live-client gates, and inspect hosted results for both exact revisions.
+- [x] Run Aislop on both ranges. Fix errors/fixable warnings and surface nonfixable warnings.
+- [x] Complete one fresh whole-project review, grade by effect, and make one Important/Critical fix pass with regressions and green suites. Do not re-review; record deferred minors and rulings.
+- [x] Commit/push verified work and record sources, tests, configuration and known deployment boundary.
+
+Completion evidence and retained decisions: [Java 21 and browser authentication](../../java21-auth-decisions-2026-11-24.md).
+Alluvium display identity, scientific workflow validation and primary-UI cutover remain the next project.
