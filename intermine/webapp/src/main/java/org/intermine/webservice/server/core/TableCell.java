@@ -10,12 +10,14 @@ package org.intermine.webservice.server.core;
  *
  */
 
+import java.util.Set;
+
 import org.intermine.api.results.ResultCell;
+import org.intermine.metadata.TypeUtil;
+import org.intermine.metadata.Util;
 import org.intermine.model.FastPathObject;
 import org.intermine.model.InterMineObject;
 import org.intermine.pathquery.Path;
-import org.intermine.util.DynamicUtil;
-import org.intermine.metadata.TypeUtil;
 
 /**
  * A representation of a table cell.
@@ -79,8 +81,29 @@ public final class TableCell implements ResultCell
         if (fpo == null) {
             return null;
         }
-        String cls = DynamicUtil.getSimpleClassName(fpo.getClass());
-        return TypeUtil.unqualifiedName(cls);
+        return TypeUtil.unqualifiedName(typeFor(fpo.getClass(), column).getName());
+    }
+
+    /**
+     * The model class an object is reported as in a column. An object can have
+     * several classes at once (a Gene that is both ProteinCodingGene and
+     * NotInSystematicSequenceOfS288C). The class that fits the column's type
+     * wins; otherwise the first class in name order.
+     * @param clazz The class of the object, possibly a dynamic class.
+     * @param view The column, or null.
+     * @return One of the classes the object is made of.
+     */
+    static Class<?> typeFor(Class<?> clazz, Path view) {
+        Set<Class<?>> classes = Util.decomposeClass(clazz);
+        if (view != null && view.getLastClassDescriptor() != null) {
+            Class<?> columnType = view.getLastClassDescriptor().getType();
+            for (Class<?> c : classes) {
+                if (columnType.isAssignableFrom(c)) {
+                    return c;
+                }
+            }
+        }
+        return classes.iterator().next();
     }
 
     @Override
