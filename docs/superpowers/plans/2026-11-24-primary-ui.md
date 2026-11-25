@@ -38,16 +38,16 @@
 **Files (BlueGenes):** new `src/cljs/bluegenes/primary_ui.cljs` and `test/cljs/bluegenes/primary_ui_test.cljs`; `route.cljs`, `events.cljs`/boot wiring as needed.
 **Interfaces:** `:primary-ui/import-query` consumes route mine, XML query and run flag after mine boot; yields query-builder state or existing `:results/history+` flow. Invalid XML/model or excessive size yields a persistent safe message. Query-builder routes consume `query`/`run` query parameters; no backend authentication state changes.
 
-- [ ] Add failing regressions for valid XML, immediate run, malformed/oversized input, unknown model paths and wrong-mine delivery.
-- [ ] Implement import through existing parser/query-builder/results events; make the new route parameters participate in controller identity so back/reload work. Run focused/full CLJS, format and Aislop; commit.
+- [x] Add failing regressions for valid XML, immediate run, malformed/oversized input, unknown model paths and wrong-mine delivery.
+- [x] Implement import through existing parser/query-builder/results events; make the new route parameters participate in controller identity so back/reload work. Run focused/full CLJS, format and Aislop; commit.
 
 ## Task 3: Explicit version and model capabilities
 
-**Files (BlueGenes):** `primary_ui.cljs`, `views.cljs`, `events/boot.cljs`, `events/cache.cljs`, regions views/events and navbar; tests in `primary_ui_test.cljs` plus existing boot/regions tests.
+**Files (BlueGenes):** `primary_ui.cljs`, `views.cljs`, `events/boot.cljs`, `events.cljs`, regions views/events and navbar; tests in `primary_ui_test.cljs` plus existing boot/regions tests.
 **Interfaces:** Pure `capabilities` derives API/model readiness and Regions support from a mine's metadata. Subscriptions/rendering consume that state; biological fetches run only when required model paths exist. Compatibility messages distinguish unsupported version, missing metadata and unavailable Regions.
 
-- [ ] Add RED tests for API26/27/36, missing/invalid metadata, generic vs genomic model, direct Regions route and mine switching.
-- [ ] Implement persistent accessible compatibility state, guard biological fetches, and preserve supported navigation. Run focused/full CLJS and backend suites, formatting and Aislop; commit.
+- [x] Add RED tests for API26/27/36, missing/invalid metadata, generic vs genomic model, direct Regions route and mine switching.
+- [x] Implement persistent accessible compatibility state, guard biological fetches, and preserve supported navigation. Run focused/full CLJS and backend suites, formatting and Aislop; commit.
 
 ## Task 4: Paired primary-UI validation and review
 

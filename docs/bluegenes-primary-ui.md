@@ -45,7 +45,9 @@ the BlueGenes authentication deployment guide.
 | `/loadQuery.do?method=xml&query=...` | Import XML into query builder |
 | Same XML link with `skipBuilder=true` | Import and run the query |
 
-Names are encoded as individual path segments. Empty names, dot-only path segments,
+Names normally use encoded path segments. Names containing slash, backslash, percent
+or semicolon use `/results?title=...` or `/templates?template=...` query entries,
+which preserve the exact name across server reloads without relaxing URI checks. Empty names, dot-only path segments,
 names longer than 1,024 characters, duplicate parameters and ambiguous list names
 are rejected. XML entry links accept at most 8,192 characters, and the complete
 encoded destination must also fit within 8,192 characters. Invalid report IDs
@@ -58,6 +60,18 @@ bridge does not implement. Credentials are never copied into a redirect. POSTs,
 administration, service endpoints, static assets and existing session query drafts
 also retain their current handlers. A permanent identifier URL continues to resolve
 through InterMine's existing resolver, then follows the report mapping.
+
+## Mine capabilities
+
+BlueGenes requires API 27 or later. External sign-in requires API 36 or later;
+password sign-in remains available on supported older APIs. Missing API-version or
+model metadata produces a persistent message with a retry action instead of showing
+a usable page based on failed metadata. An unsupported API has its own message.
+
+Regions is available only when the model contains the genomic paths its queries
+need. Generic mines keep list, template, report and query-builder navigation; direct
+Regions links explain the limitation and offer the query builder. No Organism or
+SequenceFeature query is sent by those region controls against a generic model.
 
 ## Sessions and rollback
 

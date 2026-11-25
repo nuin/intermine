@@ -53,9 +53,9 @@ public class PrimaryUiRoutesTest
     @Test
     public void namesAreEncodedOnceWithoutChangingTheResource() throws Exception {
         String value = "A/B + β&%";
-        assertEquals("https://mine.example/bluegenes/test/results/A%2FB%20%2B%20%CE%B2%26%25",
+        assertEquals("https://mine.example/bluegenes/test/results?title=A%2FB%20%2B%20%CE%B2%26%25",
                 route("/bagDetails.do", Map.of("bagName", new String[] {value})));
-        assertEquals("https://mine.example/bluegenes/test/templates/A%2FB%20%2B%20%CE%B2%26%25",
+        assertEquals("https://mine.example/bluegenes/test/templates?template=A%2FB%20%2B%20%CE%B2%26%25",
                 route("/template.do", Map.of("name", new String[] {value})));
         fails(IllegalArgumentException.class, () -> route("/bagDetails.do",
                 Map.of("name", new String[] {"one"}, "bagName", new String[] {"two"})));

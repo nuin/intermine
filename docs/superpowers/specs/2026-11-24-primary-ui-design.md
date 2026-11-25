@@ -34,7 +34,8 @@ redirect unknown/stateful operations to the homepage.
   `skipBuilder=true`. Map them to a BlueGenes query-builder entry that imports the
   XML and, when requested, runs it. Preserve Unicode and reserved characters;
   invalid/oversized queries display an error, never a different query.
-- Named list/template links preserve the exact name as one encoded path segment.
+- Named list/template links preserve the exact name in an encoded path segment, or
+  a query entry when reserved path characters would be rejected by the server.
   Unknown parameters, unsupported query methods/exports, legacy form POSTs,
   administration, authentication callbacks, API and static resources retain their
   existing handlers. Existing session-backed query drafts also retain their legacy

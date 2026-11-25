@@ -148,6 +148,11 @@ public final class PrimaryUiRoutes
         if (name.isBlank() || ".".equals(name) || "..".equals(name) || name.length() > 1024) {
             throw new IllegalArgumentException("The resource name is invalid");
         }
+        if (name.indexOf('/') >= 0 || name.indexOf('\\') >= 0
+                || name.indexOf('%') >= 0 || name.indexOf(';') >= 0) {
+            String key = "/results/".equals(path) ? "title" : "template";
+            return root + path.substring(0, path.length() - 1) + "?" + key + "=" + encode(name);
+        }
         return root + path + encode(name);
     }
 
