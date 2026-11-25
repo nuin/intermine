@@ -32,7 +32,13 @@ legacy framework, deploy to production, merge upstream, or validate genomic tool
   passed browser, migration and JS/Python client checks. Its core job was blocked
   by Maven Central HTTP 429 during dependency download, cancelling the biological
   unit job. Checkstyle passed separately. GitHub's retry endpoints returned HTTP
-  500; the documentation push triggers a new run without changing executable sources.
+  500; a documentation-only push triggered a new run without changing executable sources.
+- The fresh [InterMine CI run 45651562113](https://github.com/nuin/intermine/actions/runs/45651562113)
+  passed all six jobs, including core and biological modules, both web-service
+  clients, migration and browser checks. [Checkstyle 45651562276](https://github.com/nuin/intermine/actions/runs/45651562276)
+  also passed on `7e20d99160d452c39147087c965e3daa88c5af04`, whose changes after
+  the validated source revision are documentation only. Final worklist bookkeeping
+  reuses these checks without changing executable sources.
 
 The local validation pair uses the preserved runtime databases. A local address
 conflict means its backend URL uses `127.0.0.1:8080`, while the frontend is

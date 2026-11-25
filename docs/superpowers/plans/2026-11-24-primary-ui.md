@@ -53,7 +53,10 @@
 
 **Files:** paired CI pin/configuration, production browser tests, operator/validation documentation, completed plan and ledger.
 
-- [ ] Build/deploy the backend and production frontend sequentially; enable the primary URL in the task's preserved local deployment. Exercise home and old report/list/template/query links, reloads, capability notices and existing account/list tests; compare list snapshots.
-- [ ] Configure the disposable paired CI fixture to enable the route bridge and pin the tested backend. Run existing core/live/client checks appropriate to changes and inspect exact-source hosted results.
-- [ ] Run Aislop on both change ranges; one fresh whole-project review and one Important/Critical fix pass with RED/GREEN regressions. Record deferred minors and all rulings.
-- [ ] Commit/push verified work, complete this plan and retain the queued worklist. Report runtime/deployment boundaries and rollback instructions.
+- [x] Build/deploy the backend and production frontend sequentially; enable the primary URL in the task's preserved local deployment. Exercise home and old report/list/template/query links, reloads, capability notices and existing account/list tests; compare list snapshots.
+- [x] Configure the disposable paired CI fixture to enable the route bridge and pin the tested backend. Run existing core/live/client checks appropriate to changes and inspect exact-source hosted results.
+- [x] Run Aislop on both change ranges; one fresh whole-project review and one Important/Critical fix pass with RED/GREEN regressions. Record deferred minors and all rulings.
+- [x] Commit/push verified work, complete this plan and retain the queued worklist. Report runtime/deployment boundaries and rollback instructions.
+
+Completed 2026-11-25. Evidence, review fixes, decisions and deferred minors are in
+[the validation record](../../primary-ui-validation-2026-11-24.md).
