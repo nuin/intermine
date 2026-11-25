@@ -54,6 +54,13 @@ encoded destination must also fit within 8,192 characters. Invalid report IDs
 produce HTTP 400; an absent report object produces 404. Redirects are temporary and
 uncached, with referrers suppressed.
 
+Imported queries keep their XML in the query-builder URL, including when run
+immediately, so reloading or sharing that URL runs the same query. Imports wait for
+the selected mine's version and model; retrying failed metadata replays the link.
+Query features the current client cannot preserve (including LOOKUP `extraValue`,
+loop constraints and ID-set constraints) produce an explicit unavailable message
+instead of executing a changed query. Use the legacy query link for those features.
+
 Parameters outside the supported route's allowlist retain the legacy handler. This
 preserves parameterized template operations, query exports and other semantics the
 bridge does not implement. Credentials are never copied into a redirect. POSTs,
@@ -79,7 +86,8 @@ BlueGenes and the legacy servlet UI have separate browser sessions. Sign in to
 BlueGenes to access the same persisted account lists. Anonymous legacy work stays in
 its original servlet session; no token or anonymous-profile migration is implied.
 Append `ui=legacy` to a browser entry link to use its legacy handler for that request.
-This escape does not create a persistent UI preference.
+This escape does not create a persistent UI preference. For the home page use
+`/begin.do?ui=legacy`: the legacy redirect from `/` or `/index.jsp` drops that parameter.
 
 To roll back the deployment entry point, clear `bluegenes.primary.url` and rebuild/
 redeploy the WAR. The API, profile database and saved lists are not reset. Keep the
@@ -92,3 +100,9 @@ query links under a deployment prefix, plus login/private-list behavior. The gen
 Employee fixture verifies navigation and unsupported biological capabilities. The
 separate queued genomic-fixture work is needed to validate biological tools and
 scientific workflows; see [the worklist](development-worklist.md).
+
+Two minor edge cases remain: internal BlueGenes list links named exactly `.` or `..`
+can normalize to another path (the InterMine bridge rejects these names), and the
+home escape requires the explicit `begin.do` URL above. Existing bookmarks with
+encoded path separators may still be rejected by the server; newly generated links
+use the reload-safe query entries described above.
