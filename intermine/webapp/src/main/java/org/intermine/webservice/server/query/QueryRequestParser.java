@@ -10,8 +10,6 @@ package org.intermine.webservice.server.query;
  *
  */
 
-import java.io.UnsupportedEncodingException;
-
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -27,9 +25,8 @@ import org.intermine.webservice.server.WebServiceRequestParser;
 import org.intermine.webservice.server.exceptions.BadRequestException;
 
 /**
- * Processes query request parameters. The main function of this
- * abstraction to to ensure the Query-xml is properly
- * decoded.
+ * Reads query XML from servlet-decoded request parameters, compressed queries,
+ * or the query store.
  *
  * @author Alex Kalderimis
  **/
@@ -59,65 +56,6 @@ public class QueryRequestParser extends WebServiceRequestParser
     private static final String QLZW_PARAMETER = "qlzw";
 
     private static final String QID = "qid";
-
-    /**
-     * Function for dealing with encoding issues with various
-     * inputs.
-     * @param latin1 XML in latin1 encoding.
-     * @return The fixed string.
-     */
-    private static String fixEncoding(String latin1) {
-        try {
-            byte[] bytes = latin1.getBytes("ISO-8859-1");
-            if (!validUTF8(bytes)) {
-                return latin1;
-            }
-            return new String(bytes, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            // Impossible, throw unchecked
-            throw new IllegalStateException("Neither Latin1 nor UTF-8: " + e.getMessage());
-        }
-
-    }
-
-    private static boolean validUTF8(byte[] input) {
-        int i = 0;
-        // Check for BOM
-        if (input.length >= 3 && (input[0] & 0xFF) == 0xEF
-                && (input[1] & 0xFF) == 0xBB & (input[2] & 0xFF) == 0xBF) {
-            i = 3;
-        }
-
-        int end;
-        for (int j = input.length; i < j; ++i) {
-            int octet = input[i];
-            if ((octet & 0x80) == 0) {
-                continue; // ASCII
-            }
-
-            // Check for UTF-8 leading byte
-            if ((octet & 0xE0) == 0xC0) {
-                end = i + 1;
-            } else if ((octet & 0xF0) == 0xE0) {
-                end = i + 2;
-            } else if ((octet & 0xF8) == 0xF0) {
-                end = i + 3;
-            } else {
-                // Java only supports BMP so 3 is max
-                return false;
-            }
-
-            while (i < end) {
-                i++;
-                octet = input[i];
-                if ((octet & 0xC0) != 0x80) {
-                    // Not a valid trailing byte
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
     /**
      * Decompress a list of output ks to a string.
@@ -163,7 +101,6 @@ public class QueryRequestParser extends WebServiceRequestParser
      */
     public static String decodeLZWString(String encoded) {
         List<Integer> codes = new ArrayList<Integer>();
-        encoded = fixEncoding(encoded);
         int length = encoded.length();
         for (int i = 0; i < length; i++) {
             Integer cp = Integer.valueOf(encoded.codePointAt(i));
@@ -194,6 +131,6 @@ public class QueryRequestParser extends WebServiceRequestParser
         if (StringUtils.isBlank(xmlQuery)) {
             throw new BadRequestException("The 'query' parameter must not be blank");
         }
-        return fixEncoding(xmlQuery);
+        return xmlQuery;
     }
 }

@@ -230,3 +230,4 @@ gradle-wrapper.properties
 # Sub-projects loaded by CI
 client-JS/
 client-PY/
+/.worktrees/
