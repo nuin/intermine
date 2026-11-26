@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "name": "YeastMine bounded biological workload",
+  "model": "genomic",
+  "dataset": "yeastmine.alliancegenome.org/yeastmine; release recorded separately",
+  "queries": [
+    {
+      "id": "act1-lookup",
+      "query": "<query model=\"genomic\" view=\"Gene.secondaryIdentifier Gene.symbol\" sortOrder=\"Gene.secondaryIdentifier ASC\"><constraint path=\"Gene\" op=\"LOOKUP\" value=\"ACT1\" extraValue=\"S. cerevisiae\"/></query>",
+      "start": 0, "size": 100, "ordered": true,
+      "expectedRows": [["YFL039C", "ACT1"]]
+    },
+    {
+      "id": "act1-go-annotations",
+      "query": "<query model=\"genomic\" view=\"Gene.primaryIdentifier Gene.goAnnotation.ontologyTerm.identifier Gene.goAnnotation.ontologyTerm.name Gene.goAnnotation.ontologyTerm.namespace\" sortOrder=\"Gene.primaryIdentifier ASC Gene.goAnnotation.ontologyTerm.identifier ASC Gene.goAnnotation.ontologyTerm.name ASC Gene.goAnnotation.ontologyTerm.namespace ASC\"><constraint path=\"Gene\" op=\"LOOKUP\" value=\"ACT1\" extraValue=\"S. cerevisiae\"/></query>",
+      "start": 0, "size": 100, "ordered": true
+    },
+    {
+      "id": "act1-protein",
+      "query": "<query model=\"genomic\" view=\"Gene.primaryIdentifier Gene.proteins.symbol Gene.proteins.length Gene.proteins.molecularWeight\" sortOrder=\"Gene.primaryIdentifier ASC Gene.proteins.symbol ASC Gene.proteins.length ASC Gene.proteins.molecularWeight ASC\"><constraint path=\"Gene\" op=\"LOOKUP\" value=\"ACT1\" extraValue=\"S. cerevisiae\"/></query>",
+      "start": 0, "size": 100, "ordered": true
+    },
+    {
+      "id": "yeast-gene-page",
+      "query": "<query model=\"genomic\" view=\"Gene.primaryIdentifier Gene.secondaryIdentifier Gene.symbol Gene.featureType\" sortOrder=\"Gene.primaryIdentifier ASC Gene.secondaryIdentifier ASC Gene.symbol ASC Gene.featureType ASC\"><constraint path=\"Gene.organism.shortName\" op=\"=\" value=\"S. cerevisiae\"/></query>",
+      "start": 0, "size": 100, "ordered": true
+    },
+    {
+      "id": "yeast-gene-later-page",
+      "query": "<query model=\"genomic\" view=\"Gene.primaryIdentifier Gene.secondaryIdentifier Gene.symbol Gene.featureType\" sortOrder=\"Gene.primaryIdentifier ASC Gene.secondaryIdentifier ASC Gene.symbol ASC Gene.featureType ASC\"><constraint path=\"Gene.organism.shortName\" op=\"=\" value=\"S. cerevisiae\"/></query>",
+      "start": 1000, "size": 100, "ordered": true
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "name": "Employee fixture harness validation",
+  "model": "testmodel",
+  "dataset": "Preserved testmine Employee fixture; not production-sized",
+  "queries": [
+    {
+      "id": "name-prefix",
+      "query": "<query model=\"testmodel\" view=\"Employee.name\" sortOrder=\"Employee.name ASC\"><constraint path=\"Employee.name\" op=\"LIKE\" value=\"Da*\"/></query>",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedRows": [["Dan Gore"], ["David Brent"]]
+    },
+    {
+      "id": "department-join",
+      "query": "<query model=\"testmodel\" view=\"Employee.name Employee.department.name\" sortOrder=\"Employee.name ASC Employee.department.name ASC\"><constraint path=\"Employee.name\" op=\"ONE OF\"><value>David Brent</value><value>Neil Godwin</value></constraint></query>",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedRows": [["David Brent", "Sales"], ["Neil Godwin", "Human Resources"]]
+    },
+    {
+      "id": "employee-page",
+      "query": "<query model=\"testmodel\" view=\"Employee.id Employee.name Employee.department.name Employee.department.company.name\" sortOrder=\"Employee.id ASC\"/>",
+      "start": 0,
+      "size": 100,
+      "ordered": true
+    },
+    {
+      "id": "employee-later-page",
+      "query": "<query model=\"testmodel\" view=\"Employee.id Employee.name Employee.department.name Employee.department.company.name\" sortOrder=\"Employee.id ASC\"/>",
+      "start": 100,
+      "size": 100,
+      "ordered": true
+    }
+  ]
+}

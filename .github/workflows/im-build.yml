@@ -26,6 +26,11 @@ jobs:
     - run: npm ci --prefix config/ci/browser
     - run: npm test --prefix config/ci/browser
     - run: node --test bio/webapp/src/test/js/*.test.cjs
+    - run: node --test config/performance/*.test.cjs
+    - uses: actions/setup-python@v7
+      with:
+        python-version: '3.10'
+    - run: python -m unittest discover -s config/performance -p 'test_*.py'
 
   database-migration:
     runs-on: ubuntu-latest
@@ -98,6 +103,20 @@ jobs:
           echo 'Migration verification failed to detect changed data' >&2
           exit 1
         fi
+    - name: Verify query profiler on disposable PostgreSQL 18
+      env:
+        PG18_CONTAINER: ${{ job.services.target.id }}
+      run: |
+        set -euo pipefail
+        psql --no-password -v ON_ERROR_STOP=1 -c "ALTER SYSTEM SET shared_preload_libraries = 'pg_stat_statements';"
+        docker restart "$PG18_CONTAINER"
+        for attempt in $(seq 1 30); do
+          if pg_isready -h localhost -U postgres; then break; fi
+          sleep 1
+        done
+        createdb --no-password intermine_performance_fixture
+        psql --no-password -d intermine_performance_fixture -v ON_ERROR_STOP=1 -f config/performance/profile-fixture.sql
+        PGPROFILE_TEST_DATABASE=intermine_performance_fixture python3 config/performance/verify-pg-profile.py
 
   unit-tests:
     runs-on: ubuntu-latest
