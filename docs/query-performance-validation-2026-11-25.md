@@ -150,6 +150,14 @@ the comparison output carries that limitation.
 
 Two new failing controls passed after the compatibility change (12 Python tests
 total). Disposable PostgreSQL 15.6 and 18.7 integrations both passed; CI now checks
-15.17 and 18.7 separately. The live database inventory and connection details remain
+15.17 and 18.7 separately; all eight [CI jobs](https://github.com/nuin/intermine/actions/runs/45838520284)
+and [Checkstyle](https://github.com/nuin/intermine/actions/runs/45838520273) passed for
+source commit `09c569c12a`. The live database inventory and connection details remain
 in ignored local build artifacts, with credentials kept in process memory. This
 compatibility change does not upgrade or alter the deployed database.
+
+The user kept the deployment pass read-only. Statistics views were not installed,
+and the current AWS identity lacked permission to download the existing slow-query
+log. Neither restriction was bypassed. Query-level production SQL attribution remains
+pending those evidence sources; the completed inventory does not justify a cache or
+index change by itself.

@@ -59,10 +59,12 @@ development worklist, this plan and validation record.
   and compare an independent rerun. Verify seeded expectations and negative controls.
 - [x] Capture database evidence and demonstrate profiler deltas in an isolated
   instance. Record limitations, useful candidates and next data requirements.
-- [ ] Run one fresh review and one important-finding fix pass, then relevant CI,
+- [x] Run one fresh review and one important-finding fix pass, then relevant CI,
   Aislop and final commands. Commit/push, update the worklist and report evidence.
 
 Deployment follow-up authorized by the user: identify Multitenant EC2 and InterMine
 RDS, adapt profiling to the observed PostgreSQL 15 version, and collect read-only
 database evidence. Live extension installation remains a separate explicit decision.
 Keep raw production inventory and connection details in ignored local artifacts.
+Completed read-only inventory on PostgreSQL 15.17. User declined extension setup;
+existing slow-log download was denied by AWS IAM. No production mutations performed.
