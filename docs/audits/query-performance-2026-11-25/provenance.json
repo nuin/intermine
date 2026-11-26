@@ -8,5 +8,7 @@
   "expectedAct1Source": "https://wiki.yeastgenome.org/index.php/YFL039C",
   "expectedEmployeeSource": "Direct SQL over preserved intermine-runtime-fixed fixture; API translation under test is independent of SQL read, underlying data shared",
   "postgresFixture": "Disposable PostgreSQL 18.7, intermine_performance_fixture, 1000 IDs; three SELECT count(*) queries with id >= 1, 2, 3",
-  "interpretation": "Uncontrolled caches; sequential bounded queries; network-inclusive latency; result consistency is not complete biological validation"
+  "interpretation": "Uncontrolled caches; sequential bounded queries; network-inclusive latency; result consistency is not complete biological validation",
+  "verificationCommit": "5a57f90a82",
+  "verificationNote": "November 26: stricter API envelope, numeric precision and UTF-8 validation; same baseline fingerprints"
 }

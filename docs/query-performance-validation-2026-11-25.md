@@ -80,7 +80,7 @@ alone cannot reveal SQL execution cost or cache hit rates. Use the
 [operator commands](query-performance.md#capture-postgresql-evidence) against an
 existing profiled instance or an appropriate staging copy. If YeastMine runs an
 older PostgreSQL version, adapt the profiler to that version's available fields
-before using it; its current contract requires PostgreSQL 18 or later.
+before using it. The later PostgreSQL 15 compatibility work is described below.
 
 Then inspect the most expensive plan or instrument the existing cache, choose one
 change, and replay the same workload with unchanged fingerprints. Broader biological
@@ -98,4 +98,58 @@ Implementation decisions retained from the work ledger:
 - Restored unrelated changes made by an over-broad formatter invocation; final
   changes contain only the performance tools, CI wiring, documentation and evidence.
 
-Final review and CI results are recorded below when available.
+## Final review and verification — 2026-11-26
+
+One fresh review identified five important findings. One fix pass added failing
+controls before correcting each behavior:
+
+- Restricted statistics readers now work without `pg_read_all_settings`; ordinary
+  and non-inheriting roles receive an explicit unavailable status.
+- Incorrect response models/offsets, missing views, short rows and contradictory
+  success/error fields fail even without independent expected rows.
+- Decimal precision loss and invalid UTF-8 fail before fingerprinting; the same
+  numeric guard applies to file-based expectations.
+- Disabled statement tracking is explicit. Lost representative SQL text invalidates
+  capture rather than silently omitting statements. Tracking settings and their
+  session scope are recorded.
+- Each captured section carries database identity in the same SQL statement;
+  switching backends between connections invalidates the snapshot.
+
+Final local checks: 32 Node tests and 10 Python tests passed. Live PostgreSQL checks
+passed for the three-call delta, a statistics reader without settings access, an
+ordinary role, a non-inheriting role and disabled tracking. A second bounded
+verification on both mines passed the stricter checks and matched the earlier
+fingerprints: [YeastMine](audits/query-performance-2026-11-25/yeastmine-verified.json)
+and [Employee](audits/query-performance-2026-11-25/employee-verified.json).
+The YeastMine verification added ten sequential query requests on November 26.
+
+One minor finding remains deferred: reversed timestamps on otherwise unchanged idle
+PostgreSQL snapshots are accepted. Supply the earlier snapshot first; this does not
+affect the captured baseline. The intentional CLI status print remains the sole
+Aislop warning (score 100, no errors or fixable warnings).
+
+Review scope rulings: cache/index choices await database evidence; the four
+consistency-only biological queries still need independent completeness expectations;
+the reviewer used synthetic controls instead of repeating production traffic.
+These limits avoid unsupported performance or biological claims, but leave those
+decisions open. The implementer subsequently ran the bounded verification above.
+
+The initial implementation passed all six [InterMine CI jobs](https://github.com/nuin/intermine/actions/runs/45732145952).
+Review-fix commit `5a57f90a82` also passed all six
+[InterMine CI jobs](https://github.com/nuin/intermine/actions/runs/45834628217).
+
+## Deployment compatibility
+
+The user subsequently identified their EC2 deployment and RDS database. Direct
+read-only inventory confirmed PostgreSQL 15.17, requiring compatibility beyond the
+original PostgreSQL 18 contract. The profiler now detects `stats_since` from the
+extension's actual columns, uses the available counters on PostgreSQL 15, and
+records the weaker reset-detection capability. On older extensions, a targeted
+statement reset can escape detection if counters regrow before the next snapshot;
+the comparison output carries that limitation.
+
+Two new failing controls passed after the compatibility change (12 Python tests
+total). Disposable PostgreSQL 15.6 and 18.7 integrations both passed; CI now checks
+15.17 and 18.7 separately. The live database inventory and connection details remain
+in ignored local build artifacts, with credentials kept in process memory. This
+compatibility change does not upgrade or alter the deployed database.

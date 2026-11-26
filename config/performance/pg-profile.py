@@ -48,7 +48,11 @@ INDEXES_SQL = """SELECT coalesce(json_agg(i ORDER BY bytes DESC), '[]'::json) FR
     SELECT schemaname AS schema, relname AS table, indexrelname AS name,
         pg_relation_size(indexrelid) AS bytes, idx_scan AS scans
     FROM pg_stat_user_indexes) i"""
-EXTENSION_SQL = """SELECT json_build_object('schema', n.nspname, 'version', e.extversion)
+EXTENSION_SQL = """SELECT json_build_object('schema', n.nspname, 'version', e.extversion,
+    'statsSinceAvailable', EXISTS (
+        SELECT 1 FROM pg_attribute a JOIN pg_class c ON c.oid = a.attrelid
+        WHERE c.relnamespace = e.extnamespace AND c.relname = 'pg_stat_statements'
+            AND a.attname = 'stats_since' AND NOT a.attisdropped))
     FROM pg_extension e JOIN pg_namespace n ON n.oid = e.extnamespace
     WHERE e.extname = 'pg_stat_statements'"""
 
@@ -141,12 +145,14 @@ def statement_snapshot(database, details, settings):
         raise ValueError("Statement tracking configuration is unavailable")
     if tracking["pg_stat_statements.track"] == "none":
         return {"status": "tracking-disabled", "tracking": tracking}
+    per_statement_reset = extension.get("statsSinceAvailable", False)
+    stats_since = "stats_since" if per_statement_reset else "NULL::timestamptz"
     rows = query_json(
         database,
         f"""SELECT coalesce(json_agg(s), '[]'::json) FROM (
         SELECT queryid::text AS "queryId", userid AS "userId", toplevel,
             query IS NOT NULL AS "hasQueryText",
-            stats_since AS "statsSince", calls, total_exec_time AS "totalExecMs",
+            {stats_since} AS "statsSince", calls, total_exec_time AS "totalExecMs",
             total_plan_time AS "totalPlanMs", rows, shared_blks_hit AS "sharedHits",
             shared_blks_read AS "sharedReads", temp_blks_read AS "tempReads",
             temp_blks_written AS "tempWrites"
@@ -165,6 +171,9 @@ def statement_snapshot(database, details, settings):
     return {
         "status": "available",
         "extensionVersion": extension["version"],
+        "resetDetection": "per-statement-start"
+        if per_statement_reset
+        else "global-and-counter-regression",
         "tracking": tracking,
         "trackingScope": "profiling session; application sessions can override these settings",
         **info,
@@ -174,8 +183,8 @@ def statement_snapshot(database, details, settings):
 
 def snapshot(database):
     details = query_json(database, DATABASE_SQL)
-    if int(details["serverVersion"]) < 180000:
-        raise ValueError("This profiler requires PostgreSQL 18 or later")
+    if int(details["serverVersion"]) < 150000:
+        raise ValueError("This profiler requires PostgreSQL 15 or later")
     settings = query_json(database, SETTINGS_SQL, details)
     return {
         "schemaVersion": 1,
@@ -222,6 +231,10 @@ def compare(before, after):
         raise ValueError("Statement profiling is unavailable in one or both snapshots")
     if old.get("tracking") != new.get("tracking"):
         raise ValueError("Statement tracking configuration changed during the interval")
+    if old.get("resetDetection") != new.get("resetDetection"):
+        raise ValueError(
+            "Statement reset detection capability changed during the interval"
+        )
     if (old["resetAt"], old["dealloc"]) != (new["resetAt"], new["dealloc"]):
         raise ValueError(
             "Statement statistics reset or evicted entries during the interval"
@@ -255,6 +268,12 @@ def compare(before, after):
         "from": before["capturedAt"],
         "to": after["capturedAt"],
         "database": after["database"],
+        "resetDetection": new.get("resetDetection"),
+        "limitations": [
+            "Targeted statement resets may be undetectable when counters regrow"
+        ]
+        if new.get("resetDetection") == "global-and-counter-regression"
+        else [],
         "queries": queries,
     }
 

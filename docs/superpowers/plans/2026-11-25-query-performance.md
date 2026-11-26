@@ -6,7 +6,7 @@
 **Goal:** Produce repeatable query timings with result checks and PostgreSQL evidence.
 **Architecture:** A bounded HTTP replay command pairs with a fixed-query read-only
 PostgreSQL snapshot/delta command. JSON artifacts support before/after comparison.
-**Tech Stack:** Node 22 built-ins, Python 3 standard library, psql/PostgreSQL 18.
+**Tech Stack:** Node 22 built-ins, Python 3 standard library, psql/PostgreSQL 15–18.
 **Spec:** `docs/superpowers/specs/2026-11-25-query-performance-design.md`
 
 ## Global Constraints
@@ -61,3 +61,8 @@ development worklist, this plan and validation record.
   instance. Record limitations, useful candidates and next data requirements.
 - [ ] Run one fresh review and one important-finding fix pass, then relevant CI,
   Aislop and final commands. Commit/push, update the worklist and report evidence.
+
+Deployment follow-up authorized by the user: identify Multitenant EC2 and InterMine
+RDS, adapt profiling to the observed PostgreSQL 15 version, and collect read-only
+database evidence. Live extension installation remains a separate explicit decision.
+Keep raw production inventory and connection details in ignored local artifacts.

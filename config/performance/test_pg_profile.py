@@ -100,8 +100,51 @@ class ComparisonTests(unittest.TestCase):
     def test_unchanged_queries_are_not_reported_as_work(self):
         self.assertEqual(profile.compare(snapshot(), snapshot())["queries"], [])
 
+    def test_legacy_reset_detection_limit_is_preserved_in_comparisons(self):
+        before, after = snapshot(), snapshot(5, 22)
+        for report in [before, after]:
+            report["statements"]["resetDetection"] = "global-and-counter-regression"
+        result = profile.compare(before, after)
+        self.assertEqual(result["resetDetection"], "global-and-counter-regression")
+        self.assertTrue(result["limitations"])
+        after["statements"]["resetDetection"] = "per-statement-start"
+        with self.assertRaises(ValueError):
+            profile.compare(before, after)
+
 
 class TransportTests(unittest.TestCase):
+    def test_postgres15_snapshot_uses_available_statement_columns(self):
+        queries = []
+
+        def read(_database, sql, _identity=None):
+            queries.append(sql)
+            if sql == profile.DATABASE_SQL:
+                return {
+                    "name": "fixture",
+                    "serverVersion": "150017",
+                    "canReadAllStats": True,
+                }
+            if sql == profile.SETTINGS_SQL:
+                return [{"name": "pg_stat_statements.track", "setting": "top"}]
+            if sql == profile.EXTENSION_SQL:
+                return {
+                    "schema": "public",
+                    "version": "1.10",
+                    "statsSinceAvailable": False,
+                }
+            if "pg_stat_statements_info" in sql:
+                return {"resetAt": "reset", "dealloc": 0}
+            return []
+
+        with patch.object(profile, "query_json", read):
+            report = profile.snapshot("fixture")
+        self.assertEqual(
+            report["statements"]["resetDetection"], "global-and-counter-regression"
+        )
+        statement_sql = next(q for q in queries if 'AS "queryId"' in q)
+        self.assertNotIn("stats_since AS", statement_sql)
+        self.assertIn('NULL::timestamptz AS "statsSince"', statement_sql)
+
     def test_each_section_rejects_a_different_backend_identity(self):
         details = {"name": "fixture", "postmasterStartedAt": "first"}
         result = subprocess.CompletedProcess(

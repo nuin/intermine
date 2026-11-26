@@ -60,15 +60,17 @@ workloads, row order. Specify a complete deterministic ordering for paginated qu
 `expectedChecked: true` means an explicit expected result was supplied; provenance
 determines whether that expectation is independent. Other fingerprints establish
 consistency only. A page containing 100 rows is intentionally bounded and cannot
-establish completeness of a larger query. Unsafe JSON integers fail rather than
-silently accepting rounded identifiers.
+establish completeness of a larger query. Unsafe JSON integers and decimal tokens
+that change through numeric decoding fail rather than silently accepting rounded
+values. Malformed UTF-8, inconsistent success envelopes, incorrect page offsets/models
+and rows narrower than their advertised views are also rejected.
 
 The Employee workload is a harness check for the preserved local test mine; it is
 not a representative biological or production-scale dataset.
 
 ## Capture PostgreSQL evidence
 
-Requires Python 3.10 or later, `psql`, and a PostgreSQL 18 or later target. Configure
+Requires Python 3.10 or later, `psql`, and a PostgreSQL 15 or later target. Configure
 libpq service/password files locally; use a read-only account with the necessary
 statistics access. Keep credentials out of command arguments and reports.
 
@@ -88,20 +90,30 @@ The profiler executes fixed SELECTs with read-only transactions, statement/lock
 timeouts and no password prompt. It captures table/index sizes and usage, selected
 settings, and statement counters. It never installs extensions, changes settings,
 resets counters or executes submitted workload SQL. Snapshots are multiple bounded
-reads, not one atomic view of a busy database. Review host/schema/table identifiers
+reads, not one atomic view of a busy database. Each read also returns database identity,
+which must match the initial identity even through a load-balanced connection service.
+Review host/schema/table identifiers
 before sharing reports; SQL text and connection strings are excluded.
 
 `pg_stat_statements` needs preloading and a server restart when first enabled, plus
 the extension in the selected database. Only an operator should arrange that on an
 appropriate staging instance or in an approved maintenance window. Full statement
 identities require superuser or `pg_read_all_stats` access. Missing installation,
-preloading or privileges is reported explicitly. Planning counters are zero when
+preloading or effective privileges is reported explicitly. Settings hidden from a
+restricted statistics reader are omitted rather than requiring `pg_read_all_settings`.
+Disabled tracking is reported as unavailable; missing representative statement text
+invalidates a snapshot because measurement queries cannot be excluded reliably.
+The recorded tracking settings describe the profiling session: application sessions
+can override them, so verify the application's settings before interpreting zero work.
+Planning counters are zero when
 `pg_stat_statements.track_planning` is disabled; that does not mean planning is free.
 See the [PostgreSQL 18 documentation](https://www.postgresql.org/docs/18/pgstatstatements.html).
 
 Compare ranks interval execution cost, not lifetime totals. It rejects database
 changes/restarts, statistics resets, evictions, disappeared statements and regressed
-counters. Query IDs remain meaningful only within the same database context.
+counters. Older extensions without `stats_since` cannot reliably detect an individual
+statement reset if its counters regrow before the next snapshot; reports expose this
+limitation. Keep reset operations outside the measurement window. Query IDs remain meaningful only within the same database context.
 The profiler excludes its own queries using an SQL alias marker; leading comments
 alone do not survive PostgreSQL's stored statement text reliably.
 
@@ -140,8 +152,9 @@ node --test config/performance/query-benchmark.test.cjs
 python3 -m unittest discover -s config/performance -p 'test_*.py'
 ```
 
-CI also provisions `intermine_performance_fixture` in its disposable PostgreSQL 18
-service and verifies that three workload calls produce exactly three counted calls,
-with no profiler queries in the delta. The fixture SQL is guarded by that exact
-database name. CI restarts only its ephemeral target service after the migration
-checks. Do not run fixture setup against an existing mine.
+CI also provisions `intermine_performance_fixture` in disposable PostgreSQL 15 and 18
+services and verifies that three workload calls produce exactly three counted calls,
+with no profiler queries in the delta. It also checks restricted statistics roles,
+non-inherited privileges and disabled tracking. The fixture SQL is guarded by that exact
+database name. CI restarts only its ephemeral profiling services. Database migration checks remain
+a separate job. Do not run fixture setup against an existing mine.

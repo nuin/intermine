@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-11-26T13:57:31.161Z",
+  "service": "http://127.0.0.1:8080/intermine-demo/service/",
+  "workloadSha256": "52709bad0cde9d4897c7f97ba7d7bea431520cf7a7b10f85ec19096477f55867",
+  "workloadName": "Employee fixture harness validation",
+  "dataset": "Preserved testmine Employee fixture; not production-sized",
+  "mine": {
+    "modelName": "testmodel",
+    "modelSha256": "4a2314e492a17e7e21885edfc9315f46188b9565dd86d689d01eefeecec31c56",
+    "apiVersion": 36
+  },
+  "repeat": 1,
+  "timeoutMs": 30000,
+  "maxBytes": 16777216,
+  "comparedToBaseline": true,
+  "cacheState": "uncontrolled; initial observation is not a cold-cache measurement",
+  "queries": [
+    {
+      "id": "name-prefix",
+      "querySha256": "4614a579e611a3e0d9ce60705d4f345e013f9ac460c49d0ad9936351c0f19e2c",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": true,
+      "rowCount": 2,
+      "sha256": "7b9a73e49fd9d2f9f73b9c711de1520db26b6f437f58c3cddb69fbd386deaa00",
+      "initial": {
+        "headersMs": 367.3595,
+        "transferMs": 0.15995799999996052,
+        "bytes": 254,
+        "totalMs": 367.69620800000007,
+        "parseMs": 0.17675000000008367
+      },
+      "samples": [
+        {
+          "headersMs": 17.82350000000008,
+          "transferMs": 0.11970799999994597,
+          "bytes": 254,
+          "totalMs": 17.988708000000088,
+          "parseMs": 0.045500000000060936
+        }
+      ],
+      "repeatedMs": {
+        "count": 1,
+        "min": 17.988708000000088,
+        "median": 17.988708000000088,
+        "max": 17.988708000000088,
+        "p95": null
+      }
+    },
+    {
+      "id": "department-join",
+      "querySha256": "ae792d4873b95450cf96ab0f5ba95489cd6ca2fdf6fe628133bfa9599587ad50",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": true,
+      "rowCount": 2,
+      "sha256": "04838e00023ee4b697ed94ea73d1b64ae1ce22a39e080228515890e24fc18f82",
+      "initial": {
+        "headersMs": 23.531791999999996,
+        "transferMs": 0.11966700000004948,
+        "bytes": 332,
+        "totalMs": 23.68770900000004,
+        "parseMs": 0.03624999999999545
+      },
+      "samples": [
+        {
+          "headersMs": 19.182500000000005,
+          "transferMs": 0.10870899999997619,
+          "bytes": 332,
+          "totalMs": 19.326084000000037,
+          "parseMs": 0.03487500000005639
+        }
+      ],
+      "repeatedMs": {
+        "count": 1,
+        "min": 19.326084000000037,
+        "median": 19.326084000000037,
+        "max": 19.326084000000037,
+        "p95": null
+      }
+    },
+    {
+      "id": "employee-page",
+      "querySha256": "83ecbc5267cb8805a18d3606950cb42049814415a3fe7fd128f4fff99d9f5f15",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": false,
+      "rowCount": 100,
+      "sha256": "535e20cd98651747791ca86b5645b8ceb8d7f0945c458c4770dfc54e15d735ee",
+      "initial": {
+        "headersMs": 84.82162499999993,
+        "transferMs": 0.16545800000005784,
+        "bytes": 6324,
+        "totalMs": 85.29591600000003,
+        "parseMs": 0.30883300000004965
+      },
+      "samples": [
+        {
+          "headersMs": 20.59462499999995,
+          "transferMs": 0.11987499999997908,
+          "bytes": 6324,
+          "totalMs": 20.934624999999983,
+          "parseMs": 0.22012500000005275
+        }
+      ],
+      "repeatedMs": {
+        "count": 1,
+        "min": 20.934624999999983,
+        "median": 20.934624999999983,
+        "max": 20.934624999999983,
+        "p95": null
+      }
+    },
+    {
+      "id": "employee-later-page",
+      "querySha256": "83ecbc5267cb8805a18d3606950cb42049814415a3fe7fd128f4fff99d9f5f15",
+      "start": 100,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": false,
+      "rowCount": 32,
+      "sha256": "ad50c5e1e6db06e3be07c9d584129fd46f181a3c8dfafc43823cc49e52e85a52",
+      "initial": {
+        "headersMs": 18.688875000000053,
+        "transferMs": 0.12654199999997218,
+        "bytes": 2179,
+        "totalMs": 18.94266700000003,
+        "parseMs": 0.12725000000000364
+      },
+      "samples": [
+        {
+          "headersMs": 17.98362499999996,
+          "transferMs": 0.12845900000002075,
+          "bytes": 2179,
+          "totalMs": 18.221375999999964,
+          "parseMs": 0.10929199999998218
+        }
+      ],
+      "repeatedMs": {
+        "count": 1,
+        "min": 18.221375999999964,
+        "median": 18.221375999999964,
+        "max": 18.221375999999964,
+        "p95": null
+      }
+    }
+  ]
+}
