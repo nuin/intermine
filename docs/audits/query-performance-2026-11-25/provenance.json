@@ -1,0 +1,12 @@
+{
+  "recordedLocalDate": "2026-11-25",
+  "timeZone": "America/Edmonton",
+  "implementationCommit": "c2f26f62c09c1ac9e6c98f90a326246a91d56814",
+  "service": "https://yeastmine.alliancegenome.org/yeastmine/service/",
+  "release": "R64-5-1 (built 2026-11-20, GO 2026-07-26)",
+  "releaseEndpoint": "https://yeastmine.alliancegenome.org/yeastmine/service/version/release",
+  "expectedAct1Source": "https://wiki.yeastgenome.org/index.php/YFL039C",
+  "expectedEmployeeSource": "Direct SQL over preserved intermine-runtime-fixed fixture; API translation under test is independent of SQL read, underlying data shared",
+  "postgresFixture": "Disposable PostgreSQL 18.7, intermine_performance_fixture, 1000 IDs; three SELECT count(*) queries with id >= 1, 2, 3",
+  "interpretation": "Uncontrolled caches; sequential bounded queries; network-inclusive latency; result consistency is not complete biological validation"
+}

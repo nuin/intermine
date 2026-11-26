@@ -1,0 +1,258 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-11-26T00:49:49.182150+00:00",
+  "database": {
+    "name": "intermine_performance_fixture",
+    "oid": "16440",
+    "serverAddress": "172.17.0.4",
+    "serverPort": 5432,
+    "postmasterStartedAt": "2026-11-25T20:10:13.355192+00:00",
+    "serverVersion": "180007",
+    "statsReset": null,
+    "canReadAllStats": true
+  },
+  "settings": [
+    {
+      "name": "compute_query_id",
+      "setting": "auto",
+      "unit": null
+    },
+    {
+      "name": "default_statistics_target",
+      "setting": "100",
+      "unit": null
+    },
+    {
+      "name": "effective_cache_size",
+      "setting": "524288",
+      "unit": "8kB"
+    },
+    {
+      "name": "jit",
+      "setting": "on",
+      "unit": null
+    },
+    {
+      "name": "log_min_duration_statement",
+      "setting": "-1",
+      "unit": "ms"
+    },
+    {
+      "name": "max_connections",
+      "setting": "100",
+      "unit": null
+    },
+    {
+      "name": "max_parallel_workers_per_gather",
+      "setting": "2",
+      "unit": null
+    },
+    {
+      "name": "random_page_cost",
+      "setting": "4",
+      "unit": null
+    },
+    {
+      "name": "shared_buffers",
+      "setting": "16384",
+      "unit": "8kB"
+    },
+    {
+      "name": "shared_preload_libraries",
+      "setting": "pg_stat_statements",
+      "unit": null
+    },
+    {
+      "name": "track_counts",
+      "setting": "on",
+      "unit": null
+    },
+    {
+      "name": "track_io_timing",
+      "setting": "on",
+      "unit": null
+    },
+    {
+      "name": "work_mem",
+      "setting": "4096",
+      "unit": "kB"
+    }
+  ],
+  "tables": [
+    {
+      "schema": "public",
+      "name": "benchmark_fixture",
+      "totalBytes": 65536,
+      "indexBytes": 0,
+      "estimatedLiveRows": 1000,
+      "estimatedDeadRows": 0,
+      "seqScans": 9,
+      "indexScans": null,
+      "lastAnalyze": "2026-11-25T22:09:06.072115+00:00",
+      "lastAutoanalyze": "2026-11-25T22:09:15.603985+00:00"
+    }
+  ],
+  "indexes": [],
+  "statements": {
+    "status": "available",
+    "extensionVersion": "1.12",
+    "resetAt": "2026-11-25T20:10:13.111034+00:00",
+    "dealloc": 0,
+    "rows": [
+      {
+        "queryId": "-5983901021396072587",
+        "userId": "10",
+        "toplevel": true,
+        "statsSince": "2026-11-25T22:09:06.369297+00:00",
+        "calls": 4,
+        "totalExecMs": 0.15379199999999998,
+        "totalPlanMs": 0.25804099999999996,
+        "rows": 4,
+        "sharedHits": 60,
+        "sharedReads": 0,
+        "tempReads": 0,
+        "tempWrites": 0
+      },
+      {
+        "queryId": "-5099982311998252646",
+        "userId": "10",
+        "toplevel": true,
+        "statsSince": "2026-11-25T22:09:06.403589+00:00",
+        "calls": 2,
+        "totalExecMs": 0.388873,
+        "totalPlanMs": 0.8646659999999999,
+        "rows": 2,
+        "sharedHits": 232,
+        "sharedReads": 0,
+        "tempReads": 0,
+        "tempWrites": 0
+      },
+      {
+        "queryId": "-4888021426003421236",
+        "userId": "10",
+        "toplevel": true,
+        "statsSince": "2026-11-25T22:09:06.071374+00:00",
+        "calls": 1,
+        "totalExecMs": 0.4835,
+        "totalPlanMs": 0,
+        "rows": 1000,
+        "sharedHits": 91,
+        "sharedReads": 0,
+        "tempReads": 0,
+        "tempWrites": 0
+      },
+      {
+        "queryId": "-4687782696203707490",
+        "userId": "10",
+        "toplevel": true,
+        "statsSince": "2026-11-25T22:09:06.072125+00:00",
+        "calls": 1,
+        "totalExecMs": 0.257125,
+        "totalPlanMs": 0,
+        "rows": 0,
+        "sharedHits": 118,
+        "sharedReads": 0,
+        "tempReads": 0,
+        "tempWrites": 0
+      },
+      {
+        "queryId": "-2570839754929510420",
+        "userId": "10",
+        "toplevel": true,
+        "statsSince": "2026-11-25T22:09:06.294882+00:00",
+        "calls": 2,
+        "totalExecMs": 0.260333,
+        "totalPlanMs": 1.9009589999999998,
+        "rows": 2,
+        "sharedHits": 870,
+        "sharedReads": 0,
+        "tempReads": 0,
+        "tempWrites": 0
+      },
+      {
+        "queryId": "667459240031747838",
+        "userId": "10",
+        "toplevel": true,
+        "statsSince": "2026-11-25T22:09:06.332928+00:00",
+        "calls": 2,
+        "totalExecMs": 0.092749,
+        "totalPlanMs": 0.855167,
+        "rows": 2,
+        "sharedHits": 404,
+        "sharedReads": 0,
+        "tempReads": 0,
+        "tempWrites": 0
+      },
+      {
+        "queryId": "1203108233751656355",
+        "userId": "10",
+        "toplevel": true,
+        "statsSince": "2026-11-25T22:09:06.186579+00:00",
+        "calls": 2,
+        "totalExecMs": 0.226624,
+        "totalPlanMs": 1.167125,
+        "rows": 2,
+        "sharedHits": 550,
+        "sharedReads": 0,
+        "tempReads": 0,
+        "tempWrites": 0
+      },
+      {
+        "queryId": "3646700873791771801",
+        "userId": "10",
+        "toplevel": true,
+        "statsSince": "2026-11-25T22:09:06.071332+00:00",
+        "calls": 1,
+        "totalExecMs": 8.258917,
+        "totalPlanMs": 0,
+        "rows": 0,
+        "sharedHits": 4328,
+        "sharedReads": 0,
+        "tempReads": 0,
+        "tempWrites": 0
+      },
+      {
+        "queryId": "3795488397583128632",
+        "userId": "10",
+        "toplevel": true,
+        "statsSince": "2026-11-25T22:09:06.220353+00:00",
+        "calls": 2,
+        "totalExecMs": 1.675916,
+        "totalPlanMs": 0.381417,
+        "rows": 2,
+        "sharedHits": 82,
+        "sharedReads": 0,
+        "tempReads": 0,
+        "tempWrites": 0
+      },
+      {
+        "queryId": "8115606323156755551",
+        "userId": "10",
+        "toplevel": true,
+        "statsSince": "2026-11-25T22:09:06.470945+00:00",
+        "calls": 9,
+        "totalExecMs": 0.906459,
+        "totalPlanMs": 2.198751,
+        "rows": 9,
+        "sharedHits": 378,
+        "sharedReads": 0,
+        "tempReads": 0,
+        "tempWrites": 0
+      },
+      {
+        "queryId": "8820381029782600149",
+        "userId": "10",
+        "toplevel": true,
+        "statsSince": "2026-11-25T22:09:06.255655+00:00",
+        "calls": 2,
+        "totalExecMs": 0.419043,
+        "totalPlanMs": 2.1577919999999997,
+        "rows": 2,
+        "sharedHits": 1094,
+        "sharedReads": 0,
+        "tempReads": 0,
+        "tempWrites": 0
+      }
+    ]
+  }
+}

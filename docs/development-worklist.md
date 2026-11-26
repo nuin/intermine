@@ -5,6 +5,7 @@ names and collaborate with Gos Micklem on upstream integration.
 
 | Item | Status | Scope |
 | --- | --- | --- |
+| Query efficiency and result quality | Current priority | YeastMine baseline and read-only profiling tools complete; obtain database evidence, measure one cache/query/index improvement, and preserve result fingerprints. See the [baseline](query-performance-validation-2026-11-25.md) and [operator guide](query-performance.md). |
 | 1. Product renaming | Discarded | No Alluvium rebrand. |
 | 2. Biological workflow validation | Queued | Small genomic mine; gene reports, tools, enrichment, exports and scientific correctness. |
 | 3. BlueGenes primary UI | Complete | Configurable entry bridge, preserved report/list/template/query links, capability errors and paired production-browser validation. See the [validation record](primary-ui-validation-2026-11-24.md). |

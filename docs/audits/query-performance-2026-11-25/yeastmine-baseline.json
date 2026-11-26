@@ -1,0 +1,325 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-11-26T00:25:15.611Z",
+  "service": "https://yeastmine.alliancegenome.org/yeastmine/service/",
+  "workloadSha256": "1c2bc2553e7a05ad91ae20e7323ab7662a25ebfd16c17a14882671c748d9b648",
+  "workloadName": "YeastMine bounded biological workload",
+  "dataset": "yeastmine.alliancegenome.org/yeastmine; release recorded separately",
+  "mine": {
+    "modelName": "genomic",
+    "modelSha256": "4f6f30058519933fc89322de6e9e7caa4bf11310f67e38151f828a2afa8fa236",
+    "apiVersion": 35
+  },
+  "repeat": 5,
+  "timeoutMs": 15000,
+  "maxBytes": 4000000,
+  "comparedToBaseline": true,
+  "cacheState": "uncontrolled; initial observation is not a cold-cache measurement",
+  "queries": [
+    {
+      "id": "act1-lookup",
+      "querySha256": "b432f3ba643028429f16f85030425f8f5f72c02263175679994f939b525b0106",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": true,
+      "rowCount": 1,
+      "sha256": "feb1f1f7176110be7121999693ff1ca1b93969e977651f706a7aa879ad2ad9a2",
+      "initial": {
+        "headersMs": 218.48024999999996,
+        "transferMs": 0.5598750000000337,
+        "bytes": 292,
+        "totalMs": 219.10062500000004,
+        "parseMs": 0.060500000000047294
+      },
+      "samples": [
+        {
+          "headersMs": 178.15358300000003,
+          "transferMs": 0.5049999999998818,
+          "bytes": 292,
+          "totalMs": 178.6719579999999,
+          "parseMs": 0.013374999999996362
+        },
+        {
+          "headersMs": 306.3182079999999,
+          "transferMs": 0.37637500000005275,
+          "bytes": 292,
+          "totalMs": 306.7085830000001,
+          "parseMs": 0.014000000000123691
+        },
+        {
+          "headersMs": 213.37687499999993,
+          "transferMs": 1.0375420000000304,
+          "bytes": 292,
+          "totalMs": 214.42479200000002,
+          "parseMs": 0.010375000000067303
+        },
+        {
+          "headersMs": 156.15595799999983,
+          "transferMs": 0.33541700000000674,
+          "bytes": 292,
+          "totalMs": 156.50299999999993,
+          "parseMs": 0.011625000000094587
+        },
+        {
+          "headersMs": 170.4493339999999,
+          "transferMs": 0.3792080000000624,
+          "bytes": 292,
+          "totalMs": 170.84033399999976,
+          "parseMs": 0.01179199999978664
+        }
+      ],
+      "repeatedMs": {
+        "count": 5,
+        "min": 156.50299999999993,
+        "median": 178.6719579999999,
+        "max": 306.7085830000001,
+        "p95": null
+      }
+    },
+    {
+      "id": "act1-go-annotations",
+      "querySha256": "46ea9f18fd9465277ca0c6d0f9619adfde4d4d6198c5f08c34a9a25380deabcc",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": false,
+      "rowCount": 21,
+      "sha256": "8c1c28b5a782a3b505389a82121e64210ea22e0928fa86a6e4b4dafdfa2bfeb9",
+      "initial": {
+        "headersMs": 221.73287499999992,
+        "transferMs": 45.72187500000018,
+        "bytes": 2053,
+        "totalMs": 267.47500000000014,
+        "parseMs": 0.020250000000032742
+      },
+      "samples": [
+        {
+          "headersMs": 261.44208300000037,
+          "transferMs": 0.40141700000003766,
+          "bytes": 2053,
+          "totalMs": 261.8613330000003,
+          "parseMs": 0.017832999999882304
+        },
+        {
+          "headersMs": 186.15666699999974,
+          "transferMs": 0.32625000000007276,
+          "bytes": 2053,
+          "totalMs": 186.50004199999967,
+          "parseMs": 0.017124999999850843
+        },
+        {
+          "headersMs": 171.05804099999978,
+          "transferMs": 0.4463340000002063,
+          "bytes": 2053,
+          "totalMs": 171.5236249999998,
+          "parseMs": 0.019249999999829015
+        },
+        {
+          "headersMs": 151.49074999999993,
+          "transferMs": 0.2957499999997708,
+          "bytes": 2053,
+          "totalMs": 151.80341599999974,
+          "parseMs": 0.016916000000037457
+        },
+        {
+          "headersMs": 223.21858299999985,
+          "transferMs": 0.32337500000039654,
+          "bytes": 2053,
+          "totalMs": 223.55995800000028,
+          "parseMs": 0.018000000000029104
+        }
+      ],
+      "repeatedMs": {
+        "count": 5,
+        "min": 151.80341599999974,
+        "median": 186.50004199999967,
+        "max": 261.8613330000003,
+        "p95": null
+      }
+    },
+    {
+      "id": "act1-protein",
+      "querySha256": "7f490e58413713548500ddbc0d8d260604b2a33af2eed906054a77c977830076",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": false,
+      "rowCount": 1,
+      "sha256": "c87264d0f366a7b5c67eb3b177b2bed53e91050983e214c7b187395f911cc27e",
+      "initial": {
+        "headersMs": 165.98183300000028,
+        "transferMs": 11.595916999999645,
+        "bytes": 440,
+        "totalMs": 177.5939159999998,
+        "parseMs": 0.01616599999988466
+      },
+      "samples": [
+        {
+          "headersMs": 180.6701250000001,
+          "transferMs": 0.3114999999997963,
+          "bytes": 440,
+          "totalMs": 180.99249999999984,
+          "parseMs": 0.010874999999941792
+        },
+        {
+          "headersMs": 182.51333300000033,
+          "transferMs": 0.27408299999979135,
+          "bytes": 440,
+          "totalMs": 182.7983750000003,
+          "parseMs": 0.01095900000018446
+        },
+        {
+          "headersMs": 178.28120799999988,
+          "transferMs": 0.30987499999991996,
+          "bytes": 440,
+          "totalMs": 178.6024999999995,
+          "parseMs": 0.011416999999710242
+        },
+        {
+          "headersMs": 160.67387499999995,
+          "transferMs": 0.3328750000000582,
+          "bytes": 440,
+          "totalMs": 161.0187920000003,
+          "parseMs": 0.012042000000292319
+        },
+        {
+          "headersMs": 156.4702499999994,
+          "transferMs": 0.3393340000002354,
+          "bytes": 440,
+          "totalMs": 156.82062499999938,
+          "parseMs": 0.011040999999750056
+        }
+      ],
+      "repeatedMs": {
+        "count": 5,
+        "min": 156.82062499999938,
+        "median": 178.6024999999995,
+        "max": 182.7983750000003,
+        "p95": null
+      }
+    },
+    {
+      "id": "yeast-gene-page",
+      "querySha256": "a1de3390d859c42ae1ced7ce7fbe6ace2da675e2851b1984cb0d046d63a7b531",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": false,
+      "rowCount": 100,
+      "sha256": "bdc3461c68ed806929d15d9746968ce24bcbe60fbd72885fd9a2ece5c110b641",
+      "initial": {
+        "headersMs": 85.62554100000034,
+        "transferMs": 0.3050419999999576,
+        "bytes": 4306,
+        "totalMs": 86.01845800000046,
+        "parseMs": 0.08787500000016735
+      },
+      "samples": [
+        {
+          "headersMs": 93.29570800000056,
+          "transferMs": 0.28470799999922747,
+          "bytes": 4306,
+          "totalMs": 93.63904100000036,
+          "parseMs": 0.0586250000005748
+        },
+        {
+          "headersMs": 142.25874999999996,
+          "transferMs": 0.2885420000002341,
+          "bytes": 4306,
+          "totalMs": 142.61058400000002,
+          "parseMs": 0.06329199999981938
+        },
+        {
+          "headersMs": 188.80754100000013,
+          "transferMs": 0.2821249999997235,
+          "bytes": 4306,
+          "totalMs": 189.15749899999992,
+          "parseMs": 0.0678330000000642
+        },
+        {
+          "headersMs": 90.96954199999982,
+          "transferMs": 0.29087499999968713,
+          "bytes": 4306,
+          "totalMs": 91.32220799999959,
+          "parseMs": 0.06179100000008475
+        },
+        {
+          "headersMs": 101.83666699999958,
+          "transferMs": 0.8240420000001905,
+          "bytes": 4306,
+          "totalMs": 102.7236669999993,
+          "parseMs": 0.06295799999952578
+        }
+      ],
+      "repeatedMs": {
+        "count": 5,
+        "min": 91.32220799999959,
+        "median": 102.7236669999993,
+        "max": 189.15749899999992,
+        "p95": null
+      }
+    },
+    {
+      "id": "yeast-gene-later-page",
+      "querySha256": "a1de3390d859c42ae1ced7ce7fbe6ace2da675e2851b1984cb0d046d63a7b531",
+      "start": 1000,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": false,
+      "rowCount": 100,
+      "sha256": "eeba3fd42a6872e3b44fb90e4626576e4b9a84776a87736796360128fed622ae",
+      "initial": {
+        "headersMs": 138.79849999999988,
+        "transferMs": 0.2817079999995258,
+        "bytes": 4264,
+        "totalMs": 139.1387909999994,
+        "parseMs": 0.05858299999999872
+      },
+      "samples": [
+        {
+          "headersMs": 177.6004579999999,
+          "transferMs": 0.29874999999992724,
+          "bytes": 4264,
+          "totalMs": 177.95741599999928,
+          "parseMs": 0.058207999999467575
+        },
+        {
+          "headersMs": 90.0277500000002,
+          "transferMs": 0.23174999999991996,
+          "bytes": 4264,
+          "totalMs": 90.31508300000041,
+          "parseMs": 0.055583000000297034
+        },
+        {
+          "headersMs": 82.62979200000063,
+          "transferMs": 0.3246659999995245,
+          "bytes": 4264,
+          "totalMs": 83.02895800000078,
+          "parseMs": 0.07450000000062573
+        },
+        {
+          "headersMs": 183.86629100000027,
+          "transferMs": 0.2791669999996884,
+          "bytes": 4264,
+          "totalMs": 184.21566600000006,
+          "parseMs": 0.0702080000000933
+        },
+        {
+          "headersMs": 184.73433299999942,
+          "transferMs": 0.3875000000007276,
+          "bytes": 4264,
+          "totalMs": 185.17925000000014,
+          "parseMs": 0.05741699999998673
+        }
+      ],
+      "repeatedMs": {
+        "count": 5,
+        "min": 83.02895800000078,
+        "median": 177.95741599999928,
+        "max": 185.17925000000014,
+        "p95": null
+      }
+    }
+  ]
+}

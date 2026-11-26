@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-11-25T21:57:51.137Z",
+  "service": "https://yeastmine.alliancegenome.org/yeastmine/service/",
+  "workloadSha256": "1c2bc2553e7a05ad91ae20e7323ab7662a25ebfd16c17a14882671c748d9b648",
+  "workloadName": "YeastMine bounded biological workload",
+  "dataset": "yeastmine.alliancegenome.org/yeastmine; release recorded separately",
+  "mine": {
+    "modelName": "genomic",
+    "modelSha256": "4f6f30058519933fc89322de6e9e7caa4bf11310f67e38151f828a2afa8fa236",
+    "apiVersion": 35
+  },
+  "repeat": 1,
+  "timeoutMs": 15000,
+  "maxBytes": 4000000,
+  "comparedToBaseline": false,
+  "cacheState": "uncontrolled; initial observation is not a cold-cache measurement",
+  "queries": [
+    {
+      "id": "act1-lookup",
+      "querySha256": "b432f3ba643028429f16f85030425f8f5f72c02263175679994f939b525b0106",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": true,
+      "rowCount": 1,
+      "sha256": "feb1f1f7176110be7121999693ff1ca1b93969e977651f706a7aa879ad2ad9a2",
+      "initial": {
+        "headersMs": 1900.870125,
+        "transferMs": 0.4055840000000899,
+        "bytes": 292,
+        "totalMs": 1901.3309170000002,
+        "parseMs": 0.055208000000220636
+      },
+      "samples": [
+        {
+          "headersMs": 171.33016700000007,
+          "transferMs": 0.6093330000003334,
+          "bytes": 292,
+          "totalMs": 171.95258300000023,
+          "parseMs": 0.013082999999824096
+        }
+      ],
+      "repeatedMs": {
+        "count": 1,
+        "min": 171.95258300000023,
+        "median": 171.95258300000023,
+        "max": 171.95258300000023,
+        "p95": null
+      }
+    },
+    {
+      "id": "act1-go-annotations",
+      "querySha256": "46ea9f18fd9465277ca0c6d0f9619adfde4d4d6198c5f08c34a9a25380deabcc",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": false,
+      "rowCount": 21,
+      "sha256": "8c1c28b5a782a3b505389a82121e64210ea22e0928fa86a6e4b4dafdfa2bfeb9",
+      "initial": {
+        "headersMs": 703.1955420000004,
+        "transferMs": 0.37633299999970404,
+        "bytes": 2053,
+        "totalMs": 703.5906250000003,
+        "parseMs": 0.0187500000001819
+      },
+      "samples": [
+        {
+          "headersMs": 153.21275000000014,
+          "transferMs": 0.7812919999996666,
+          "bytes": 2053,
+          "totalMs": 154.0091669999997,
+          "parseMs": 0.015124999999898137
+        }
+      ],
+      "repeatedMs": {
+        "count": 1,
+        "min": 154.0091669999997,
+        "median": 154.0091669999997,
+        "max": 154.0091669999997,
+        "p95": null
+      }
+    },
+    {
+      "id": "act1-protein",
+      "querySha256": "7f490e58413713548500ddbc0d8d260604b2a33af2eed906054a77c977830076",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": false,
+      "rowCount": 1,
+      "sha256": "c87264d0f366a7b5c67eb3b177b2bed53e91050983e214c7b187395f911cc27e",
+      "initial": {
+        "headersMs": 697.596583,
+        "transferMs": 0.4205419999998412,
+        "bytes": 440,
+        "totalMs": 698.0299169999994,
+        "parseMs": 0.01279199999953562
+      },
+      "samples": [
+        {
+          "headersMs": 158.2040419999994,
+          "transferMs": 0.32287499999983993,
+          "bytes": 440,
+          "totalMs": 158.5378329999994,
+          "parseMs": 0.010916000000179338
+        }
+      ],
+      "repeatedMs": {
+        "count": 1,
+        "min": 158.5378329999994,
+        "median": 158.5378329999994,
+        "max": 158.5378329999994,
+        "p95": null
+      }
+    },
+    {
+      "id": "yeast-gene-page",
+      "querySha256": "a1de3390d859c42ae1ced7ce7fbe6ace2da675e2851b1984cb0d046d63a7b531",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": false,
+      "rowCount": 100,
+      "sha256": "bdc3461c68ed806929d15d9746968ce24bcbe60fbd72885fd9a2ece5c110b641",
+      "initial": {
+        "headersMs": 7584.938375000001,
+        "transferMs": 0.37920800000028976,
+        "bytes": 4306,
+        "totalMs": 7585.377875000001,
+        "parseMs": 0.060292000000117696
+      },
+      "samples": [
+        {
+          "headersMs": 110.81733300000087,
+          "transferMs": 0.9742499999993015,
+          "bytes": 4306,
+          "totalMs": 111.84637499999917,
+          "parseMs": 0.0547919999989972
+        }
+      ],
+      "repeatedMs": {
+        "count": 1,
+        "min": 111.84637499999917,
+        "median": 111.84637499999917,
+        "max": 111.84637499999917,
+        "p95": null
+      }
+    },
+    {
+      "id": "yeast-gene-later-page",
+      "querySha256": "a1de3390d859c42ae1ced7ce7fbe6ace2da675e2851b1984cb0d046d63a7b531",
+      "start": 1000,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": false,
+      "rowCount": 100,
+      "sha256": "eeba3fd42a6872e3b44fb90e4626576e4b9a84776a87736796360128fed622ae",
+      "initial": {
+        "headersMs": 81.47104200000103,
+        "transferMs": 0.3335419999984879,
+        "bytes": 4264,
+        "totalMs": 81.87475000000086,
+        "parseMs": 0.07016600000133622
+      },
+      "samples": [
+        {
+          "headersMs": 103.3470840000009,
+          "transferMs": 0.2763749999994616,
+          "bytes": 4264,
+          "totalMs": 103.68866700000035,
+          "parseMs": 0.06520799999998417
+        }
+      ],
+      "repeatedMs": {
+        "count": 1,
+        "min": 103.68866700000035,
+        "median": 103.68866700000035,
+        "max": 103.68866700000035,
+        "p95": null
+      }
+    }
+  ]
+}

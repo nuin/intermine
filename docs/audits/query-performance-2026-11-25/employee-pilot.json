@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-11-25T20:08:04.919Z",
+  "service": "http://127.0.0.1:8080/intermine-demo/service/",
+  "workloadSha256": "52709bad0cde9d4897c7f97ba7d7bea431520cf7a7b10f85ec19096477f55867",
+  "workloadName": "Employee fixture harness validation",
+  "dataset": "Preserved testmine Employee fixture; not production-sized",
+  "mine": {
+    "modelName": "testmodel",
+    "modelSha256": "4a2314e492a17e7e21885edfc9315f46188b9565dd86d689d01eefeecec31c56",
+    "apiVersion": 36
+  },
+  "repeat": 2,
+  "timeoutMs": 30000,
+  "maxBytes": 16777216,
+  "comparedToBaseline": false,
+  "cacheState": "uncontrolled; initial observation is not a cold-cache measurement",
+  "queries": [
+    {
+      "id": "name-prefix",
+      "querySha256": "4614a579e611a3e0d9ce60705d4f345e013f9ac460c49d0ad9936351c0f19e2c",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": true,
+      "rowCount": 2,
+      "sha256": "7b9a73e49fd9d2f9f73b9c711de1520db26b6f437f58c3cddb69fbd386deaa00",
+      "initial": {
+        "headersMs": 26.954583,
+        "transferMs": 0.10316699999999912,
+        "bytes": 254,
+        "totalMs": 27.113332999999997,
+        "parseMs": 0.055582999999998606
+      },
+      "samples": [
+        {
+          "headersMs": 7.035041000000007,
+          "transferMs": 0.08412500000000023,
+          "bytes": 254,
+          "totalMs": 7.1295410000000174,
+          "parseMs": 0.01037500000001046
+        },
+        {
+          "headersMs": 5.394333000000003,
+          "transferMs": 0.10333300000000634,
+          "bytes": 254,
+          "totalMs": 5.505875000000017,
+          "parseMs": 0.008209000000007904
+        }
+      ],
+      "repeatedMs": {
+        "count": 2,
+        "min": 5.505875000000017,
+        "median": 6.317708000000017,
+        "max": 7.1295410000000174,
+        "p95": null
+      }
+    },
+    {
+      "id": "department-join",
+      "querySha256": "ae792d4873b95450cf96ab0f5ba95489cd6ca2fdf6fe628133bfa9599587ad50",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": true,
+      "rowCount": 2,
+      "sha256": "04838e00023ee4b697ed94ea73d1b64ae1ce22a39e080228515890e24fc18f82",
+      "initial": {
+        "headersMs": 8.677416000000008,
+        "transferMs": 0.08241699999999241,
+        "bytes": 332,
+        "totalMs": 8.769416000000007,
+        "parseMs": 0.009583000000006336
+      },
+      "samples": [
+        {
+          "headersMs": 6.478916000000012,
+          "transferMs": 0.07170899999999847,
+          "bytes": 332,
+          "totalMs": 6.560625000000002,
+          "parseMs": 0.009999999999990905
+        },
+        {
+          "headersMs": 5.299750000000017,
+          "transferMs": 0.14312499999999773,
+          "bytes": 332,
+          "totalMs": 5.459250000000026,
+          "parseMs": 0.016375000000010687
+        }
+      ],
+      "repeatedMs": {
+        "count": 2,
+        "min": 5.459250000000026,
+        "median": 6.009937500000014,
+        "max": 6.560625000000002,
+        "p95": null
+      }
+    },
+    {
+      "id": "employee-page",
+      "querySha256": "83ecbc5267cb8805a18d3606950cb42049814415a3fe7fd128f4fff99d9f5f15",
+      "start": 0,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": false,
+      "rowCount": 100,
+      "sha256": "535e20cd98651747791ca86b5645b8ceb8d7f0945c458c4770dfc54e15d735ee",
+      "initial": {
+        "headersMs": 28.199917,
+        "transferMs": 0.11304200000000719,
+        "bytes": 6324,
+        "totalMs": 28.352499999999992,
+        "parseMs": 0.039540999999985615
+      },
+      "samples": [
+        {
+          "headersMs": 7.300582999999989,
+          "transferMs": 0.09020800000001827,
+          "bytes": 6324,
+          "totalMs": 7.425874999999991,
+          "parseMs": 0.03508399999998346
+        },
+        {
+          "headersMs": 8.062583999999987,
+          "transferMs": 0.0701660000000004,
+          "bytes": 6324,
+          "totalMs": 8.169083,
+          "parseMs": 0.03633300000001327
+        }
+      ],
+      "repeatedMs": {
+        "count": 2,
+        "min": 7.425874999999991,
+        "median": 7.797478999999996,
+        "max": 8.169083,
+        "p95": null
+      }
+    },
+    {
+      "id": "employee-later-page",
+      "querySha256": "83ecbc5267cb8805a18d3606950cb42049814415a3fe7fd128f4fff99d9f5f15",
+      "start": 100,
+      "size": 100,
+      "ordered": true,
+      "expectedChecked": false,
+      "rowCount": 32,
+      "sha256": "ad50c5e1e6db06e3be07c9d584129fd46f181a3c8dfafc43823cc49e52e85a52",
+      "initial": {
+        "headersMs": 6.358417000000003,
+        "transferMs": 0.06224999999997749,
+        "bytes": 2179,
+        "totalMs": 6.443916999999999,
+        "parseMs": 0.023250000000018645
+      },
+      "samples": [
+        {
+          "headersMs": 5.916958000000022,
+          "transferMs": 0.16833399999998733,
+          "bytes": 2179,
+          "totalMs": 6.114875000000012,
+          "parseMs": 0.029583000000002357
+        },
+        {
+          "headersMs": 7.558208000000008,
+          "transferMs": 0.0811249999999859,
+          "bytes": 2179,
+          "totalMs": 7.657000000000011,
+          "parseMs": 0.017667000000017197
+        }
+      ],
+      "repeatedMs": {
+        "count": 2,
+        "min": 6.114875000000012,
+        "median": 6.885937500000011,
+        "max": 7.657000000000011,
+        "p95": null
+      }
+    }
+  ]
+}
