@@ -4,6 +4,7 @@ import importlib.util
 import os
 import subprocess
 from pathlib import Path
+from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location(
     "pg_profile", Path(__file__).with_name("pg-profile.py")
@@ -28,4 +29,33 @@ assert delta["queries"][0]["calls"] == 3, (
     "The three measured reads were not recorded exactly"
 )
 assert delta["queries"][0]["rows"] == 3
-print("Verified three workload calls with no profiler queries in the delta")
+psql_command = profile.psql_command
+for role, status in [
+    ("intermine_profile_reader", "available"),
+    ("intermine_profile_plain", "insufficient-privileges"),
+    ("intermine_profile_noinherit", "insufficient-privileges"),
+]:
+
+    def role_command(database, sql, role=role):
+        command, environment = psql_command(database, sql)
+        return command[:-2] + ["-c", "SET ROLE " + role] + command[-2:], environment
+
+    with patch.object(profile, "psql_command", role_command):
+        observed = profile.snapshot(database)
+    assert observed["statements"]["status"] == status, role
+    assert not any(
+        s["name"] == "shared_preload_libraries" for s in observed["settings"]
+    )
+
+
+def untracked_command(database, sql):
+    command, environment = psql_command(database, sql)
+    return command[:-2] + ["-c", "SET pg_stat_statements.track='none'"] + command[
+        -2:
+    ], environment
+
+
+with patch.object(profile, "psql_command", untracked_command):
+    untracked = profile.snapshot(database)
+assert untracked["statements"]["status"] == "tracking-disabled"
+print("Verified workload counters, restricted roles and disabled tracking")

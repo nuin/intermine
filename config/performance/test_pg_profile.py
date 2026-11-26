@@ -1,5 +1,7 @@
 import copy
 import importlib.util
+import json
+import subprocess
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -100,6 +102,91 @@ class ComparisonTests(unittest.TestCase):
 
 
 class TransportTests(unittest.TestCase):
+    def test_each_section_rejects_a_different_backend_identity(self):
+        details = {"name": "fixture", "postmasterStartedAt": "first"}
+        result = subprocess.CompletedProcess(
+            [],
+            0,
+            json.dumps(
+                {"database": {**details, "postmasterStartedAt": "second"}, "value": []}
+            ),
+            "",
+        )
+        with (
+            patch.object(profile.subprocess, "run", return_value=result),
+            self.assertRaisesRegex(ValueError, "identity"),
+        ):
+            profile.query_json("service=fixture", profile.TABLES_SQL, details)
+
+    def test_unavailable_preload_is_explicit_without_disclosing_server_errors(self):
+        result = subprocess.CompletedProcess(
+            [], 1, "", "ERROR:  55000\nprivate details"
+        )
+        with (
+            patch.object(profile.subprocess, "run", return_value=result),
+            self.assertRaises(profile.DatabaseQueryError) as raised,
+        ):
+            profile.query_json("fixture", "SELECT 1")
+        self.assertEqual(raised.exception.sqlstate, "55000")
+        self.assertNotIn("private", str(raised.exception))
+        with patch.object(
+            profile,
+            "query_json",
+            side_effect=[{"schema": "public", "version": "1.12"}, raised.exception],
+        ):
+            result = profile.statement_snapshot(
+                "fixture", {"canReadAllStats": True}, []
+            )
+        self.assertEqual(result["status"], "not-preloaded")
+
+    def test_hidden_preload_setting_does_not_require_read_all_settings(self):
+        responses = [
+            {"schema": "public", "version": "1.12"},
+            {"resetAt": "reset", "dealloc": 0},
+            [],
+            {"resetAt": "reset", "dealloc": 0},
+        ]
+        with patch.object(profile, "query_json", side_effect=responses):
+            result = profile.statement_snapshot(
+                "fixture",
+                {"canReadAllStats": True},
+                [{"name": "pg_stat_statements.track", "setting": "top"}],
+            )
+        self.assertEqual(result["status"], "available")
+        with patch.object(profile, "query_json", return_value=responses[0]):
+            result = profile.statement_snapshot(
+                "fixture", {"canReadAllStats": False}, []
+            )
+        self.assertEqual(result["status"], "insufficient-privileges")
+
+    def test_disabled_tracking_and_missing_statement_text_are_not_empty_successes(self):
+        for track, rows in [("none", []), ("top", [{"hasQueryText": False}])]:
+            with self.subTest(track=track):
+                responses = [
+                    {"schema": "public", "version": "1.12"},
+                    {"resetAt": "reset", "dealloc": 0},
+                    rows,
+                    {"resetAt": "reset", "dealloc": 0},
+                ]
+                settings = [
+                    {"name": "pg_stat_statements.track", "setting": track},
+                    {
+                        "name": "shared_preload_libraries",
+                        "setting": "pg_stat_statements",
+                    },
+                ]
+                with patch.object(profile, "query_json", side_effect=responses):
+                    if track == "none":
+                        result = profile.statement_snapshot(
+                            "fixture", {"canReadAllStats": True}, settings
+                        )
+                        self.assertEqual(result["status"], "tracking-disabled")
+                    else:
+                        with self.assertRaisesRegex(ValueError, "text"):
+                            profile.statement_snapshot(
+                                "fixture", {"canReadAllStats": True}, settings
+                            )
+
     def test_psql_is_read_only_bounded_and_does_not_inherit_write_capable_options(self):
         with patch.dict(
             "os.environ", {"PGOPTIONS": "-c default_transaction_read_only=off"}
@@ -115,7 +202,7 @@ class TransportTests(unittest.TestCase):
     def test_missing_extension_is_explicit_without_database_mutation(self):
         queries = []
 
-        def read(_database, sql):
+        def read(_database, sql, _identity=None):
             queries.append(sql)
             if "pg_extension" in sql:
                 return None

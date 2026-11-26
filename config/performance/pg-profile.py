@@ -5,6 +5,7 @@ import datetime
 import json
 import math
 import os
+import re
 import subprocess
 from pathlib import Path
 
@@ -27,13 +28,15 @@ DATABASE_SQL = """SELECT json_build_object(
     'serverVersion', current_setting('server_version_num'),
     'statsReset', (SELECT stats_reset FROM pg_stat_database WHERE datname = current_database()),
     'canReadAllStats', (SELECT rolsuper FROM pg_roles WHERE rolname = current_user)
-        OR pg_has_role(current_user, 'pg_read_all_stats', 'MEMBER'))"""
+        OR pg_has_role(current_user, 'pg_read_all_stats', 'USAGE'))"""
 SETTINGS_SQL = """SELECT coalesce(json_agg(s ORDER BY name), '[]'::json) FROM (
     SELECT name, setting, unit FROM pg_settings WHERE name IN (
         'shared_buffers', 'work_mem', 'effective_cache_size', 'random_page_cost',
         'max_connections', 'track_io_timing', 'track_counts', 'compute_query_id',
         'shared_preload_libraries', 'log_min_duration_statement',
-        'default_statistics_target', 'jit', 'max_parallel_workers_per_gather')) s"""
+        'default_statistics_target', 'jit', 'max_parallel_workers_per_gather',
+        'pg_stat_statements.track', 'pg_stat_statements.track_planning',
+        'pg_stat_statements.track_utility')) s"""
 TABLES_SQL = """SELECT coalesce(json_agg(t ORDER BY "totalBytes" DESC), '[]'::json) FROM (
     SELECT schemaname AS schema, relname AS name,
         pg_total_relation_size(relid) AS "totalBytes",
@@ -65,6 +68,8 @@ def psql_command(database, sql):
         "--no-password",
         "-v",
         "ON_ERROR_STOP=1",
+        "-v",
+        "VERBOSITY=sqlstate",
         "--dbname",
         database,
         "-c",
@@ -75,8 +80,19 @@ def psql_command(database, sql):
     ], environment
 
 
-def query_json(database, sql):
-    command, environment = psql_command(database, sql)
+class DatabaseQueryError(RuntimeError):
+    def __init__(self, sqlstate):
+        super().__init__(
+            "PostgreSQL profiling query failed; check connection and read privileges"
+        )
+        self.sqlstate = sqlstate
+
+
+def query_json(database, sql, identity=None):
+    wrapped = (
+        f"SELECT json_build_object('database', ({DATABASE_SQL}), 'value', ({sql}))"
+    )
+    command, environment = psql_command(database, wrapped)
     try:
         result = subprocess.run(
             command,
@@ -91,21 +107,18 @@ def query_json(database, sql):
             "psql unavailable or timed out; check local connection configuration"
         ) from error
     if result.returncode:
-        raise RuntimeError(
-            "PostgreSQL profiling query failed; check connection and read privileges"
-        )
-    return json.loads(result.stdout) if result.stdout.strip() else None
+        state = re.search(r"(?:ERROR|FATAL):\s+([0-9A-Z]{5})\b", result.stderr)
+        raise DatabaseQueryError(state[1] if state else None)
+    payload = json.loads(result.stdout)
+    if identity is not None and payload["database"] != identity:
+        raise ValueError("Database identity changed while capturing snapshot")
+    return payload["value"]
 
 
 def statement_snapshot(database, details, settings):
-    extension = query_json(database, EXTENSION_SQL)
+    extension = query_json(database, EXTENSION_SQL, details)
     if extension is None:
         return {"status": "not-installed"}
-    preloaded = next(
-        s["setting"] for s in settings if s["name"] == "shared_preload_libraries"
-    )
-    if "pg_stat_statements" not in preloaded:
-        return {"status": "not-preloaded"}
     if not details.get("canReadAllStats"):
         return {"status": "insufficient-privileges"}
     schema = '"' + extension["schema"].replace('"', '""') + '"'
@@ -113,27 +126,47 @@ def statement_snapshot(database, details, settings):
         "SELECT json_build_object('resetAt', stats_reset, 'dealloc', dealloc) "
         f"FROM {schema}.pg_stat_statements_info"
     )
-    info = query_json(database, info_sql)
+    try:
+        info = query_json(database, info_sql, details)
+    except DatabaseQueryError as error:
+        if error.sqlstate == "55000":
+            return {"status": "not-preloaded"}
+        raise
+    tracking = {
+        s["name"]: s["setting"]
+        for s in settings
+        if s["name"].startswith("pg_stat_statements.")
+    }
+    if "pg_stat_statements.track" not in tracking:
+        raise ValueError("Statement tracking configuration is unavailable")
+    if tracking["pg_stat_statements.track"] == "none":
+        return {"status": "tracking-disabled", "tracking": tracking}
     rows = query_json(
         database,
         f"""SELECT coalesce(json_agg(s), '[]'::json) FROM (
         SELECT queryid::text AS "queryId", userid AS "userId", toplevel,
+            query IS NOT NULL AS "hasQueryText",
             stats_since AS "statsSince", calls, total_exec_time AS "totalExecMs",
             total_plan_time AS "totalPlanMs", rows, shared_blks_hit AS "sharedHits",
             shared_blks_read AS "sharedReads", temp_blks_read AS "tempReads",
             temp_blks_written AS "tempWrites"
         FROM {schema}.pg_stat_statements
         WHERE dbid = (SELECT oid FROM pg_database WHERE datname = current_database())
-            AND query NOT LIKE '%intermine_performance_probe%'
+            AND (query IS NULL OR query NOT LIKE '%intermine_performance_probe%')
         ORDER BY userid, queryid, toplevel) s""",
+        details,
     )
-    if info != query_json(database, info_sql):
+    if info != query_json(database, info_sql, details):
         raise ValueError(
             "Statement statistics reset or evicted entries while capturing snapshot"
         )
+    if any(not row["hasQueryText"] for row in rows):
+        raise ValueError("Statement text unavailable; cannot exclude profiling queries")
     return {
         "status": "available",
         "extensionVersion": extension["version"],
+        "tracking": tracking,
+        "trackingScope": "profiling session; application sessions can override these settings",
         **info,
         "rows": rows,
     }
@@ -143,14 +176,14 @@ def snapshot(database):
     details = query_json(database, DATABASE_SQL)
     if int(details["serverVersion"]) < 180000:
         raise ValueError("This profiler requires PostgreSQL 18 or later")
-    settings = query_json(database, SETTINGS_SQL)
+    settings = query_json(database, SETTINGS_SQL, details)
     return {
         "schemaVersion": 1,
         "capturedAt": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "database": details,
         "settings": settings,
-        "tables": query_json(database, TABLES_SQL),
-        "indexes": query_json(database, INDEXES_SQL),
+        "tables": query_json(database, TABLES_SQL, details),
+        "indexes": query_json(database, INDEXES_SQL, details),
         "statements": statement_snapshot(database, details, settings),
     }
 
@@ -187,6 +220,8 @@ def compare(before, after):
     old, new = before["statements"], after["statements"]
     if old["status"] != "available" or new["status"] != "available":
         raise ValueError("Statement profiling is unavailable in one or both snapshots")
+    if old.get("tracking") != new.get("tracking"):
+        raise ValueError("Statement tracking configuration changed during the interval")
     if (old["resetAt"], old["dealloc"]) != (new["resetAt"], new["dealloc"]):
         raise ValueError(
             "Statement statistics reset or evicted entries during the interval"

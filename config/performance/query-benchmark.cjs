@@ -94,13 +94,39 @@ async function request(url, options, { timeoutMs, maxBytes, token }) {
     } catch {
         throw new Error(`Request failed (HTTP ${response?.status ?? 'unavailable'}; check timeout and byte limit)`);
     }
+    const text = decodeUtf8(bytes);
     const received = performance.now();
-    return { text: bytes.toString('utf8'), sample: { headersMs, transferMs: received - start - headersMs,
+    return { text, sample: { headersMs, transferMs: received - start - headersMs,
         bytes: bytes.length, totalMs: received - start, parseMs: 0 } };
 }
 
+function decodeUtf8(bytes) {
+    try { return new TextDecoder('utf-8', { fatal: true }).decode(bytes); }
+    catch { throw new Error('Input is not valid UTF-8'); }
+}
+
+function decimalIdentity(source) {
+    const [, sign, whole, fraction = '', exponent = '0'] = source.match(/^(-?)(\d+)(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    const digits = (whole + fraction).replace(/^0+/, '');
+    if (!digits) return '0';
+    const significant = digits.replace(/0+$/, '');
+    return `${sign}${significant}e${Number(exponent) - fraction.length + digits.length - significant.length}`;
+}
+
 function parseJson(text) {
-    try { return JSON.parse(text); } catch { throw new Error('Response is not valid JSON'); }
+    try {
+        return JSON.parse(text, (_key, value, context) => {
+            if (typeof value === 'number' && (!Number.isFinite(value)
+                || (Number.isInteger(value) && !Number.isSafeInteger(value))
+                || !context?.source || decimalIdentity(context.source) !== decimalIdentity(String(value)))) {
+                throw new Error('JSON number loses precision; encode exact decimals as strings');
+            }
+            return value;
+        });
+    } catch (error) {
+        if (error instanceof SyntaxError) throw new Error('Input is not valid JSON');
+        throw error;
+    }
 }
 
 async function metadata(service, options) {
@@ -122,8 +148,13 @@ async function sampleQuery(service, item, options) {
     }, options);
     const start = performance.now();
     const body = parseJson(response.text);
-    if (body.wasSuccessful !== true || !Array.isArray(body.results)
-        || body.results.some(row => !Array.isArray(row)) || body.results.length > item.size) {
+    if (body.wasSuccessful !== true || body.statusCode !== 200 || body.error !== null
+        || body.modelName !== options.model || String(body.start) !== String(item.start)
+        || !Array.isArray(body.views) || !body.views.length
+        || body.views.some(view => typeof view !== 'string' || !view.trim())
+        || !Array.isArray(body.results)
+        || body.results.some(row => !Array.isArray(row) || row.length !== body.views.length)
+        || body.results.length > item.size) {
         throw new Error('Query did not return a successful bounded row array');
     }
     const parseMs = performance.now() - start;
@@ -162,7 +193,7 @@ async function runBenchmark({ service, workload, baseline, repeat = 10, timeoutM
     const workloadSha256 = hash(workload);
     if (baseline && (baseline.schemaVersion !== 1 || baseline.workloadSha256 !== workloadSha256
         || baseline.queries?.length !== workload.queries.length)) throw new Error('Baseline workload differs');
-    const options = { repeat, timeoutMs, maxBytes, token };
+    const options = { repeat, timeoutMs, maxBytes, token, model: workload.model };
     const info = await metadata(root, options);
     if (info.modelName !== workload.model) throw new Error('Workload model differs from service');
     if (baseline && info.modelSha256 !== baseline.mine?.modelSha256) throw new Error('Baseline model differs');
@@ -187,8 +218,8 @@ async function main() {
     if (!values.service || !values.workload || !values.output) {
         throw new Error('Required: --service URL --workload FILE --output FILE');
     }
-    const workload = parseJson(await readFile(values.workload, 'utf8'));
-    const baseline = values.baseline ? parseJson(await readFile(values.baseline, 'utf8')) : undefined;
+    const workload = parseJson(decodeUtf8(await readFile(values.workload)));
+    const baseline = values.baseline ? parseJson(decodeUtf8(await readFile(values.baseline))) : undefined;
     const report = await runBenchmark({ service: values.service, workload, baseline,
         repeat: Number(values.repeat), timeoutMs: Number(values['timeout-ms']),
         maxBytes: Number(values['max-bytes']), token: process.env.INTERMINE_BENCHMARK_TOKEN });

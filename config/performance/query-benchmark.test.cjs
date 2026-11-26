@@ -1,12 +1,16 @@
 const assert = require('node:assert/strict');
 const { createServer } = require('node:http');
 const { test } = require('node:test');
+const { spawnSync } = require('node:child_process');
+const { mkdtempSync, writeFileSync, rmSync } = require('node:fs');
+const { tmpdir } = require('node:os');
+const { join } = require('node:path');
 const { fingerprint, summarize, runBenchmark } = require('./query-benchmark.cjs');
 
 const rows = [[1, 'β'], [2, null], [2, null]];
 const workload = () => ({
     schemaVersion: 1, name: 'fixture', model: 'testmodel', dataset: 'seeded-test-data',
-    queries: [{ id: 'employees', query: '<query view="Employee.id"/>',
+    queries: [{ id: 'employees', query: '<query model="testmodel" view="Employee.id Employee.name"/>',
         start: 0, size: 10, ordered: true, expectedRows: rows }],
 });
 
@@ -34,9 +38,71 @@ async function fixture(t, queryHandler) {
     return { service: `http://127.0.0.1:${server.address().port}/service/`, requests };
 }
 
-function success(response, values = rows) {
-    response.end(JSON.stringify({ wasSuccessful: true, results: values }));
+function envelope(values = rows) {
+    return { wasSuccessful: true, error: null, statusCode: 200, modelName: 'testmodel',
+        start: '0', views: ['Employee.id', 'Employee.name'], results: values };
 }
+
+function success(response, values = rows) {
+    response.end(JSON.stringify(envelope(values)));
+}
+
+test('successful-looking malformed pages fail without independent row expectations', async t => {
+    const changes = [body => { body.start = 100; }, body => { body.modelName = 'wrong'; },
+        body => { body.results = [[1]]; }, body => { body.views = []; },
+        body => { body.views = ['Employee.id', null]; }, body => { body.error = 'private-error'; },
+        body => { body.statusCode = 500; }];
+    for (const [index, change] of changes.entries()) {
+        await t.test(String(index), async child => {
+            const body = envelope();
+            change(body);
+            const { service } = await fixture(child, response => response.end(JSON.stringify(body)));
+            const input = workload();
+            delete input.queries[0].expectedRows;
+            await assert.rejects(runBenchmark({ service, workload: input, repeat: 1 }), error => {
+                assert.ok(!error.message.includes('private-error'));
+                return true;
+            });
+        });
+    }
+});
+
+test('numeric precision loss and malformed UTF-8 cannot become stable results', async t => {
+    for (const invalid of ['1.00000000000000001', '9007199254740993', '1e-999', '"BADBYTE"']) {
+        await t.test(invalid, async child => {
+            const { service } = await fixture(child, (response, call) => {
+                let body = JSON.stringify(envelope([['NUMBER', null]])).replace('"NUMBER"',
+                    call === 1 ? invalid : invalid.replace(/1$/, '2'));
+                if (invalid.includes('BADBYTE')) body = Buffer.from(body.replace('BADBYTE', '\u0080'), 'latin1');
+                response.end(body);
+            });
+            const input = workload();
+            delete input.queries[0].expectedRows;
+            await assert.rejects(runBenchmark({ service, workload: input, repeat: 1 }));
+        });
+    }
+});
+
+test('equivalent numeric spellings retain precision and compare successfully', async t => {
+    const { service } = await fixture(t, (response, call) => {
+        response.end(JSON.stringify(envelope([['NUMBER', null]])).replace('"NUMBER"', call === 1 ? '1.2500e2' : '125'));
+    });
+    const input = workload();
+    input.queries[0].expectedRows = [[125, null]];
+    assert.equal((await runBenchmark({ service, workload: input, repeat: 1 })).queries[0].rowCount, 1);
+});
+
+test('file-based expectations reject decimal rounding before making requests', t => {
+    const directory = mkdtempSync(join(tmpdir(), 'intermine-precision-'));
+    t.after(() => rmSync(directory, { recursive: true }));
+    const file = join(directory, 'workload.json');
+    writeFileSync(file, JSON.stringify(workload()).replace('[[1,', '[[1.00000000000000001,'));
+    const result = spawnSync(process.execPath, [join(__dirname, 'query-benchmark.cjs'),
+        '--service', 'http://127.0.0.1:1/service/', '--workload', file, '--output', join(directory, 'out.json')], { encoding: 'utf8' });
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /precision/);
+    assert.ok(!result.stderr.includes('1.00000000000000001'));
+});
 
 test('fingerprints retain types, duplicate rows and explicit ordering', () => {
     assert.notEqual(fingerprint(rows, true), fingerprint([...rows].reverse(), true));
